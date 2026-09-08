@@ -810,7 +810,7 @@
   min-height: 3.2rem;
 }
 
-/* Modelo principal — PNG original (cantos/flores/título) + inputs por cima */
+/* Modelo principal — PNG oficial + moldura-mask + inputs */
 .art--principal {
   position: relative;
   width: min(100%, 400px);
@@ -833,147 +833,340 @@
   z-index: 0;
 }
 
-.principal-edit {
+.art--principal .tpl {
+  position: absolute;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+/*
+  Branco apertado só em volta da moldura principal
+  (tapa vazamento da moldura antiga — não cobre título nem lírios).
+*/
+.art--principal .tpl-moldura-clean {
+  left: 29.6%;
+  top: 18.3%;
+  width: 40.8%;
+  height: 38.2%;
+  z-index: 2;
+  pointer-events: none;
+  background: transparent;
+}
+
+.art--principal .tpl-moldura-clean svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+  Moldura principal (borda dourada) — abaixo de HOMENAGEM.
+*/
+.art--principal .tpl-photo {
+  left: 31.4%;
+  top: 19.8%;
+  width: 37.2%;
+  height: 33.6%;
+  z-index: 3;
+  overflow: visible;
+  background: transparent;
+}
+
+.art--principal .tpl-photo .photo-frame,
+.art--principal .principal-moldura {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.art--principal .photo-frame__tools {
+  display: none !important;
+}
+
+/* Moldura principal — topo/base retos, sem marca d'água */
+.photo-frame--moldura {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.photo-frame--moldura .photo-frame__hit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: unset;
+  box-shadow: none;
+  overflow: hidden;
+  background: #f4f6f8;
+  filter: none;
+}
+
+.photo-frame--moldura .photo-frame__img {
   position: absolute;
   inset: 0;
   z-index: 2;
-  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
-.principal-slot {
+.photo-frame--moldura .photo-frame__placeholder--moldura {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  inset: 0;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  pointer-events: auto;
-  /* cobre o texto estático do PNG sem invadir cantos */
-  background: #fbfbfb;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  background: #f4f6f8;
+  color: #1a2744;
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-align: center;
 }
 
-/* Foto — área da moldura, sem encostar nos cantos */
-.principal-slot--photo {
-  top: 17.8%;
-  width: 42%;
-  height: 28.5%;
-  background: transparent;
+.photo-frame--moldura .photo-frame__watermark,
+.photo-frame--moldura .photo-frame__watermark--asset,
+.photo-frame--moldura .hex-mark {
+  display: none !important;
 }
 
-.principal-slot--photo .photo-frame {
-  width: 100%;
-  height: 100%;
-  margin: 0;
+.photo-frame--moldura .photo-frame__gold-border--moldura {
+  position: absolute;
+  inset: -1.2%;
+  width: 102.4%;
+  height: 102.4%;
+  left: -1.2%;
+  top: -1.2%;
+  pointer-events: none;
+  z-index: 4;
+  overflow: visible;
 }
 
-.principal-slot--photo .photo-frame__hit {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: unset !important;
-  max-height: none;
-}
-
-/* Nome / idade */
-.principal-slot--person {
-  top: 47.2%;
+/*
+  Pinta o miolo do PNG — encolhido à esquerda p/ não cobrir lírios.
+*/
+.art--principal .tpl-text-paint {
+  left: 16%;
+  top: 53.2%;
   width: 72%;
-  padding: 0.15rem 0.35rem 0.1rem;
-  background: linear-gradient(
-    180deg,
-    rgba(251, 251, 251, 0.92) 0%,
-    #fbfbfb 18%,
-    #fbfbfb 100%
-  );
+  height: 28.6%;
+  z-index: 2;
+  background: #f0f0f0;
+  pointer-events: none;
 }
 
-.art--principal .invite-person {
-  gap: 0.1rem;
+/* Nome / idade — inputs sobre o papel */
+.art--principal .tpl-person {
+  left: 52%;
+  top: 54.6%;
+  transform: translateX(-50%);
+  width: 68%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.12rem;
+  padding: 0.2rem 0.4rem 0.15rem;
+  background: transparent;
+  z-index: 3;
 }
 
-.art--principal .invite-person__name,
-.art--principal .editable--name {
-  font-size: clamp(0.95rem, 3.8cqw, 1.2rem);
-  margin: 0;
+.art--principal .tpl-age {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.12rem;
+  color: #c4a46a;
+  font-family: var(--font-serif);
+  font-size: clamp(0.72rem, 2.9cqw, 0.88rem);
 }
 
-.art--principal .invite-person__age,
-.art--principal .invite-person__age-row,
-.art--principal .editable--age {
-  font-size: clamp(0.68rem, 2.8cqw, 0.82rem);
+.art--principal .tpl-dates {
+  left: 52%;
+  top: 62.2%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 72%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.12rem 0.35rem;
+  background: transparent;
+  z-index: 3;
 }
 
-/* Datas */
-.principal-slot--dates {
-  top: 53.6%;
-  width: 70%;
-  padding: 0.12rem 0.25rem;
+.art--principal .tpl-dates__item {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.28rem;
+  color: #1a2744;
+  font-size: clamp(0.62rem, 2.6cqw, 0.76rem);
+  font-weight: 600;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-.art--principal .invite-dates {
-  gap: 0.35rem;
-  margin: 0;
-  font-size: clamp(0.62rem, 2.6cqw, 0.74rem);
-}
-
-/* Cards velório / sepultamento */
-.principal-slot--cards {
-  top: 58.5%;
-  width: 78%;
-  padding: 0.15rem 0;
-  background: #fbfbfb;
-}
-
-.art--principal .invite-cards {
-  width: 100%;
-  max-width: 100%;
-  gap: 0.35rem;
-  margin: 0;
-}
-
-.art--principal .invite-card {
-  padding: 0.38rem 0.45rem;
-  gap: 0.4rem;
-}
-
-.art--principal .invite-card__icon {
-  width: 1.55rem;
-  height: 1.55rem;
+.art--principal .tpl-dates__icon {
+  width: 0.9rem;
+  height: 0.9rem;
+  display: grid;
+  place-items: center;
+  color: #1a2744;
   flex-shrink: 0;
 }
 
-.art--principal .invite-card p,
-.art--principal .editable--card {
-  font-size: clamp(0.52rem, 2.3cqw, 0.64rem);
-  line-height: 1.3;
-  min-height: 2.2rem;
+.art--principal .tpl-dates__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-/* Rodapé */
-.principal-slot--footer {
-  top: 78.5%;
-  width: 70%;
-  padding: 0.2rem 0.3rem 0.15rem;
-  background: #fbfbfb;
+.art--principal .tpl-dates__sep {
+  width: 1px;
+  height: 0.9rem;
+  background: rgba(26, 39, 68, 0.35);
+  flex-shrink: 0;
 }
 
-.art--principal .invite-footer {
+.art--principal .tpl-cards {
+  left: 54%;
+  top: 66.8%;
+  transform: translateX(-50%);
+  width: 68%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.2rem 0;
+  background: transparent;
+  z-index: 3;
+}
+
+.art--principal .tpl-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.45rem;
+  align-items: center;
+  border: 1.45px solid #c4a46a;
+  border-radius: 999px;
+  padding: 0.42rem 0.55rem 0.42rem 0.4rem;
+  background: #f0f0f0;
+  box-shadow: 0 0 0 3px #f0f0f0;
+  min-width: 0;
+}
+
+.art--principal .tpl-card__icon {
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 50%;
+  background: #1a2744;
+  color: #c4a46a;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.art--principal .tpl-card__icon svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.art--principal .tpl-footer {
+  left: 50%;
+  top: 94.6%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 62%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  padding: 0.12rem 0.45rem;
+  background: #f0f0f0;
+  z-index: 3;
+  border-radius: 4px;
+}
+
+.art--principal .tpl-footer__dot {
+  color: #c4a46a;
+  flex-shrink: 0;
+  font-size: 0.55rem;
+  line-height: 1;
+}
+
+.art--principal .tpl-input {
+  border: none;
+  background: transparent !important;
+  outline: none;
+  padding: 0;
   margin: 0;
-  gap: 0.25rem;
+  width: 100%;
+  color: #1a2744;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-.art--principal .invite-footer .brand-logo {
-  transform: scale(0.82);
-  transform-origin: center top;
+.art--principal .tpl-input:focus {
+  box-shadow: none;
+  outline: none;
+  background: transparent !important;
 }
 
-.art--principal .invite-footer__rule {
-  margin: 0.15rem 0;
+.art--principal .tpl-input--name {
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 4.2cqw, 1.28rem);
+  font-weight: 700;
+  text-align: center;
+  color: #1a2744;
 }
 
-.art--principal .editable--contact,
-.art--principal .invite-footer__contact {
-  font-size: clamp(0.52rem, 2.2cqw, 0.64rem);
+.art--principal .tpl-input--age {
+  width: auto;
+  min-width: 3.5rem;
+  max-width: 6rem;
+  text-align: center;
+  font-family: var(--font-serif);
+  font-size: inherit;
+  color: #c4a46a;
+}
+
+.art--principal .tpl-input--date {
+  width: 5.6rem;
+  min-width: 5.6rem;
+  max-width: 5.6rem;
+  flex-shrink: 0;
+  font-family: var(--font-serif);
+  font-size: inherit;
+  font-weight: 600;
+  color: #1a2744;
+  white-space: nowrap;
+}
+
+.art--principal .tpl-input--card {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: clamp(0.55rem, 2.35cqw, 0.68rem);
+  line-height: 1.35;
+  min-height: 2.2rem;
+  resize: none;
+  color: #1a2744;
+  text-align: left;
+}
+
+.art--principal .tpl-input--contact {
+  width: auto;
+  min-width: 0;
+  max-width: 9.5rem;
+  flex: 0 1 auto;
+  text-align: center;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: clamp(0.5rem, 2.1cqw, 0.6rem);
+  color: #1a2744;
 }
 
 .art.is-exporting .photo-frame__tools,
@@ -981,28 +1174,35 @@
   display: none !important;
 }
 
+/* Moldura soft-hex (outros layouts) */
 .photo-frame--hexSoft {
   position: relative;
   width: 100%;
-  height: 100%;
+}
+
+.photo-frame--hexSoft .photo-frame__hit {
+  aspect-ratio: 100 / 120;
+  box-shadow: none;
+  background: linear-gradient(160deg, #f2f6fa, #e6eef6);
 }
 
 .photo-frame--hexSoft .photo-frame__gold-border {
   position: absolute;
-  inset: -2px;
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
+  inset: -1.5%;
+  width: 103%;
+  height: 103%;
+  margin: auto;
+  left: -1.5%;
+  top: -1.5%;
   pointer-events: none;
   z-index: 3;
+  overflow: visible;
 }
 
-.photo-frame--hexSoft .photo-frame__gold-border {
-  position: absolute;
-  inset: -2px;
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
-  pointer-events: none;
-  z-index: 3;
+.photo-frame--hexSoft .photo-frame__placeholder {
+  font-size: 0.62rem;
+  padding: 0.65rem;
+  text-align: center;
 }
 
 .editor__photo-tools {

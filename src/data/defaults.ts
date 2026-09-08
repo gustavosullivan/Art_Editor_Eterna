@@ -1,7 +1,7 @@
 import type { ArtFields, LayoutOption } from '../types'
 
 export const defaultFields: ArtFields = {
-  personName: 'Nome da pessoa que veio a falecer',
+  personName: 'Claudina Danielli',
   age: '95 anos',
   birthDate: '30/06/1931',
   deathDate: '28/08/2026',
@@ -20,7 +20,7 @@ export const layoutOptions: LayoutOption[] = [
   {
     id: 'principal',
     name: 'Modelo Principal',
-    description: 'Layout oficial São Luiz — cantos, lírios e moldura hexagonal.',
+    description: 'Layout oficial São Luiz — cantos com lírios em relevo e moldura hexagonal.',
   },
   {
     id: 'setimo',
