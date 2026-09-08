@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import html2canvas from 'html2canvas'
 import ArtLayout from '../components/layouts/ArtLayout'
+import { layoutOptions } from '../data/defaults'
 import type { ArtFields, LayoutId, PhotoTransform } from '../types'
 
 type EditorScreenProps = {
@@ -15,6 +16,10 @@ type EditorScreenProps = {
   onChangeLayout: () => void
 }
 
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value))
+}
+
 export default function EditorScreen({
   layoutId,
   fields,
@@ -27,7 +32,16 @@ export default function EditorScreen({
   onChangeLayout,
 }: EditorScreenProps) {
   const artRef = useRef<HTMLDivElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
   const [downloading, setDownloading] = useState(false)
+
+  function handleFile(file: File | undefined) {
+    if (!file || !file.type.startsWith('image/')) return
+    const url = URL.createObjectURL(file)
+    if (photoUrl?.startsWith('blob:')) URL.revokeObjectURL(photoUrl)
+    onPhotoChange(url)
+    onPhotoTransformChange({ x: 0, y: 0, scale: 1 })
+  }
 
   async function handleDownload() {
     const target = artRef.current?.querySelector('.art') as HTMLElement | null
@@ -36,12 +50,33 @@ export default function EditorScreen({
     setDownloading(true)
     target.classList.add('is-exporting')
 
+    // espera o browser aplicar o CSS de exportação
+    await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
     try {
       const canvas = await html2canvas(target, {
-        backgroundColor: '#fbfbfb',
-        scale: Math.min(3, window.devicePixelRatio > 1 ? 2.5 : 2),
+        backgroundColor: '#ffffff',
+        scale: 2,
         useCORS: true,
         logging: false,
+        allowTaint: true,
+        onclone: (_doc, element) => {
+          element.classList.add('is-exporting')
+          element.querySelectorAll('input, textarea').forEach((node) => {
+            const el = node as HTMLInputElement | HTMLTextAreaElement
+            el.style.border = 'none'
+            el.style.background = 'transparent'
+            el.style.outline = 'none'
+            el.style.boxShadow = 'none'
+            el.style.padding = '0'
+            el.style.resize = 'none'
+            el.style.caretColor = 'transparent'
+          })
+          element.querySelectorAll('.no-export, .photo-frame__tools, .photo-frame__placeholder').forEach((node) => {
+            ;(node as HTMLElement).style.display = 'none'
+          })
+        },
       })
 
       const slug = fields.personName
@@ -70,7 +105,9 @@ export default function EditorScreen({
         <button type="button" className="editor__bar-btn" onClick={onBack}>
           Voltar
         </button>
-        <p className="editor__bar-title">Editar arte</p>
+        <p className="editor__bar-title">
+          {layoutOptions.find((item) => item.id === layoutId)?.name ?? 'Editar arte'}
+        </p>
         <button type="button" className="editor__bar-btn" onClick={onChangeLayout}>
           Layouts
         </button>
@@ -89,9 +126,74 @@ export default function EditorScreen({
       </div>
 
       <div className="editor__footer">
-        <p className="editor__tip">
-          Arraste a foto para posicionar. Use − / + ou o dedo (pinça) para redimensionar.
-        </p>
+        <div className="editor__photo-slot">
+          {photoUrl ? (
+            <div className="editor__photo-tools">
+              <button
+                type="button"
+                className="editor__tool-btn"
+                onClick={() =>
+                  onPhotoTransformChange({
+                    ...photoTransform,
+                    scale: clamp(photoTransform.scale - 0.1, 1, 3),
+                  })
+                }
+                aria-label="Diminuir"
+              >
+                −
+              </button>
+              <input
+                className="editor__tool-slider"
+                type="range"
+                min={1}
+                max={3}
+                step={0.01}
+                value={photoTransform.scale}
+                onChange={(event) =>
+                  onPhotoTransformChange({
+                    ...photoTransform,
+                    scale: Number(event.target.value),
+                  })
+                }
+                aria-label="Zoom da foto"
+              />
+              <button
+                type="button"
+                className="editor__tool-btn"
+                onClick={() =>
+                  onPhotoTransformChange({
+                    ...photoTransform,
+                    scale: clamp(photoTransform.scale + 0.1, 1, 3),
+                  })
+                }
+                aria-label="Aumentar"
+              >
+                +
+              </button>
+              <button type="button" className="editor__tool-link" onClick={() => fileRef.current?.click()}>
+                Trocar
+              </button>
+              <button
+                type="button"
+                className="editor__tool-link"
+                onClick={() => onPhotoTransformChange({ x: 0, y: 0, scale: 1 })}
+              >
+                Centralizar
+              </button>
+            </div>
+          ) : (
+            <p className="editor__tip">Toque na moldura para adicionar a foto.</p>
+          )}
+        </div>
+
+        <input
+          ref={fileRef}
+          className="photo-frame__input"
+          type="file"
+          accept="image/*"
+          onChange={(event) => handleFile(event.target.files?.[0])}
+        />
+
         <button
           type="button"
           className="editor__download"

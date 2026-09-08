@@ -162,6 +162,7 @@ export function InvitationFooter({
   return (
     <footer className="invite-footer">
       <SaoLuizLogo compact />
+      <div className="invite-footer__rule" aria-hidden="true" />
       <div className="invite-footer__contact">
         {preview ? (
           <>

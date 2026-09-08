@@ -1,4 +1,4 @@
-export type LayoutId = 'classic' | 'elegant' | 'serene'
+export type LayoutId = 'principal' | 'classic' | 'elegant' | 'serene' | 'setimo'
 
 export type ArtFields = {
   personName: string
@@ -9,6 +9,12 @@ export type ArtFields = {
   burialText: string
   phone: string
   website: string
+  /** Texto sob o nome (Missa de 7º Dia) */
+  memorialNote: string
+  /** Data e horário da celebração */
+  celebrationDate: string
+  /** Local da cerimônia */
+  ceremonyPlace: string
 }
 
 export type PhotoTransform = {
@@ -20,7 +26,7 @@ export type PhotoTransform = {
 export const defaultPhotoTransform: PhotoTransform = {
   x: 0,
   y: 0,
-  scale: 1.15,
+  scale: 1,
 }
 
 export type ArtState = ArtFields & {

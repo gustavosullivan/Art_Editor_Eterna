@@ -25,7 +25,7 @@ export default function WelcomeScreen({ onConfirm, onBack }: WelcomeScreenProps)
         <p className="welcome__eyebrow">São Luiz Funerária</p>
         <h1 className="welcome__title">Bem-vindo</h1>
         <p className="welcome__subtitle">
-          Escolha um dos 3 layouts para montar o convite de homenagem.
+          Escolha o layout do convite. O Modelo Principal é o oficial da São Luiz.
         </p>
       </header>
 

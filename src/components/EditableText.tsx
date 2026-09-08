@@ -7,6 +7,8 @@ type EditableTextProps = {
   multiline?: boolean
   ariaLabel: string
   placeholder?: string
+  /** Sem a classe global .editable (evita conflito no template) */
+  plain?: boolean
 }
 
 export default function EditableText({
@@ -16,9 +18,10 @@ export default function EditableText({
   multiline = false,
   ariaLabel,
   placeholder,
+  plain = false,
 }: EditableTextProps) {
   const sharedProps = {
-    className: `editable ${multiline ? 'editable--multiline' : ''} ${className}`.trim(),
+    className: `${plain ? '' : `editable ${multiline ? 'editable--multiline' : ''}`} ${className}`.trim(),
     value,
     onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       onChange(event.target.value),
@@ -28,7 +31,7 @@ export default function EditableText({
   }
 
   if (multiline) {
-    return <textarea {...sharedProps} rows={3} />
+    return <textarea {...sharedProps} rows={2} />
   }
 
   return <input type="text" {...sharedProps} />

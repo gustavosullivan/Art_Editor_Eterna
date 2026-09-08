@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --invite-navy: #1a2744;
   --invite-gold: #c4a46a;
   --invite-paper: #fbfbfb;
@@ -7,7 +7,7 @@
   --font-serif: 'Libre Baskerville', 'Cormorant Garamond', Georgia, serif;
 }
 
-/* ——— Welcome + carousel ——— */
+/* â€”â€”â€” Welcome + carousel â€”â€”â€” */
 .welcome {
   position: relative;
   isolation: isolate;
@@ -195,7 +195,7 @@
   animation: none;
 }
 
-/* ——— Editor ——— */
+/* â€”â€”â€” Editor â€”â€”â€” */
 .editor {
   min-height: 100dvh;
   min-height: 100svh;
@@ -268,6 +268,14 @@
   border-top: 1px solid rgba(26, 35, 50, 0.08);
 }
 
+/* Espaço reservado: tip ↔ tools não empurra a arte ao escolher foto */
+.editor__photo-slot {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .editor__tip {
   margin: 0;
   text-align: center;
@@ -303,7 +311,7 @@
   transform: scale(0.985);
 }
 
-/* ——— Art card shared ——— */
+/* â€”â€”â€” Art card shared â€”â€”â€” */
 .art {
   position: relative;
   isolation: isolate;
@@ -385,6 +393,7 @@
 }
 
 .photo-frame__hit {
+  position: relative;
   display: block;
   width: 100%;
   aspect-ratio: 0.82;
@@ -392,10 +401,29 @@
   -webkit-tap-highlight-color: transparent;
   overflow: hidden;
   background:
-    linear-gradient(160deg, #eef2f6, #dfe6ee);
+    linear-gradient(160deg, #f4f8fc, #e4eef8);
   box-shadow: 0 0 0 2px var(--invite-gold), 0 0 0 4px rgba(196, 164, 106, 0.25);
   touch-action: none;
   user-select: none;
+}
+
+.photo-frame__watermark {
+  position: absolute;
+  inset: 0;
+  width: 72%;
+  height: auto;
+  margin: auto;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.92;
+}
+
+.photo-frame__watermark--soft {
+  width: 64%;
+  opacity: 0.14;
+  z-index: 2;
+  filter: none;
+  mix-blend-mode: normal;
 }
 
 .photo-frame__hit--photo {
@@ -425,7 +453,33 @@
   border-radius: 50%;
 }
 
+/* Moldura Missa 7º Dia — quadrado com cantos bem arredondados + filete duplo */
+.photo-frame--rounded {
+  width: 100%;
+}
+
+.photo-frame--rounded .photo-frame__hit {
+  aspect-ratio: 1;
+  border-radius: 24%;
+  overflow: hidden;
+  background: #eef2f6;
+  box-shadow:
+    0 0 0 1.6px var(--invite-gold),
+    0 0 0 3.4px #f7f7f7,
+    0 0 0 5px var(--invite-gold);
+}
+
+.photo-frame--rounded .photo-frame__img {
+  border-radius: 24%;
+}
+
+.photo-frame--rounded .photo-frame__watermark {
+  display: none;
+}
+
 .photo-frame__img {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -436,19 +490,23 @@
 }
 
 .photo-frame__placeholder {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
-  padding: 1rem;
+  justify-content: flex-end;
+  gap: 0.2rem;
+  padding: 0.85rem 0.7rem 1rem;
   text-align: center;
   color: var(--invite-navy);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
   line-height: 1.25;
+  background: linear-gradient(to top, rgba(244, 248, 252, 0.92) 0%, rgba(244, 248, 252, 0.2) 42%, transparent 70%);
 }
 
 .photo-frame__plus {
@@ -538,9 +596,18 @@
 }
 
 /* Person / dates / cards */
+.editable--name {
+  background: transparent;
+  text-shadow: none;
+  filter: none;
+  position: relative;
+  z-index: 1;
+}
+
 .invite-person {
   width: 100%;
   text-align: center;
+  isolation: isolate;
 }
 
 .invite-person__name,
@@ -657,8 +724,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
   padding-top: 0.35rem;
+}
+
+.invite-footer__rule {
+  width: min(78%, 220px);
+  height: 1px;
+  background: var(--invite-gold);
+  margin-top: 0.1rem;
 }
 
 .invite-footer .brand-logo {
@@ -736,7 +810,247 @@
   min-height: 3.2rem;
 }
 
-/* Layout 1 — classic corners + lilies */
+/* Modelo principal — PNG original (cantos/flores/título) + inputs por cima */
+.art--principal {
+  position: relative;
+  width: min(100%, 400px);
+  aspect-ratio: 768 / 1024;
+  background: #fff;
+  overflow: hidden;
+  padding: 0;
+  container-type: inline-size;
+}
+
+.art--principal .art__template {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.principal-edit {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.principal-slot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  /* cobre o texto estático do PNG sem invadir cantos */
+  background: #fbfbfb;
+}
+
+/* Foto — área da moldura, sem encostar nos cantos */
+.principal-slot--photo {
+  top: 17.8%;
+  width: 42%;
+  height: 28.5%;
+  background: transparent;
+}
+
+.principal-slot--photo .photo-frame {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.principal-slot--photo .photo-frame__hit {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: unset !important;
+  max-height: none;
+}
+
+/* Nome / idade */
+.principal-slot--person {
+  top: 47.2%;
+  width: 72%;
+  padding: 0.15rem 0.35rem 0.1rem;
+  background: linear-gradient(
+    180deg,
+    rgba(251, 251, 251, 0.92) 0%,
+    #fbfbfb 18%,
+    #fbfbfb 100%
+  );
+}
+
+.art--principal .invite-person {
+  gap: 0.1rem;
+}
+
+.art--principal .invite-person__name,
+.art--principal .editable--name {
+  font-size: clamp(0.95rem, 3.8cqw, 1.2rem);
+  margin: 0;
+}
+
+.art--principal .invite-person__age,
+.art--principal .invite-person__age-row,
+.art--principal .editable--age {
+  font-size: clamp(0.68rem, 2.8cqw, 0.82rem);
+}
+
+/* Datas */
+.principal-slot--dates {
+  top: 53.6%;
+  width: 70%;
+  padding: 0.12rem 0.25rem;
+}
+
+.art--principal .invite-dates {
+  gap: 0.35rem;
+  margin: 0;
+  font-size: clamp(0.62rem, 2.6cqw, 0.74rem);
+}
+
+/* Cards velório / sepultamento */
+.principal-slot--cards {
+  top: 58.5%;
+  width: 78%;
+  padding: 0.15rem 0;
+  background: #fbfbfb;
+}
+
+.art--principal .invite-cards {
+  width: 100%;
+  max-width: 100%;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.art--principal .invite-card {
+  padding: 0.38rem 0.45rem;
+  gap: 0.4rem;
+}
+
+.art--principal .invite-card__icon {
+  width: 1.55rem;
+  height: 1.55rem;
+  flex-shrink: 0;
+}
+
+.art--principal .invite-card p,
+.art--principal .editable--card {
+  font-size: clamp(0.52rem, 2.3cqw, 0.64rem);
+  line-height: 1.3;
+  min-height: 2.2rem;
+}
+
+/* Rodapé */
+.principal-slot--footer {
+  top: 78.5%;
+  width: 70%;
+  padding: 0.2rem 0.3rem 0.15rem;
+  background: #fbfbfb;
+}
+
+.art--principal .invite-footer {
+  margin: 0;
+  gap: 0.25rem;
+}
+
+.art--principal .invite-footer .brand-logo {
+  transform: scale(0.82);
+  transform-origin: center top;
+}
+
+.art--principal .invite-footer__rule {
+  margin: 0.15rem 0;
+}
+
+.art--principal .editable--contact,
+.art--principal .invite-footer__contact {
+  font-size: clamp(0.52rem, 2.2cqw, 0.64rem);
+}
+
+.art.is-exporting .photo-frame__tools,
+.art.is-exporting .no-export {
+  display: none !important;
+}
+
+.photo-frame--hexSoft {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.photo-frame--hexSoft .photo-frame__gold-border {
+  position: absolute;
+  inset: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.photo-frame--hexSoft .photo-frame__gold-border {
+  position: absolute;
+  inset: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.editor__photo-tools {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  gap: 0.4rem;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin-inline: auto;
+  padding: 0.35rem 0.2rem;
+}
+
+.editor__tool-btn {
+  appearance: none;
+  border: 1px solid rgba(26, 39, 68, 0.16);
+  background: #fff;
+  color: var(--navy);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.editor__tool-slider {
+  width: 100%;
+  accent-color: var(--navy);
+}
+
+.editor__tool-link {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--navy);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-height: 2rem;
+  padding: 0 0.15rem;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Layout 1 â€” classic corners + lilies */
 .art--classic .art__corner {
   position: absolute;
   width: 42%;
@@ -817,7 +1131,7 @@
   transform: rotate(22deg);
 }
 
-/* Layout 2 — elegant framed */
+/* Layout 2 â€” elegant framed */
 .art--elegant {
   background:
     linear-gradient(#fff, #fff) padding-box,
@@ -842,7 +1156,7 @@
   padding-inline: 0.85rem;
 }
 
-/* Layout 3 — serene band */
+/* Layout 3 â€” serene band */
 .art--serene .art__band {
   position: absolute;
   top: 0;
@@ -870,6 +1184,383 @@
 .art--serene .invite-person__age-row,
 .art--serene .editable--age {
   color: var(--invite-navy);
+}
+
+/* ═══════════════════════════════════════════
+   Missa de Sétimo Dia — folha em código
+   ═══════════════════════════════════════════ */
+.art--setimo {
+  --setimo-navy: #1a2744;
+  --setimo-gold: #c4a46a;
+  --setimo-paper: #f4f4f4;
+  width: min(100%, 400px);
+  aspect-ratio: 768 / 1086;
+  background: var(--setimo-paper);
+  overflow: hidden;
+  padding: 0;
+  container-type: inline-size;
+}
+
+.setimo-lilies {
+  position: absolute;
+  inset: 8% 0 18%;
+  z-index: 0;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.setimo-corner {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  width: 52%;
+  height: 34%;
+  overflow: hidden;
+}
+
+.setimo-corner--tr {
+  top: -1%;
+  right: -4%;
+  background:
+    radial-gradient(125% 105% at 100% 0%, var(--setimo-navy) 0 61%, transparent 62%);
+}
+
+.setimo-corner--bl {
+  left: -6%;
+  bottom: -2%;
+  background:
+    radial-gradient(125% 105% at 0% 100%, var(--setimo-navy) 0 61%, transparent 62%);
+}
+
+.setimo-corner--tr::after,
+.setimo-corner--bl::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.setimo-corner--tr::after {
+  top: 10%;
+  right: 9%;
+  width: 76%;
+  height: 68%;
+  border-top: 1.5px solid var(--setimo-gold);
+  border-right: 1.5px solid var(--setimo-gold);
+  border-radius: 0 72% 0 0;
+}
+
+.setimo-corner--bl::after {
+  left: 10%;
+  bottom: 10%;
+  width: 76%;
+  height: 68%;
+  border-bottom: 1.5px solid var(--setimo-gold);
+  border-left: 1.5px solid var(--setimo-gold);
+  border-radius: 0 0 0 72%;
+}
+
+.setimo-flora {
+  position: absolute;
+  width: 82%;
+  height: 82%;
+  top: 2%;
+  right: 0;
+}
+
+.setimo-flora--mirror {
+  top: auto;
+  right: auto;
+  left: 0;
+  bottom: 2%;
+  transform: scale(-1, -1);
+}
+
+.setimo-inner {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8% 9% 5%;
+  box-sizing: border-box;
+}
+
+.setimo-header {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 5%;
+}
+
+.setimo-header__eyebrow {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(0.64rem, 2.9cqw, 0.8rem);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: var(--setimo-gold);
+  text-transform: uppercase;
+}
+
+.setimo-header__title {
+  margin: 0.02rem 0 0.2rem;
+  font-family: var(--font-script);
+  font-size: clamp(2.25rem, 11.5cqw, 2.95rem);
+  font-weight: 400;
+  color: var(--setimo-navy);
+  line-height: 0.95;
+}
+
+.setimo-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  max-width: 10rem;
+  margin: 0.35rem auto 0;
+}
+
+.setimo-hero__copy .setimo-ornament {
+  justify-content: flex-start;
+  margin: 0.55rem 0 0.5rem;
+  max-width: 9.2rem;
+}
+
+.setimo-ornament span {
+  flex: 1;
+  height: 1px;
+  background: var(--setimo-gold);
+  opacity: 0.9;
+}
+
+.setimo-ornament i {
+  width: 0.38rem;
+  height: 0.38rem;
+  background: var(--setimo-gold);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.setimo-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 0.7rem 0.85rem;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 5.5%;
+}
+
+.setimo-hero__photo {
+  width: 100%;
+  max-width: 152px;
+  justify-self: start;
+}
+
+.setimo-photo.photo-frame,
+.setimo-photo {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.art--setimo .photo-frame--rounded .photo-frame__hit {
+  border-radius: 24%;
+  box-shadow:
+    0 0 0 1.5px var(--setimo-gold),
+    0 0 0 3.2px #f4f4f4,
+    0 0 0 4.6px var(--setimo-gold);
+}
+
+.art--setimo .photo-frame--rounded .photo-frame__img,
+.art--setimo .photo-frame--rounded .photo-frame__placeholder {
+  border-radius: 24%;
+}
+
+.art--setimo .photo-frame__tools {
+  display: none !important;
+}
+
+.art--setimo .photo-frame__placeholder {
+  font-size: 0.62rem;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.setimo-hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  padding-top: 0.1rem;
+}
+
+.setimo-name,
+input.setimo-name,
+textarea.setimo-name {
+  width: 100%;
+  margin: 0;
+  border: none;
+  background: transparent;
+  font-family: var(--font-serif);
+  font-size: clamp(0.78rem, 3.45cqw, 0.96rem);
+  font-weight: 700;
+  color: var(--setimo-navy);
+  line-height: 1.28;
+  text-align: left;
+  padding: 0;
+  outline: none;
+  resize: none;
+  min-height: 2.5em;
+  field-sizing: content;
+}
+
+.setimo-note,
+input.setimo-note {
+  width: 100%;
+  margin: 0;
+  border: none;
+  background: transparent;
+  font-family: var(--font-serif);
+  font-size: clamp(0.72rem, 3.1cqw, 0.88rem);
+  font-weight: 400;
+  color: var(--setimo-navy);
+  line-height: 1.3;
+  text-align: left;
+  padding: 0;
+  outline: none;
+}
+
+.setimo-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.58rem;
+  width: 100%;
+  margin-bottom: auto;
+}
+
+.setimo-card {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 0.58rem 0.75rem;
+  border: 1.45px solid var(--setimo-gold);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.28);
+  box-sizing: border-box;
+}
+
+.setimo-card__icon {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: var(--setimo-navy);
+  color: var(--setimo-gold);
+  flex-shrink: 0;
+}
+
+.setimo-card__icon svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.setimo-card__body {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.setimo-card__label {
+  margin: 0;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--setimo-navy);
+  opacity: 0.72;
+}
+
+.setimo-card__value,
+input.setimo-card__value {
+  width: 100%;
+  margin: 0;
+  border: none;
+  background: transparent;
+  font-family: var(--font-serif);
+  font-size: clamp(0.8rem, 3.35cqw, 0.96rem);
+  font-weight: 400;
+  color: var(--setimo-navy);
+  line-height: 1.25;
+  padding: 0;
+  outline: none;
+}
+
+.setimo-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 7%;
+}
+
+.art--setimo .brand-logo {
+  transform: scale(0.9);
+  transform-origin: center;
+}
+
+.art--setimo .brand-logo__mark path {
+  stroke: var(--setimo-navy);
+  stroke-width: 2.2;
+  fill: none;
+}
+
+.art--setimo .brand-logo__name,
+.art--setimo .brand-logo__tag {
+  color: var(--setimo-navy);
+}
+
+.setimo-footer__contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.62rem;
+  color: var(--setimo-navy);
+}
+
+.setimo-footer__dot {
+  color: var(--setimo-gold);
+}
+
+.setimo-footer__field,
+input.setimo-footer__field {
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: center;
+  min-width: 0;
+  width: auto;
+  max-width: 10rem;
+  padding: 0;
+  outline: none;
+}
+
+.art--setimo .setimo-input:focus {
+  outline: none;
+  box-shadow: 0 1px 0 var(--setimo-gold);
 }
 
 @media (min-width: 720px) {
@@ -912,3 +1603,4 @@
     transition: none;
   }
 }
+

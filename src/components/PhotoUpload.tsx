@@ -1,19 +1,29 @@
 import { useEffect, useId, useRef, type PointerEvent as ReactPointerEvent } from 'react'
 import type { PhotoTransform } from '../types'
+import HexMarkWatermark from './HexMarkWatermark'
 
 type PhotoUploadProps = {
   photoUrl: string | null
   onChange: (url: string | null) => void
   transform: PhotoTransform
   onTransformChange: (transform: PhotoTransform) => void
-  variant?: 'hex' | 'oval' | 'circle'
+  variant?: 'hex' | 'hexSoft' | 'oval' | 'circle' | 'rounded'
   className?: string
   preview?: boolean
+  templateSlot?: boolean
 }
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
 }
+
+/** Hexágono ponta-cima com cantos arredondados (coords 0–1) — alinhado à moldura */
+const SOFT_HEX_PATH =
+  'M0.50 0.015 C0.58 0.015 0.87 0.175 0.93 0.25 C0.99 0.34 0.99 0.66 0.93 0.75 C0.87 0.825 0.58 0.985 0.50 0.992 C0.42 0.985 0.13 0.825 0.07 0.75 C0.01 0.66 0.01 0.34 0.07 0.25 C0.13 0.175 0.42 0.015 0.50 0.015 Z'
+
+/** Mesmo path em viewBox 100×120 para a borda dourada */
+const SOFT_HEX_BORDER =
+  'M50 1.8 C58 1.8 87 21 93 30 C99 40.8 99 79.2 93 90 C87 99 58 118.2 50 119 C42 118.2 13 99 7 90 C1 79.2 1 40.8 7 30 C13 21 42 1.8 50 1.8 Z'
 
 export default function PhotoUpload({
   photoUrl,
@@ -23,8 +33,10 @@ export default function PhotoUpload({
   variant = 'hex',
   className = '',
   preview = false,
+  templateSlot = false,
 }: PhotoUploadProps) {
   const inputId = useId()
+  const clipId = useId().replace(/:/g, '')
   const inputRef = useRef<HTMLInputElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
   const transformRef = useRef(transform)
@@ -41,6 +53,7 @@ export default function PhotoUpload({
   } | null>(null)
 
   transformRef.current = transform
+  const isSoftHex = variant === 'hexSoft'
 
   useEffect(() => {
     const node = frameRef.current
@@ -96,7 +109,7 @@ export default function PhotoUpload({
     const url = URL.createObjectURL(file)
     if (photoUrl?.startsWith('blob:')) URL.revokeObjectURL(photoUrl)
     onChange(url)
-    onTransformChange({ x: 0, y: 0, scale: 1.15 })
+    onTransformChange({ x: 0, y: 0, scale: 1 })
   }
 
   function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
@@ -136,24 +149,65 @@ export default function PhotoUpload({
     })
   }
 
+  const hitStyle = isSoftHex
+    ? { clipPath: `url(#soft-hex-${clipId})`, WebkitClipPath: `url(#soft-hex-${clipId})` }
+    : undefined
+
+  const frameBody = (
+    <>
+      {photoUrl && !preview ? (
+        <img
+          className="photo-frame__img"
+          src={photoUrl}
+          alt="Foto da homenagem"
+          draggable={false}
+          style={{
+            transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
+          }}
+        />
+      ) : templateSlot ? (
+        <span className="photo-frame__ghost" aria-hidden="true" />
+      ) : (
+        <>
+          <HexMarkWatermark className="photo-frame__watermark" />
+          <span className="photo-frame__placeholder">
+            {!preview ? (
+              <span className="photo-frame__plus" aria-hidden="true">
+                +
+              </span>
+            ) : null}
+            <span>{preview ? 'Foto' : 'Toque para adicionar foto'}</span>
+            {!preview ? <span className="photo-frame__hint">Galeria ou arquivos</span> : null}
+          </span>
+        </>
+      )}
+    </>
+  )
+
   return (
     <div
-      className={`photo-frame photo-frame--${variant} ${preview ? 'photo-frame--preview' : ''} ${className}`.trim()}
+      className={`photo-frame photo-frame--${variant} ${preview ? 'photo-frame--preview' : ''} ${templateSlot ? 'photo-frame--template' : ''} ${className}`.trim()}
     >
+      {isSoftHex ? (
+        <svg width="0" height="0" aria-hidden="true" focusable="false">
+          <defs>
+            <clipPath id={`soft-hex-${clipId}`} clipPathUnits="objectBoundingBox">
+              <path d={SOFT_HEX_PATH} />
+            </clipPath>
+          </defs>
+        </svg>
+      ) : null}
+
       {preview ? (
-        <div className="photo-frame__hit photo-frame__hit--static">
-          <span className="photo-frame__placeholder">
-            <span className="photo-frame__plus" aria-hidden="true">
-              +
-            </span>
-            <span>Foto</span>
-          </span>
+        <div className="photo-frame__hit photo-frame__hit--static" style={hitStyle}>
+          {frameBody}
         </div>
       ) : (
         <>
           <div
             ref={frameRef}
             className={`photo-frame__hit ${photoUrl ? 'photo-frame__hit--photo' : ''}`}
+            style={hitStyle}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={endDrag}
@@ -171,25 +225,7 @@ export default function PhotoUpload({
             }}
             aria-label={photoUrl ? 'Arrastar para posicionar a foto' : 'Adicionar foto'}
           >
-            {photoUrl ? (
-              <img
-                className="photo-frame__img"
-                src={photoUrl}
-                alt="Foto da homenagem"
-                draggable={false}
-                style={{
-                  transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
-                }}
-              />
-            ) : (
-              <span className="photo-frame__placeholder">
-                <span className="photo-frame__plus" aria-hidden="true">
-                  +
-                </span>
-                <span>Toque para adicionar foto</span>
-                <span className="photo-frame__hint">Galeria ou arquivos</span>
-              </span>
-            )}
+            {frameBody}
           </div>
 
           <input
@@ -201,7 +237,7 @@ export default function PhotoUpload({
             onChange={(event) => handleFile(event.target.files?.[0])}
           />
 
-          {photoUrl ? (
+          {photoUrl && !templateSlot ? (
             <div className="photo-frame__tools no-export">
               <div className="photo-frame__zoom">
                 <button
@@ -247,7 +283,7 @@ export default function PhotoUpload({
                 <button
                   type="button"
                   className="photo-frame__change"
-                  onClick={() => onTransformChange({ x: 0, y: 0, scale: 1.15 })}
+                  onClick={() => onTransformChange({ x: 0, y: 0, scale: 1 })}
                 >
                   Centralizar
                 </button>
@@ -256,6 +292,12 @@ export default function PhotoUpload({
           ) : null}
         </>
       )}
+
+      {isSoftHex && !templateSlot ? (
+        <svg className="photo-frame__gold-border" viewBox="0 0 100 120" aria-hidden="true" focusable="false">
+          <path d={SOFT_HEX_BORDER} fill="none" stroke="#c4a46a" strokeWidth="2.1" />
+        </svg>
+      ) : null}
     </div>
   )
 }
