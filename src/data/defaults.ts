@@ -28,18 +28,8 @@ export const layoutOptions: LayoutOption[] = [
     description: 'Folha de missa — foto arredondada, nome ao lado e dados da cerimônia.',
   },
   {
-    id: 'classic',
-    name: 'Layout 2 — Clássico',
-    description: 'Variação clássica com cantos em curva.',
-  },
-  {
     id: 'elegant',
     name: 'Layout 3 — Elegante',
     description: 'Foto oval central e tipografia solene.',
-  },
-  {
-    id: 'serene',
-    name: 'Layout 4 — Sereno',
-    description: 'Faixa superior e foto redonda.',
   },
 ]

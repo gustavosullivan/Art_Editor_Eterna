@@ -11,6 +11,18 @@ export type LayoutProps = {
   photoTransform?: PhotoTransform
   onPhotoTransformChange?: (transform: PhotoTransform) => void
   preview?: boolean
+  showWakeCard?: boolean
+  showBurialCard?: boolean
+  showBirthDate?: boolean
+  showDeathDate?: boolean
+  showPersonName?: boolean
+  showPersonAge?: boolean
+  onRemoveWakeCard?: () => void
+  onRemoveBurialCard?: () => void
+  onRemoveBirthDate?: () => void
+  onRemoveDeathDate?: () => void
+  onRemovePersonName?: () => void
+  onRemovePersonAge?: () => void
 }
 
 function ClockIcon() {

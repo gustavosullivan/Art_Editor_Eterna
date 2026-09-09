@@ -27,11 +27,11 @@ const SOFT_HEX_BORDER =
   'M50 2.2 C57.5 2.2 85.5 18.6 92.5 28.2 C98.5 37.8 98.5 82.2 92.5 91.8 C85.5 101.4 57.5 117.8 50 117.8 C42.5 117.8 14.5 101.4 7.5 91.8 C1.5 82.2 1.5 37.8 7.5 28.2 C14.5 18.6 42.5 2.2 50 2.2 Z'
 
 /**
- * Moldura principal — octógono alongado com TOPO E BASE RETOS
- * (cantos chanfrados suaves), igual à arte oficial.
+ * Moldura principal — mesmo path da borda dourada (viewBox 100×120),
+ * normalizado 0–1 para clipPath objectBoundingBox.
  */
 const MOLDURA_PATH =
-  'M0.22 0.028 H0.78 C0.84 0.028 0.90 0.055 0.935 0.11 L0.978 0.20 C0.995 0.24 1 0.28 1 0.32 V0.68 C1 0.72 0.995 0.76 0.978 0.80 L0.935 0.89 C0.90 0.945 0.84 0.972 0.78 0.972 H0.22 C0.16 0.972 0.10 0.945 0.065 0.89 L0.022 0.80 C0.005 0.76 0 0.72 0 0.68 V0.32 C0 0.28 0.005 0.24 0.022 0.20 L0.065 0.11 C0.10 0.055 0.16 0.028 0.22 0.028 Z'
+  'M0.22 0.028333 H0.78 C0.84 0.028333 0.90 0.055 0.935 0.11 L0.978 0.2 C0.995 0.24 1 0.28 1 0.32 V0.68 C1 0.72 0.995 0.76 0.978 0.8 L0.935 0.89 C0.90 0.945 0.84 0.971667 0.78 0.971667 H0.22 C0.16 0.971667 0.10 0.945 0.065 0.89 L0.022 0.8 C0.005 0.76 0 0.72 0 0.68 V0.32 C0 0.28 0.005 0.24 0.022 0.2 L0.065 0.11 C0.10 0.055 0.16 0.028333 0.22 0.028333 Z'
 
 const MOLDURA_BORDER =
   'M22 3.4 H78 C84 3.4 90 6.6 93.5 13.2 L97.8 24 C99.5 28.8 100 33.6 100 38.4 V81.6 C100 86.4 99.5 91.2 97.8 96 L93.5 106.8 C90 113.4 84 116.6 78 116.6 H22 C16 116.6 10 113.4 6.5 106.8 L2.2 96 C0.5 91.2 0 86.4 0 81.6 V38.4 C0 33.6 0.5 28.8 2.2 24 L6.5 13.2 C10 6.6 16 3.4 22 3.4 Z'
@@ -214,7 +214,7 @@ export default function PhotoUpload({
       className={`photo-frame photo-frame--${variant} ${preview ? 'photo-frame--preview' : ''} ${templateSlot ? 'photo-frame--template' : ''} ${className}`.trim()}
     >
       {isSoftHex || isMoldura ? (
-        <svg width="0" height="0" aria-hidden="true" focusable="false">
+        <svg className="photo-frame__clip-defs" aria-hidden="true" focusable="false">
           <defs>
             <clipPath id={`frame-clip-${clipId}`} clipPathUnits="objectBoundingBox">
               <path d={isMoldura ? MOLDURA_PATH : SOFT_HEX_PATH} />

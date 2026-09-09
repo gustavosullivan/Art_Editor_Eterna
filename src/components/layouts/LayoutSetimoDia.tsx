@@ -1,37 +1,9 @@
 import EditableText from '../EditableText'
 import PhotoUpload from '../PhotoUpload'
 import SaoLuizLogo from '../SaoLuizLogo'
+import CardIconAsset from '../CardIconAsset'
 import type { LayoutProps } from './shared'
 import { defaultPhotoTransform } from '../../types'
-
-function ClockIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
-      <path
-        d="M12 7.5V12l3 2"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-function PinIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-      />
-      <circle cx="12" cy="11" r="2.2" fill="currentColor" />
-    </svg>
-  )
-}
 
 /** Folhagem em linha nos cantos navy — estilo da arte São Luiz */
 function CornerFlora({ mirror = false }: { mirror?: boolean }) {
@@ -128,7 +100,13 @@ export default function LayoutSetimoDia({
   photoTransform = defaultPhotoTransform,
   onPhotoTransformChange,
   preview = false,
+  showWakeCard = true,
+  showBurialCard = true,
+  onRemoveWakeCard,
+  onRemoveBurialCard,
 }: LayoutProps) {
+  const canEdit = !preview
+
   return (
     <article className="art art--setimo">
       <LilyWatermark />
@@ -191,45 +169,55 @@ export default function LayoutSetimoDia({
         </div>
 
         <div className="setimo-cards">
-          <div className="setimo-card">
-            <span className="setimo-card__icon" aria-hidden="true">
-              <ClockIcon />
-            </span>
-            <div className="setimo-card__body">
-              <p className="setimo-card__label">DATA DA CELEBRAÇÃO</p>
-              {preview ? (
-                <p className="setimo-card__value">{fields.celebrationDate}</p>
-              ) : (
-                <EditableText
-                  value={fields.celebrationDate}
-                  onChange={(value) => onFieldChange('celebrationDate', value)}
-                  ariaLabel="Data e horário da celebração"
-                  className="setimo-card__value setimo-input"
-                  plain
-                />
-              )}
+          {showWakeCard ? (
+            <div className="setimo-card">
+              <CardIconAsset
+                kind="clock"
+                label="ícone da data"
+                interactive={canEdit}
+                onRemove={() => onRemoveWakeCard?.()}
+              />
+              <div className="setimo-card__body">
+                <p className="setimo-card__label">DATA DA CELEBRAÇÃO</p>
+                {preview ? (
+                  <p className="setimo-card__value">{fields.celebrationDate}</p>
+                ) : (
+                  <EditableText
+                    value={fields.celebrationDate}
+                    onChange={(value) => onFieldChange('celebrationDate', value)}
+                    ariaLabel="Data e horário da celebração"
+                    className="setimo-card__value setimo-input"
+                    plain
+                  />
+                )}
+              </div>
             </div>
-          </div>
+          ) : null}
 
-          <div className="setimo-card">
-            <span className="setimo-card__icon" aria-hidden="true">
-              <PinIcon />
-            </span>
-            <div className="setimo-card__body">
-              <p className="setimo-card__label">LOCAL DA CERIMÔNIA</p>
-              {preview ? (
-                <p className="setimo-card__value">{fields.ceremonyPlace}</p>
-              ) : (
-                <EditableText
-                  value={fields.ceremonyPlace}
-                  onChange={(value) => onFieldChange('ceremonyPlace', value)}
-                  ariaLabel="Local da cerimônia"
-                  className="setimo-card__value setimo-input"
-                  plain
-                />
-              )}
+          {showBurialCard ? (
+            <div className="setimo-card">
+              <CardIconAsset
+                kind="pin"
+                label="ícone do local"
+                interactive={canEdit}
+                onRemove={() => onRemoveBurialCard?.()}
+              />
+              <div className="setimo-card__body">
+                <p className="setimo-card__label">LOCAL DA CERIMÔNIA</p>
+                {preview ? (
+                  <p className="setimo-card__value">{fields.ceremonyPlace}</p>
+                ) : (
+                  <EditableText
+                    value={fields.ceremonyPlace}
+                    onChange={(value) => onFieldChange('ceremonyPlace', value)}
+                    ariaLabel="Local da cerimônia"
+                    className="setimo-card__value setimo-input"
+                    plain
+                  />
+                )}
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
 
         <footer className="setimo-footer">
@@ -237,28 +225,22 @@ export default function LayoutSetimoDia({
           <div className="setimo-footer__contact">
             {preview ? (
               <>
-                <span>{fields.phone}</span>
-                <span className="setimo-footer__dot" aria-hidden="true">
-                  •
-                </span>
-                <span>{fields.website}</span>
+                <span className="setimo-footer__line">{fields.website}</span>
+                <span className="setimo-footer__line">{fields.phone}</span>
               </>
             ) : (
               <>
                 <EditableText
-                  value={fields.phone}
-                  onChange={(value) => onFieldChange('phone', value)}
-                  ariaLabel="Telefone"
-                  className="setimo-footer__field setimo-input"
-                  plain
-                />
-                <span className="setimo-footer__dot" aria-hidden="true">
-                  •
-                </span>
-                <EditableText
                   value={fields.website}
                   onChange={(value) => onFieldChange('website', value)}
                   ariaLabel="Site"
+                  className="setimo-footer__field setimo-input"
+                  plain
+                />
+                <EditableText
+                  value={fields.phone}
+                  onChange={(value) => onFieldChange('phone', value)}
+                  ariaLabel="Telefone"
                   className="setimo-footer__field setimo-input"
                   plain
                 />

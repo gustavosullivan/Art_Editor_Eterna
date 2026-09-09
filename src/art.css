@@ -815,7 +815,7 @@
   position: relative;
   width: min(100%, 400px);
   aspect-ratio: 768 / 1024;
-  background: #fff;
+  background: #efeff1;
   overflow: hidden;
   padding: 0;
   container-type: inline-size;
@@ -883,11 +883,20 @@
   display: none !important;
 }
 
-/* Moldura principal — topo/base retos, sem marca d'água */
+/* Moldura principal — recorte = mesmo path da borda dourada */
 .photo-frame--moldura {
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: visible;
+}
+
+.photo-frame__clip-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 .photo-frame--moldura .photo-frame__hit {
@@ -898,8 +907,9 @@
   aspect-ratio: unset;
   box-shadow: none;
   overflow: hidden;
-  background: #f4f6f8;
+  background: #efeff1;
   filter: none;
+  isolation: isolate;
 }
 
 .photo-frame--moldura .photo-frame__img {
@@ -910,6 +920,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
+  max-width: none;
 }
 
 .photo-frame--moldura .photo-frame__placeholder--moldura {
@@ -922,7 +933,7 @@
   justify-content: center;
   gap: 0.25rem;
   padding: 0.75rem;
-  background: #f4f6f8;
+  background: #efeff1;
   color: #1a2744;
   font-size: 0.62rem;
   font-weight: 600;
@@ -937,11 +948,9 @@
 
 .photo-frame--moldura .photo-frame__gold-border--moldura {
   position: absolute;
-  inset: -1.2%;
-  width: 102.4%;
-  height: 102.4%;
-  left: -1.2%;
-  top: -1.2%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 4;
   overflow: visible;
@@ -951,13 +960,37 @@
   Pinta o miolo do PNG — encolhido à esquerda p/ não cobrir lírios.
 */
 .art--principal .tpl-text-paint {
-  left: 16%;
+  left: 18%;
   top: 53.2%;
-  width: 72%;
+  width: 68%;
   height: 28.6%;
   z-index: 2;
-  background: #f0f0f0;
+  background: #efeff1;
   pointer-events: none;
+}
+
+/* Camada sob os cards — cobre residual ao lado do lírio, sem tapar o canto */
+.art--principal .tpl-cards-paint {
+  left: 18.5%;
+  top: 65.4%;
+  width: 66%;
+  height: 17.5%;
+  z-index: 2;
+  background: #efeff1;
+  pointer-events: none;
+  border-radius: 6px;
+}
+
+/* Atrás do card do maps + um pouco mais embaixo (acima da logo) */
+.art--principal .tpl-burial-paint {
+  left: 18.5%;
+  top: 71.8%;
+  width: 66%;
+  height: 16.4%;
+  z-index: 2;
+  background: #efeff1;
+  pointer-events: none;
+  border-radius: 12px;
 }
 
 /* Nome / idade — inputs sobre o papel */
@@ -1055,9 +1088,11 @@
   border: 1.45px solid #c4a46a;
   border-radius: 999px;
   padding: 0.42rem 0.55rem 0.42rem 0.4rem;
-  background: #f0f0f0;
-  box-shadow: 0 0 0 3px #f0f0f0;
+  background: #efeff1;
+  box-shadow: 0 0 0 8px #efeff1;
   min-width: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .art--principal .tpl-card__icon {
@@ -1076,18 +1111,207 @@
   height: 0.9rem;
 }
 
+/* Asset de ícone (relógio / maps / estrela / cruz) */
+.card-icon-asset {
+  position: relative;
+  width: 1.7rem;
+  height: 1.7rem;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+}
+
+.card-icon-asset__face {
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: #1a2744;
+  color: #c4a46a;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.card-icon-asset--date {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.card-icon-asset--date .card-icon-asset__face {
+  width: 0.95rem;
+  height: 0.95rem;
+  background: transparent;
+  color: #1a2744;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.card-icon-asset__face svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  display: block;
+}
+
+.card-icon-asset--date .card-icon-asset__face svg {
+  width: 100%;
+  height: 100%;
+}
+
+.card-icon-asset--pin .card-icon-asset__face svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  transform: translateY(0.5px);
+}
+
+.card-icon-asset__hit {
+  position: absolute;
+  inset: -2px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  z-index: 1;
+}
+
+.card-icon-asset.is-selected .card-icon-asset__face {
+  box-shadow: 0 0 0 1.5px #c4a46a;
+}
+
+.card-icon-asset--date.is-selected .card-icon-asset__face {
+  box-shadow: none;
+  outline: 1.5px solid #c4a46a;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.card-icon-asset__remove {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  z-index: 3;
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #b42318;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card-icon-asset--date .card-icon-asset__remove {
+  top: -0.55rem;
+  right: -0.55rem;
+}
+
+.art.is-exporting .card-icon-asset__hit,
+.art.is-exporting .card-icon-asset__remove,
+.art.is-exporting .removable-block__select,
+.art.is-exporting .removable-block__remove {
+  display: none !important;
+}
+
+/* Título / idade removíveis */
+.removable-block {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.removable-block.is-selected {
+  outline: 1.5px dashed rgba(196, 164, 106, 0.85);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.removable-block__select {
+  position: absolute;
+  top: -0.15rem;
+  right: -0.15rem;
+  z-index: 2;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(196, 164, 106, 0.7);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.removable-block__select::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: #c4a46a;
+  opacity: 0.55;
+}
+
+.removable-block.is-selected .removable-block__select {
+  display: none;
+}
+
+.removable-block__remove {
+  position: absolute;
+  top: -0.45rem;
+  right: -0.45rem;
+  z-index: 3;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #b42318;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.art--principal .tpl-card {
+  overflow: visible;
+}
+
+.art--principal .tpl-dates__item {
+  position: relative;
+  overflow: visible;
+}
+
 .art--principal .tpl-footer {
   left: 50%;
-  top: 94.6%;
+  top: 93.8%;
   transform: translateX(-50%);
   width: max-content;
-  max-width: 62%;
+  max-width: 48%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.28rem;
-  padding: 0.12rem 0.45rem;
-  background: #f0f0f0;
+  gap: 0.1rem;
+  padding: 0.1rem 0.5rem;
+  background: #efeff1;
   z-index: 3;
   border-radius: 4px;
 }
@@ -1159,10 +1383,10 @@
 }
 
 .art--principal .tpl-input--contact {
-  width: auto;
+  width: 100%;
   min-width: 0;
-  max-width: 9.5rem;
-  flex: 0 1 auto;
+  max-width: 11rem;
+  flex: 0 0 auto;
   text-align: center;
   font-family: 'Manrope', system-ui, sans-serif;
   font-size: clamp(0.5rem, 2.1cqw, 0.6rem);
@@ -1207,13 +1431,17 @@
 
 .editor__photo-tools {
   display: grid;
-  grid-template-columns: auto 1fr auto auto auto;
+  grid-template-columns: auto 1fr auto auto auto auto;
   gap: 0.4rem;
   align-items: center;
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   margin-inline: auto;
   padding: 0.35rem 0.2rem;
+}
+
+.editor__photo-tools--empty {
+  grid-template-columns: 1fr auto;
 }
 
 .editor__tool-btn {
@@ -1250,88 +1478,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Layout 1 â€” classic corners + lilies */
-.art--classic .art__corner {
-  position: absolute;
-  width: 42%;
-  height: 22%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.art--classic .art__corner--tr {
-  top: -2%;
-  right: -6%;
-  background:
-    radial-gradient(120% 100% at 100% 0%, var(--invite-navy) 0 62%, transparent 63%);
-}
-
-.art--classic .art__corner--tr::after {
-  content: '';
-  position: absolute;
-  inset: 8% 10% auto auto;
-  width: 78%;
-  height: 70%;
-  border-top: 1.5px solid var(--invite-gold);
-  border-right: 1.5px solid var(--invite-gold);
-  border-radius: 0 70% 0 0;
-  opacity: 0.85;
-}
-
-.art--classic .art__corner--bl {
-  left: -8%;
-  bottom: -4%;
-  background:
-    radial-gradient(120% 100% at 0% 100%, var(--invite-navy) 0 62%, transparent 63%);
-}
-
-.art--classic .art__corner--bl::after {
-  content: '';
-  position: absolute;
-  inset: auto auto 10% 12%;
-  width: 78%;
-  height: 70%;
-  border-bottom: 1.5px solid var(--invite-gold);
-  border-left: 1.5px solid var(--invite-gold);
-  border-radius: 0 0 0 70%;
-  opacity: 0.85;
-}
-
-.art--classic .art__lilies {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.12;
-  background-image:
-    radial-gradient(circle at 18% 38%, transparent 0 10px, #1a2744 11px 12px, transparent 13px),
-    radial-gradient(circle at 82% 62%, transparent 0 10px, #1a2744 11px 12px, transparent 13px);
-}
-
-.art--classic .art__lilies::before,
-.art--classic .art__lilies::after {
-  content: '';
-  position: absolute;
-  width: 70px;
-  height: 110px;
-  border: 1.2px solid var(--invite-navy);
-  border-radius: 60% 40% 55% 45%;
-  opacity: 0.18;
-}
-
-.art--classic .art__lilies::before {
-  left: 4%;
-  top: 28%;
-  transform: rotate(-18deg);
-}
-
-.art--classic .art__lilies::after {
-  right: 5%;
-  bottom: 26%;
-  transform: rotate(22deg);
-}
-
-/* Layout 2 â€” elegant framed */
+/* Layout Elegante — moldura */
 .art--elegant {
   background:
     linear-gradient(#fff, #fff) padding-box,
@@ -1354,36 +1501,6 @@
 .art--elegant .invite-card {
   border-radius: 999px;
   padding-inline: 0.85rem;
-}
-
-/* Layout 3 â€” serene band */
-.art--serene .art__band {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 0.55rem;
-  background: linear-gradient(90deg, var(--invite-navy), var(--invite-gold), var(--invite-navy));
-  z-index: 2;
-}
-
-.art--serene .art__inner {
-  padding-top: 1.6rem;
-}
-
-.art--serene .invite-card {
-  border-radius: 8px;
-  background: rgba(26, 39, 68, 0.03);
-}
-
-.art--serene .invite-header__script {
-  color: var(--invite-navy);
-}
-
-.art--serene .invite-person__age,
-.art--serene .invite-person__age-row,
-.art--serene .editable--age {
-  color: var(--invite-navy);
 }
 
 /* ═══════════════════════════════════════════
@@ -1731,17 +1848,20 @@ input.setimo-card__value {
 
 .setimo-footer__contact {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.28rem;
+  gap: 0.12rem;
   font-family: 'Manrope', system-ui, sans-serif;
   font-size: 0.62rem;
   color: var(--setimo-navy);
+  width: 100%;
+  max-width: 70%;
 }
 
-.setimo-footer__dot {
-  color: var(--setimo-gold);
+.setimo-footer__line {
+  display: block;
+  text-align: center;
 }
 
 .setimo-footer__field,
@@ -1752,10 +1872,26 @@ input.setimo-footer__field {
   color: inherit;
   text-align: center;
   min-width: 0;
-  width: auto;
-  max-width: 10rem;
+  width: 100%;
+  max-width: 12rem;
   padding: 0;
   outline: none;
+}
+
+.art--setimo .setimo-card {
+  position: relative;
+  overflow: visible;
+}
+
+.art--setimo .setimo-card .card-icon-asset,
+.art--setimo .setimo-card .card-icon-asset__face {
+  width: 2.1rem;
+  height: 2.1rem;
+}
+
+.art--setimo .setimo-card .card-icon-asset__face svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .art--setimo .setimo-input:focus {
