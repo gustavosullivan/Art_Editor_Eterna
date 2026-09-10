@@ -1,6 +1,8 @@
 import EditableText from '../EditableText'
 import PhotoUpload from '../PhotoUpload'
 import CardIconAsset, { RemovableBlock } from '../CardIconAsset'
+import SaoLuizLogo from '../SaoLuizLogo'
+import DraggableAsset, { defaultAssetOffset } from '../DraggableAsset'
 import type { LayoutProps } from './shared'
 import { defaultPhotoTransform } from '../../types'
 
@@ -21,12 +23,18 @@ export default function LayoutPrincipal({
   showDeathDate = true,
   showPersonName = true,
   showPersonAge = true,
+  showLogo = true,
+  logoOffset = defaultAssetOffset,
+  contactOffset = defaultAssetOffset,
+  onLogoOffsetChange,
+  onContactOffsetChange,
   onRemoveWakeCard,
   onRemoveBurialCard,
   onRemoveBirthDate,
   onRemoveDeathDate,
   onRemovePersonName,
   onRemovePersonAge,
+  onRemoveLogo,
 }: LayoutProps) {
   const templateSrc = `${import.meta.env.BASE_URL}templates/convite-principal.png`
   const canEdit = !preview
@@ -73,6 +81,9 @@ export default function LayoutPrincipal({
       {/* Cobre os cards antigos do PNG (permanece mesmo após remover com X) */}
       <div className="tpl tpl-cards-paint" aria-hidden="true" />
       <div className="tpl tpl-burial-paint" aria-hidden="true" />
+      {/* Cobre a logo do PNG + área do rodapé */}
+      <div className="tpl tpl-logo-paint" aria-hidden="true" />
+      <div className="tpl tpl-contact-paint" aria-hidden="true" />
 
       <div className="tpl tpl-person">
         {showPersonName ? (
@@ -198,14 +209,34 @@ export default function LayoutPrincipal({
         ) : null}
       </div>
 
-      <div className="tpl tpl-footer">
-        <EditableText
-          value={fields.website}
-          onChange={(value) => onFieldChange('website', value)}
-          ariaLabel="Site"
-          className="tpl-input tpl-input--contact"
-          plain
-        />
+      {showLogo ? (
+        <DraggableAsset
+          className="tpl tpl-logo"
+          offset={logoOffset}
+          onOffsetChange={(next) => onLogoOffsetChange?.(next)}
+          disabled={!canEdit}
+          clamp={140}
+          axis="y"
+        >
+          <RemovableBlock
+            label="logo São Luiz"
+            interactive={canEdit}
+            className="tpl-logo__block"
+            onRemove={() => onRemoveLogo?.()}
+          >
+            <SaoLuizLogo compact className="tpl-logo__asset" />
+          </RemovableBlock>
+        </DraggableAsset>
+      ) : null}
+
+      <DraggableAsset
+        className="tpl tpl-footer"
+        offset={contactOffset}
+        onOffsetChange={(next) => onContactOffsetChange?.(next)}
+        disabled={!canEdit}
+        clamp={140}
+        axis="y"
+      >
         <EditableText
           value={fields.phone}
           onChange={(value) => onFieldChange('phone', value)}
@@ -213,7 +244,17 @@ export default function LayoutPrincipal({
           className="tpl-input tpl-input--contact"
           plain
         />
-      </div>
+        <span className="tpl-footer__dot" aria-hidden="true">
+          •
+        </span>
+        <EditableText
+          value={fields.website}
+          onChange={(value) => onFieldChange('website', value)}
+          ariaLabel="Site"
+          className="tpl-input tpl-input--contact"
+          plain
+        />
+      </DraggableAsset>
     </article>
   )
 }

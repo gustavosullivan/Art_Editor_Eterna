@@ -986,11 +986,109 @@
   left: 18.5%;
   top: 71.8%;
   width: 66%;
-  height: 16.4%;
+  height: 14.5%;
   z-index: 2;
   background: #efeff1;
   pointer-events: none;
   border-radius: 12px;
+}
+
+/* Cobre a logo desenhada no PNG */
+.art--principal .tpl-logo-paint {
+  left: 22%;
+  top: 86.4%;
+  width: 56%;
+  height: 6.4%;
+  z-index: 2;
+  background: #efeff1;
+  pointer-events: none;
+  border-radius: 6px;
+}
+
+/* Fundo atrás do site/telefone + um pouco dos lados */
+.art--principal .tpl-contact-paint {
+  left: 30%;
+  top: 92.6%;
+  width: 40%;
+  height: 4.8%;
+  z-index: 2;
+  background: #efeff1;
+  pointer-events: none;
+  border-radius: 6px;
+}
+
+/* Asset da logo São Luiz — posição padrão do Principal */
+.art--principal .tpl-logo {
+  left: 50%;
+  top: 87.2%;
+  width: max-content;
+  max-width: 72%;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.35rem 0.32rem 0.55rem;
+  background: #efeff1;
+  border-radius: 4px;
+  overflow: visible;
+}
+
+.art--principal .tpl-logo__block {
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+  width: max-content;
+  max-width: none;
+}
+
+/* Bolinha / X bem fora do texto (não em cima do Z de LUIZ) */
+.art--principal .tpl-logo .removable-block__select,
+.art--principal .tpl-logo .removable-block__remove {
+  top: -0.65rem;
+  right: -0.95rem;
+}
+
+.art--principal .tpl-logo__asset.brand-logo,
+.art--principal .tpl-logo .brand-logo {
+  gap: 0.4rem;
+  color: #1a2744;
+  transform: none;
+  max-width: none;
+  width: max-content;
+  flex-shrink: 0;
+}
+
+.art--principal .tpl-logo .brand-logo__mark {
+  width: clamp(1.45rem, 6.6cqw, 1.85rem);
+  stroke: #1a2744;
+  stroke-width: 2.1;
+  flex-shrink: 0;
+}
+
+.art--principal .tpl-logo .brand-logo__text {
+  min-width: max-content;
+  overflow: visible;
+}
+
+.art--principal .tpl-logo .brand-logo__name {
+  font-size: clamp(0.68rem, 3cqw, 0.86rem);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.art--principal .tpl-logo .brand-logo__rule {
+  height: 1px;
+  background: #c4a46a;
+  width: 100%;
+}
+
+.art--principal .tpl-logo .brand-logo__tag {
+  font-size: clamp(0.36rem, 1.55cqw, 0.46rem);
+  letter-spacing: 0.28em;
+  margin-right: 0;
+  white-space: nowrap;
+  overflow: visible;
 }
 
 /* Nome / idade — inputs sobre o papel */
@@ -1074,7 +1172,7 @@
   width: 68%;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.72rem;
   padding: 0.2rem 0;
   background: transparent;
   z-index: 3;
@@ -1089,10 +1187,14 @@
   border-radius: 999px;
   padding: 0.42rem 0.55rem 0.42rem 0.4rem;
   background: #efeff1;
-  box-shadow: 0 0 0 8px #efeff1;
+  box-shadow: 0 0 0 6px #efeff1;
   min-width: 0;
   position: relative;
   z-index: 1;
+}
+
+.art--principal .tpl-card + .tpl-card {
+  margin-top: 0.12rem;
 }
 
 .art--principal .tpl-card__icon {
@@ -1301,19 +1403,29 @@
 
 .art--principal .tpl-footer {
   left: 50%;
-  top: 93.8%;
-  transform: translateX(-50%);
+  top: 93.1%;
   width: max-content;
-  max-width: 48%;
+  max-width: 46%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  gap: 0.1rem;
-  padding: 0.1rem 0.5rem;
+  gap: 0.22rem;
+  padding: 0.12rem 0.42rem;
   background: #efeff1;
+  box-shadow: -8px 0 0 #efeff1, 8px 0 0 #efeff1;
   z-index: 3;
   border-radius: 4px;
+  overflow: visible;
+}
+
+.art--principal .draggable-asset--active {
+  cursor: grab;
+}
+
+.art--principal .draggable-asset--active:active {
+  cursor: grabbing;
 }
 
 .art--principal .tpl-footer__dot {
@@ -1383,14 +1495,15 @@
 }
 
 .art--principal .tpl-input--contact {
-  width: 100%;
+  width: auto;
   min-width: 0;
-  max-width: 11rem;
-  flex: 0 0 auto;
+  max-width: 7.2rem;
+  flex: 0 1 auto;
   text-align: center;
   font-family: 'Manrope', system-ui, sans-serif;
-  font-size: clamp(0.5rem, 2.1cqw, 0.6rem);
+  font-size: clamp(0.48rem, 2cqw, 0.58rem);
   color: #1a2744;
+  white-space: nowrap;
 }
 
 .art.is-exporting .photo-frame__tools,

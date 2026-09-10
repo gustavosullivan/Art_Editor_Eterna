@@ -3,6 +3,7 @@ import html2canvas from 'html2canvas'
 import ArtLayout from '../components/layouts/ArtLayout'
 import { layoutOptions } from '../data/defaults'
 import { applyClippedPhotosToClone } from '../exportClippedPhoto'
+import type { AssetOffset } from '../components/DraggableAsset'
 import type { ArtFields, LayoutId, PhotoTransform } from '../types'
 
 type EditorScreenProps = {
@@ -10,21 +11,27 @@ type EditorScreenProps = {
   fields: ArtFields
   photoUrl: string | null
   photoTransform: PhotoTransform
+  logoOffset: AssetOffset
+  contactOffset: AssetOffset
   showWakeCard: boolean
   showBurialCard: boolean
   showBirthDate: boolean
   showDeathDate: boolean
   showPersonName: boolean
   showPersonAge: boolean
+  showLogo: boolean
   onFieldChange: <K extends keyof ArtFields>(key: K, value: ArtFields[K]) => void
   onPhotoChange: (url: string | null) => void
   onPhotoTransformChange: (transform: PhotoTransform) => void
+  onLogoOffsetChange: (offset: AssetOffset) => void
+  onContactOffsetChange: (offset: AssetOffset) => void
   onRemoveWakeCard: () => void
   onRemoveBurialCard: () => void
   onRemoveBirthDate: () => void
   onRemoveDeathDate: () => void
   onRemovePersonName: () => void
   onRemovePersonAge: () => void
+  onRemoveLogo: () => void
   onResetEdits: () => void
   onBack: () => void
   onChangeLayout: () => void
@@ -39,21 +46,27 @@ export default function EditorScreen({
   fields,
   photoUrl,
   photoTransform,
+  logoOffset,
+  contactOffset,
   showWakeCard,
   showBurialCard,
   showBirthDate,
   showDeathDate,
   showPersonName,
   showPersonAge,
+  showLogo,
   onFieldChange,
   onPhotoChange,
   onPhotoTransformChange,
+  onLogoOffsetChange,
+  onContactOffsetChange,
   onRemoveWakeCard,
   onRemoveBurialCard,
   onRemoveBirthDate,
   onRemoveDeathDate,
   onRemovePersonName,
   onRemovePersonAge,
+  onRemoveLogo,
   onResetEdits,
   onBack,
   onChangeLayout,
@@ -189,21 +202,27 @@ export default function EditorScreen({
           fields={fields}
           photoUrl={photoUrl}
           photoTransform={photoTransform}
+          logoOffset={logoOffset}
+          contactOffset={contactOffset}
           onFieldChange={onFieldChange}
           onPhotoChange={onPhotoChange}
           onPhotoTransformChange={onPhotoTransformChange}
+          onLogoOffsetChange={onLogoOffsetChange}
+          onContactOffsetChange={onContactOffsetChange}
           showWakeCard={showWakeCard}
           showBurialCard={showBurialCard}
           showBirthDate={showBirthDate}
           showDeathDate={showDeathDate}
           showPersonName={showPersonName}
           showPersonAge={showPersonAge}
+          showLogo={showLogo}
           onRemoveWakeCard={onRemoveWakeCard}
           onRemoveBurialCard={onRemoveBurialCard}
           onRemoveBirthDate={onRemoveBirthDate}
           onRemoveDeathDate={onRemoveDeathDate}
           onRemovePersonName={onRemovePersonName}
           onRemovePersonAge={onRemovePersonAge}
+          onRemoveLogo={onRemoveLogo}
         />
       </div>
 

@@ -2,6 +2,7 @@ import EditableText from '../EditableText'
 import PhotoUpload from '../PhotoUpload'
 import SaoLuizLogo from '../SaoLuizLogo'
 import type { ArtFields, PhotoTransform } from '../../types'
+import type { AssetOffset } from '../DraggableAsset'
 
 export type LayoutProps = {
   fields: ArtFields
@@ -17,12 +18,18 @@ export type LayoutProps = {
   showDeathDate?: boolean
   showPersonName?: boolean
   showPersonAge?: boolean
+  showLogo?: boolean
+  logoOffset?: AssetOffset
+  contactOffset?: AssetOffset
+  onLogoOffsetChange?: (offset: AssetOffset) => void
+  onContactOffsetChange?: (offset: AssetOffset) => void
   onRemoveWakeCard?: () => void
   onRemoveBurialCard?: () => void
   onRemoveBirthDate?: () => void
   onRemoveDeathDate?: () => void
   onRemovePersonName?: () => void
   onRemovePersonAge?: () => void
+  onRemoveLogo?: () => void
 }
 
 function ClockIcon() {
