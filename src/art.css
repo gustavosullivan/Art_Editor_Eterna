@@ -840,14 +840,14 @@
 }
 
 /*
-  Branco apertado só em volta da moldura principal
-  (tapa vazamento da moldura antiga — não cobre título nem lírios).
+  Pinta em volta da moldura — um pouco maior que a foto
+  (tapa traço do layout antigo nos cantos de fora).
 */
 .art--principal .tpl-moldura-clean {
-  left: 29.6%;
-  top: 18.3%;
-  width: 40.8%;
-  height: 38.2%;
+  left: 28.9%;
+  top: 17.7%;
+  width: 42.2%;
+  height: 39.6%;
   z-index: 2;
   pointer-events: none;
   background: transparent;
@@ -1007,9 +1007,9 @@
 
 /* Fundo atrás do site/telefone + um pouco dos lados */
 .art--principal .tpl-contact-paint {
-  left: 30%;
+  left: 26%;
   top: 92.6%;
-  width: 40%;
+  width: 48%;
   height: 4.8%;
   z-index: 2;
   background: #efeff1;
@@ -1027,9 +1027,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.65rem 1.35rem 0.32rem 0.55rem;
-  background: #efeff1;
-  border-radius: 4px;
+  padding: 0.35rem 0.95rem 0.1rem 0.2rem;
+  background: transparent;
+  border-radius: 0;
   overflow: visible;
 }
 
@@ -1405,14 +1405,14 @@
   left: 50%;
   top: 93.1%;
   width: max-content;
-  max-width: 46%;
+  max-width: 58%;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   gap: 0.22rem;
-  padding: 0.12rem 0.42rem;
+  padding: 0.12rem 0.5rem;
   background: #efeff1;
   box-shadow: -8px 0 0 #efeff1, 8px 0 0 #efeff1;
   z-index: 3;
@@ -1497,13 +1497,14 @@
 .art--principal .tpl-input--contact {
   width: auto;
   min-width: 0;
-  max-width: 7.2rem;
+  max-width: 10.5rem;
   flex: 0 1 auto;
   text-align: center;
   font-family: 'Manrope', system-ui, sans-serif;
   font-size: clamp(0.48rem, 2cqw, 0.58rem);
   color: #1a2744;
   white-space: nowrap;
+  overflow: visible;
 }
 
 .art.is-exporting .photo-frame__tools,

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { defaultFields } from './data/defaults'
 import EditorScreen from './screens/EditorScreen'
 import SplashScreen from './screens/SplashScreen'
@@ -23,48 +23,9 @@ const defaultVisibility = {
   logo: true,
 }
 
-/** Posição inicial do Principal (centralizado; Y é o “jeito” padrão) */
+/** Offsets zerados = posição padrão do CSS do Modelo Principal */
 const defaultLogoOffset: AssetOffset = { x: 0, y: 0 }
 const defaultContactOffset: AssetOffset = { x: 0, y: 0 }
-
-const ASSET_LAYOUT_KEY = 'sao-luiz-art-principal-assets'
-
-type StoredAssetLayout = {
-  logo: AssetOffset
-  contact: AssetOffset
-}
-
-function readStoredAssetLayout(): StoredAssetLayout {
-  try {
-    const raw = localStorage.getItem(ASSET_LAYOUT_KEY)
-    if (!raw) return { logo: defaultLogoOffset, contact: defaultContactOffset }
-    const parsed = JSON.parse(raw) as Partial<StoredAssetLayout>
-    return {
-      logo: {
-        x: 0,
-        y: Number(parsed.logo?.y) || 0,
-      },
-      contact: {
-        x: 0,
-        y: Number(parsed.contact?.y) || 0,
-      },
-    }
-  } catch {
-    return { logo: defaultLogoOffset, contact: defaultContactOffset }
-  }
-}
-
-function writeStoredAssetLayout(logo: AssetOffset, contact: AssetOffset) {
-  try {
-    const payload: StoredAssetLayout = {
-      logo: { x: 0, y: logo.y },
-      contact: { x: 0, y: contact.y },
-    }
-    localStorage.setItem(ASSET_LAYOUT_KEY, JSON.stringify(payload))
-  } catch {
-    /* ignore quota / private mode */
-  }
-}
 
 export default function App() {
   const [step, setStep] = useState<Step>('splash')
@@ -76,31 +37,27 @@ export default function App() {
   const [logoOffset, setLogoOffset] = useState<AssetOffset>(defaultLogoOffset)
   const [contactOffset, setContactOffset] = useState<AssetOffset>(defaultContactOffset)
   const [visibility, setVisibility] = useState(defaultVisibility)
-  const [assetsReady, setAssetsReady] = useState(false)
-
-  useEffect(() => {
-    const stored = readStoredAssetLayout()
-    setLogoOffset(stored.logo)
-    setContactOffset(stored.contact)
-    setAssetsReady(true)
-  }, [])
-
-  useEffect(() => {
-    if (!assetsReady) return
-    writeStoredAssetLayout(logoOffset, contactOffset)
-  }, [assetsReady, logoOffset, contactOffset])
 
   function updateField<K extends keyof ArtFields>(key: K, value: ArtFields[K]) {
     setFields((current) => ({ ...current, [key]: value }))
   }
 
-  function resetEdits() {
+  function applyLayoutDefaults() {
     setFields(defaultFields)
     setPhotoTransform(defaultPhotoTransform)
     setLogoOffset(defaultLogoOffset)
     setContactOffset(defaultContactOffset)
     setVisibility(defaultVisibility)
-    writeStoredAssetLayout(defaultLogoOffset, defaultContactOffset)
+  }
+
+  function resetEdits() {
+    applyLayoutDefaults()
+  }
+
+  function openLayout(id: LayoutId) {
+    setLayoutId(id)
+    applyLayoutDefaults()
+    setStep('editor')
   }
 
   if (step === 'splash') {
@@ -111,10 +68,7 @@ export default function App() {
     return (
       <WelcomeScreen
         onBack={() => setStep('splash')}
-        onConfirm={(id) => {
-          setLayoutId(id)
-          setStep('editor')
-        }}
+        onConfirm={openLayout}
       />
     )
   }
