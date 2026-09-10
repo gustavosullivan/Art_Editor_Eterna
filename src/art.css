@@ -1664,38 +1664,13 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Layout Elegante — moldura */
-.art--elegant {
-  background:
-    linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(160deg, rgba(196, 164, 106, 0.55), rgba(26, 39, 68, 0.2)) border-box;
-  border: 1px solid transparent;
-}
-
-.art--elegant .art__frame {
-  position: absolute;
-  inset: 0.55rem;
-  border: 1px solid rgba(196, 164, 106, 0.55);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.art--elegant .art__inner {
-  padding-block: 1.55rem 1.15rem;
-}
-
-.art--elegant .invite-card {
-  border-radius: 999px;
-  padding-inline: 0.85rem;
-}
-
 /* ═══════════════════════════════════════════
-   Missa de Sétimo Dia — folha em código
+   Missa de Sétimo Dia (temporário) — fundo + assets
    ═══════════════════════════════════════════ */
 .art--setimo {
   --setimo-navy: #1a2744;
   --setimo-gold: #c4a46a;
-  --setimo-paper: #f4f4f4;
+  --setimo-paper: #efeff1;
   width: min(100%, 400px);
   aspect-ratio: 768 / 1086;
   background: var(--setimo-paper);
@@ -1704,81 +1679,65 @@
   container-type: inline-size;
 }
 
-.setimo-lilies {
+/* Decoração: lírios/BL do Principal + canto TR refeito */
+.setimo-decor {
   position: absolute;
-  inset: 8% 0 18%;
+  inset: 0;
   z-index: 0;
+  pointer-events: none;
+}
+
+.setimo-decor__full {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
-  pointer-events: none;
-  opacity: 0.85;
+  height: 100%;
+  object-fit: fill;
+  display: block;
 }
 
-.setimo-corner {
+.setimo-corner-tr {
   position: absolute;
-  z-index: 1;
-  pointer-events: none;
-  width: 52%;
-  height: 34%;
-  overflow: hidden;
-}
-
-.setimo-corner--tr {
-  top: -1%;
-  right: -4%;
-  background:
-    radial-gradient(125% 105% at 100% 0%, var(--setimo-navy) 0 61%, transparent 62%);
-}
-
-.setimo-corner--bl {
-  left: -6%;
-  bottom: -2%;
-  background:
-    radial-gradient(125% 105% at 0% 100%, var(--setimo-navy) 0 61%, transparent 62%);
-}
-
-.setimo-corner--tr::after,
-.setimo-corner--bl::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-  opacity: 0.9;
-}
-
-.setimo-corner--tr::after {
-  top: 10%;
-  right: 9%;
-  width: 76%;
-  height: 68%;
-  border-top: 1.5px solid var(--setimo-gold);
-  border-right: 1.5px solid var(--setimo-gold);
-  border-radius: 0 72% 0 0;
-}
-
-.setimo-corner--bl::after {
-  left: 10%;
-  bottom: 10%;
-  width: 76%;
-  height: 68%;
-  border-bottom: 1.5px solid var(--setimo-gold);
-  border-left: 1.5px solid var(--setimo-gold);
-  border-radius: 0 0 0 72%;
-}
-
-.setimo-flora {
-  position: absolute;
-  width: 82%;
-  height: 82%;
-  top: 2%;
-  right: 0;
-}
-
-.setimo-flora--mirror {
-  top: auto;
-  right: auto;
+  top: 0;
   left: 0;
-  bottom: 2%;
-  transform: scale(-1, -1);
+  right: 0;
+  width: 100%;
+  height: 40%;
+  z-index: 1;
+  overflow: visible;
+  pointer-events: none;
+  line-height: 0;
+}
+
+.setimo-corner-tr__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  object-position: top right;
+  pointer-events: none;
+}
+
+.setimo-corner-bl {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 46%;
+  z-index: 1;
+  overflow: visible;
+  pointer-events: none;
+  line-height: 0;
+}
+
+.setimo-corner-bl__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  object-position: bottom left;
+  pointer-events: none;
 }
 
 .setimo-inner {
@@ -1788,33 +1747,86 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8% 9% 5%;
+  padding: 6.5% 9% 4.5%;
   box-sizing: border-box;
 }
 
-.setimo-header {
+/* Título — componente igual à referência */
+.setimo-title {
   text-align: center;
   width: 100%;
-  margin-bottom: 5%;
+  margin-bottom: 4%;
+  position: relative;
+  z-index: 3;
 }
 
-.setimo-header__eyebrow {
+.setimo-title__eyebrow {
   margin: 0;
-  font-family: var(--font-serif);
-  font-size: clamp(0.64rem, 2.9cqw, 0.8rem);
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: clamp(0.58rem, 2.6cqw, 0.72rem);
   font-weight: 700;
   letter-spacing: 0.28em;
   color: var(--setimo-gold);
   text-transform: uppercase;
 }
 
-.setimo-header__title {
-  margin: 0.02rem 0 0.2rem;
+.setimo-title__heading {
+  margin: 0.12rem 0 0.2rem;
   font-family: var(--font-script);
-  font-size: clamp(2.25rem, 11.5cqw, 2.95rem);
+  font-size: clamp(2.55rem, 13.5cqw, 3.35rem);
   font-weight: 400;
   color: var(--setimo-navy);
-  line-height: 0.95;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+}
+
+.setimo-title__setimo {
+  white-space: nowrap;
+}
+
+/* \"ia\" fica no azul — branco */
+.setimo-title__dia {
+  white-space: nowrap;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+}
+
+/* \"D\": fora = navy; dentro do azul = branco (degradê original) */
+.setimo-title__d {
+  background: linear-gradient(
+    118deg,
+    var(--setimo-navy) 0 48%,
+    #ffffff 56% 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.setimo-title__ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  max-width: 9.2rem;
+  margin: 0.35rem auto 0;
+}
+
+.setimo-title__ornament span {
+  flex: 1;
+  height: 1px;
+  background: var(--setimo-gold);
+  opacity: 0.9;
+}
+
+.setimo-title__ornament i {
+  width: 0.34rem;
+  height: 0.34rem;
+  background: var(--setimo-gold);
+  transform: rotate(45deg);
+  flex-shrink: 0;
 }
 
 .setimo-ornament {
@@ -1823,14 +1835,14 @@
   justify-content: center;
   gap: 0.4rem;
   width: 100%;
-  max-width: 10rem;
-  margin: 0.35rem auto 0;
+  max-width: 9.5rem;
+  margin: 0.3rem auto 0;
 }
 
 .setimo-hero__copy .setimo-ornament {
   justify-content: flex-start;
-  margin: 0.55rem 0 0.5rem;
-  max-width: 9.2rem;
+  margin: 0.5rem 0 0.45rem;
+  max-width: 8.8rem;
 }
 
 .setimo-ornament span {
@@ -1841,8 +1853,8 @@
 }
 
 .setimo-ornament i {
-  width: 0.38rem;
-  height: 0.38rem;
+  width: 0.36rem;
+  height: 0.36rem;
   background: var(--setimo-gold);
   transform: rotate(45deg);
   flex-shrink: 0;
@@ -1851,15 +1863,15 @@
 .setimo-hero {
   display: grid;
   grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-  gap: 0.7rem 0.85rem;
+  gap: 0.65rem 0.8rem;
   align-items: center;
   width: 100%;
-  margin-bottom: 5.5%;
+  margin-bottom: 5%;
 }
 
 .setimo-hero__photo {
   width: 100%;
-  max-width: 152px;
+  max-width: 118px;
   justify-self: start;
 }
 
@@ -1870,16 +1882,17 @@
 }
 
 .art--setimo .photo-frame--rounded .photo-frame__hit {
-  border-radius: 24%;
+  aspect-ratio: 0.8 / 1;
+  border-radius: 20%;
   box-shadow:
-    0 0 0 1.5px var(--setimo-gold),
-    0 0 0 3.2px #f4f4f4,
-    0 0 0 4.6px var(--setimo-gold);
+    0 0 0 1.2px var(--setimo-gold),
+    0 0 0 2.5px var(--setimo-paper),
+    0 0 0 3.6px var(--setimo-gold);
 }
 
 .art--setimo .photo-frame--rounded .photo-frame__img,
 .art--setimo .photo-frame--rounded .photo-frame__placeholder {
-  border-radius: 24%;
+  border-radius: 20%;
 }
 
 .art--setimo .photo-frame__tools {
@@ -1901,48 +1914,66 @@
   padding-top: 0.1rem;
 }
 
+.setimo-name-wrap {
+  width: 100%;
+}
+
 .setimo-name,
 input.setimo-name,
 textarea.setimo-name {
   width: 100%;
-  margin: 0;
   border: none;
   background: transparent;
-  font-family: var(--font-serif);
-  font-size: clamp(0.78rem, 3.45cqw, 0.96rem);
+  margin: 0;
+  padding: 0;
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: clamp(0.78rem, 3.4cqw, 0.98rem);
   font-weight: 700;
   color: var(--setimo-navy);
-  line-height: 1.28;
+  line-height: 1.25;
   text-align: left;
-  padding: 0;
-  outline: none;
   resize: none;
-  min-height: 2.5em;
-  field-sizing: content;
+  outline: none;
 }
 
 .setimo-note,
 input.setimo-note {
   width: 100%;
-  margin: 0;
   border: none;
   background: transparent;
-  font-family: var(--font-serif);
-  font-size: clamp(0.72rem, 3.1cqw, 0.88rem);
+  margin: 0;
+  padding: 0;
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: clamp(0.72rem, 3cqw, 0.88rem);
   font-weight: 400;
   color: var(--setimo-navy);
-  line-height: 1.3;
+  line-height: 1.35;
   text-align: left;
-  padding: 0;
   outline: none;
+}
+
+.setimo-cards-drag {
+  width: 78%;
+  max-width: 78%;
+  margin-left: auto;
+  margin-right: 0;
+  margin-bottom: auto;
+  align-self: flex-end;
+}
+
+.art--setimo .setimo-cards-drag.draggable-asset--active {
+  cursor: grab;
+}
+
+.art--setimo .setimo-cards-drag.draggable-asset--active:active {
+  cursor: grabbing;
 }
 
 .setimo-cards {
   display: flex;
   flex-direction: column;
-  gap: 0.58rem;
+  gap: 0.55rem;
   width: 100%;
-  margin-bottom: auto;
 }
 
 .setimo-card {
@@ -1950,27 +1981,29 @@ input.setimo-note {
   align-items: center;
   gap: 0.7rem;
   width: 100%;
-  padding: 0.58rem 0.75rem;
+  padding: 0.55rem 0.72rem;
   border: 1.45px solid var(--setimo-gold);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.72);
   box-sizing: border-box;
+  position: relative;
+  overflow: visible;
 }
 
-.setimo-card__icon {
-  display: grid;
-  place-items: center;
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 50%;
+.art--setimo .setimo-card .card-icon-asset,
+.art--setimo .setimo-card .card-icon-asset__face {
+  width: 2.05rem;
+  height: 2.05rem;
+}
+
+.art--setimo .setimo-card .card-icon-asset__face {
   background: var(--setimo-navy);
   color: var(--setimo-gold);
-  flex-shrink: 0;
 }
 
-.setimo-card__icon svg {
-  width: 1.05rem;
-  height: 1.05rem;
+.art--setimo .setimo-card .card-icon-asset__face svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .setimo-card__body {
@@ -1984,26 +2017,23 @@ input.setimo-note {
 .setimo-card__label {
   margin: 0;
   font-family: 'Manrope', system-ui, sans-serif;
-  font-size: 0.56rem;
+  font-size: clamp(0.48rem, 2cqw, 0.58rem);
   font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.12em;
   color: var(--setimo-navy);
-  opacity: 0.72;
+  text-transform: uppercase;
 }
 
 .setimo-card__value,
 input.setimo-card__value {
   width: 100%;
-  margin: 0;
   border: none;
   background: transparent;
-  font-family: var(--font-serif);
-  font-size: clamp(0.8rem, 3.35cqw, 0.96rem);
-  font-weight: 400;
-  color: var(--setimo-navy);
-  line-height: 1.25;
+  margin: 0;
   padding: 0;
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: clamp(0.72rem, 3cqw, 0.88rem);
+  color: var(--setimo-navy);
   outline: none;
 }
 
@@ -2011,14 +2041,21 @@ input.setimo-card__value {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   width: 100%;
-  margin-top: 7%;
+  margin-top: 6%;
 }
 
+.setimo-logo-wrap {
+  width: max-content;
+  overflow: visible;
+}
+
+.art--setimo .setimo-logo-asset.brand-logo,
 .art--setimo .brand-logo {
-  transform: scale(0.9);
+  transform: scale(0.92);
   transform-origin: center;
+  color: var(--setimo-navy);
 }
 
 .art--setimo .brand-logo__mark path {
@@ -2034,20 +2071,23 @@ input.setimo-card__value {
 
 .setimo-footer__contact {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  gap: 0.12rem;
+  gap: 0.28rem;
   font-family: 'Manrope', system-ui, sans-serif;
   font-size: 0.62rem;
   color: var(--setimo-navy);
   width: 100%;
-  max-width: 70%;
+  max-width: 78%;
 }
 
-.setimo-footer__line {
-  display: block;
-  text-align: center;
+.setimo-footer__dot {
+  color: var(--setimo-gold);
+  flex-shrink: 0;
+  font-size: 0.55rem;
+  line-height: 1;
 }
 
 .setimo-footer__field,
@@ -2058,32 +2098,24 @@ input.setimo-footer__field {
   color: inherit;
   text-align: center;
   min-width: 0;
-  width: 100%;
-  max-width: 12rem;
+  width: auto;
+  max-width: 10rem;
   padding: 0;
   outline: none;
-}
-
-.art--setimo .setimo-card {
-  position: relative;
-  overflow: visible;
-}
-
-.art--setimo .setimo-card .card-icon-asset,
-.art--setimo .setimo-card .card-icon-asset__face {
-  width: 2.1rem;
-  height: 2.1rem;
-}
-
-.art--setimo .setimo-card .card-icon-asset__face svg {
-  width: 1rem;
-  height: 1rem;
+  white-space: nowrap;
 }
 
 .art--setimo .setimo-input:focus {
   outline: none;
   box-shadow: 0 1px 0 var(--setimo-gold);
 }
+
+.art--setimo .removable-block__select,
+.art--setimo .removable-block__remove {
+  top: -0.35rem;
+  right: -0.55rem;
+}
+
 
 @media (min-width: 720px) {
   .welcome {

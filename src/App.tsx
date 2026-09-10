@@ -24,6 +24,7 @@ const defaultVisibility = {
 }
 
 const defaultLogoOffset: AssetOffset = { x: 0, y: 0 }
+const defaultCardsOffset: AssetOffset = { x: 0, y: 0 }
 
 export default function App() {
   const [step, setStep] = useState<Step>('splash')
@@ -33,6 +34,7 @@ export default function App() {
   const [photoTransform, setPhotoTransform] =
     useState<PhotoTransform>(defaultPhotoTransform)
   const [logoOffset, setLogoOffset] = useState<AssetOffset>(defaultLogoOffset)
+  const [cardsOffset, setCardsOffset] = useState<AssetOffset>(defaultCardsOffset)
   const [visibility, setVisibility] = useState(defaultVisibility)
 
   function updateField<K extends keyof ArtFields>(key: K, value: ArtFields[K]) {
@@ -43,6 +45,7 @@ export default function App() {
     setFields(defaultFields)
     setPhotoTransform(defaultPhotoTransform)
     setLogoOffset(defaultLogoOffset)
+    setCardsOffset(defaultCardsOffset)
     setVisibility(defaultVisibility)
   }
 
@@ -76,6 +79,7 @@ export default function App() {
       photoUrl={photoUrl}
       photoTransform={photoTransform}
       logoOffset={logoOffset}
+      cardsOffset={cardsOffset}
       showWakeCard={visibility.wake}
       showBurialCard={visibility.burial}
       showBirthDate={visibility.birth}
@@ -87,6 +91,7 @@ export default function App() {
       onPhotoChange={setPhotoUrl}
       onPhotoTransformChange={setPhotoTransform}
       onLogoOffsetChange={setLogoOffset}
+      onCardsOffsetChange={setCardsOffset}
       onRemoveWakeCard={() => setVisibility((v) => ({ ...v, wake: false }))}
       onRemoveBurialCard={() => setVisibility((v) => ({ ...v, burial: false }))}
       onRemoveBirthDate={() => setVisibility((v) => ({ ...v, birth: false }))}

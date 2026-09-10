@@ -16,6 +16,8 @@ type DraggableAssetProps = {
   clamp?: number
   /** `y` = fica centralizado na horizontal, só sobe/desce */
   axis?: 'xy' | 'x' | 'y'
+  /** `center` aplica -50% no X (logo); `start` só soma o offset */
+  anchor?: 'center' | 'start'
   children: ReactNode
 }
 
@@ -34,6 +36,7 @@ export default function DraggableAsset({
   className = '',
   clamp = 120,
   axis = 'xy',
+  anchor = 'center',
   children,
 }: DraggableAssetProps) {
   const dragRef = useRef<{
@@ -47,6 +50,7 @@ export default function DraggableAsset({
 
   const x = axis === 'y' ? 0 : offset.x
   const y = axis === 'x' ? 0 : offset.y
+  const translateX = anchor === 'center' ? `calc(-50% + ${x}px)` : `${x}px`
 
   function isInteractiveTarget(target: EventTarget | null) {
     if (!(target instanceof Element)) return false
@@ -93,7 +97,7 @@ export default function DraggableAsset({
     <div
       className={`draggable-asset ${disabled ? '' : 'draggable-asset--active'} ${className}`.trim()}
       style={{
-        transform: `translate(calc(-50% + ${x}px), ${y}px)`,
+        transform: `translate(${translateX}, ${y}px)`,
         touchAction: disabled ? undefined : 'none',
       }}
       onPointerDown={onPointerDown}

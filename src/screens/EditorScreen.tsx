@@ -12,6 +12,7 @@ type EditorScreenProps = {
   photoUrl: string | null
   photoTransform: PhotoTransform
   logoOffset: AssetOffset
+  cardsOffset: AssetOffset
   showWakeCard: boolean
   showBurialCard: boolean
   showBirthDate: boolean
@@ -23,6 +24,7 @@ type EditorScreenProps = {
   onPhotoChange: (url: string | null) => void
   onPhotoTransformChange: (transform: PhotoTransform) => void
   onLogoOffsetChange: (offset: AssetOffset) => void
+  onCardsOffsetChange: (offset: AssetOffset) => void
   onRemoveWakeCard: () => void
   onRemoveBurialCard: () => void
   onRemoveBirthDate: () => void
@@ -45,6 +47,7 @@ export default function EditorScreen({
   photoUrl,
   photoTransform,
   logoOffset,
+  cardsOffset,
   showWakeCard,
   showBurialCard,
   showBirthDate,
@@ -56,6 +59,7 @@ export default function EditorScreen({
   onPhotoChange,
   onPhotoTransformChange,
   onLogoOffsetChange,
+  onCardsOffsetChange,
   onRemoveWakeCard,
   onRemoveBurialCard,
   onRemoveBirthDate,
@@ -199,10 +203,12 @@ export default function EditorScreen({
           photoUrl={photoUrl}
           photoTransform={photoTransform}
           logoOffset={logoOffset}
+          cardsOffset={cardsOffset}
           onFieldChange={onFieldChange}
           onPhotoChange={onPhotoChange}
           onPhotoTransformChange={onPhotoTransformChange}
           onLogoOffsetChange={onLogoOffsetChange}
+          onCardsOffsetChange={onCardsOffsetChange}
           showWakeCard={showWakeCard}
           showBurialCard={showBurialCard}
           showBirthDate={showBirthDate}

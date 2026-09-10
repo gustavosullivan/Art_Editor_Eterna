@@ -25,11 +25,6 @@ export const layoutOptions: LayoutOption[] = [
   {
     id: 'setimo',
     name: 'Missa de 7º Dia',
-    description: 'Folha de missa — foto arredondada, nome ao lado e dados da cerimônia.',
-  },
-  {
-    id: 'elegant',
-    name: 'Layout 3 — Elegante',
-    description: 'Foto oval central e tipografia solene.',
+    description: 'Temporário — fundo em assets, foto, cards e logo editáveis.',
   },
 ]

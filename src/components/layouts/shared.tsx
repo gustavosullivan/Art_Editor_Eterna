@@ -21,6 +21,8 @@ export type LayoutProps = {
   showLogo?: boolean
   logoOffset?: AssetOffset
   onLogoOffsetChange?: (offset: AssetOffset) => void
+  cardsOffset?: AssetOffset
+  onCardsOffsetChange?: (offset: AssetOffset) => void
   onRemoveWakeCard?: () => void
   onRemoveBurialCard?: () => void
   onRemoveBirthDate?: () => void
