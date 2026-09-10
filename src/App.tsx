@@ -23,9 +23,7 @@ const defaultVisibility = {
   logo: true,
 }
 
-/** Offsets zerados = posição padrão do CSS do Modelo Principal */
 const defaultLogoOffset: AssetOffset = { x: 0, y: 0 }
-const defaultContactOffset: AssetOffset = { x: 0, y: 0 }
 
 export default function App() {
   const [step, setStep] = useState<Step>('splash')
@@ -35,7 +33,6 @@ export default function App() {
   const [photoTransform, setPhotoTransform] =
     useState<PhotoTransform>(defaultPhotoTransform)
   const [logoOffset, setLogoOffset] = useState<AssetOffset>(defaultLogoOffset)
-  const [contactOffset, setContactOffset] = useState<AssetOffset>(defaultContactOffset)
   const [visibility, setVisibility] = useState(defaultVisibility)
 
   function updateField<K extends keyof ArtFields>(key: K, value: ArtFields[K]) {
@@ -46,7 +43,6 @@ export default function App() {
     setFields(defaultFields)
     setPhotoTransform(defaultPhotoTransform)
     setLogoOffset(defaultLogoOffset)
-    setContactOffset(defaultContactOffset)
     setVisibility(defaultVisibility)
   }
 
@@ -80,7 +76,6 @@ export default function App() {
       photoUrl={photoUrl}
       photoTransform={photoTransform}
       logoOffset={logoOffset}
-      contactOffset={contactOffset}
       showWakeCard={visibility.wake}
       showBurialCard={visibility.burial}
       showBirthDate={visibility.birth}
@@ -92,7 +87,6 @@ export default function App() {
       onPhotoChange={setPhotoUrl}
       onPhotoTransformChange={setPhotoTransform}
       onLogoOffsetChange={setLogoOffset}
-      onContactOffsetChange={setContactOffset}
       onRemoveWakeCard={() => setVisibility((v) => ({ ...v, wake: false }))}
       onRemoveBurialCard={() => setVisibility((v) => ({ ...v, burial: false }))}
       onRemoveBirthDate={() => setVisibility((v) => ({ ...v, birth: false }))}

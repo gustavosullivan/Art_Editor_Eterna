@@ -971,9 +971,9 @@
 
 /* Camada sob os cards — cobre residual ao lado do lírio, sem tapar o canto */
 .art--principal .tpl-cards-paint {
-  left: 18.5%;
+  left: 22%;
   top: 65.4%;
-  width: 66%;
+  width: 60%;
   height: 17.5%;
   z-index: 2;
   background: #efeff1;
@@ -983,44 +983,103 @@
 
 /* Atrás do card do maps + um pouco mais embaixo (acima da logo) */
 .art--principal .tpl-burial-paint {
-  left: 18.5%;
-  top: 71.8%;
-  width: 66%;
-  height: 14.5%;
+  left: 23%;
+  top: 72.4%;
+  width: 58%;
+  height: 12.2%;
   z-index: 2;
   background: #efeff1;
   pointer-events: none;
   border-radius: 12px;
 }
 
-/* Cobre a logo desenhada no PNG */
+/* Cobre a logo do PNG / atrás do asset São Luiz (cantos + fundo) */
 .art--principal .tpl-logo-paint {
-  left: 22%;
-  top: 86.4%;
-  width: 56%;
-  height: 6.4%;
+  left: 32%;
+  top: 85.2%;
+  width: 42%;
+  height: 9.2%;
+  z-index: 2;
+  background: #efeff1;
+  pointer-events: none;
+  border-radius: 8px;
+}
+
+/* Cantos de baixo da logo — manchas curtas, longe do lírio */
+.art--principal .tpl-logo-corner-bl-paint {
+  left: 33%;
+  top: 91.6%;
+  width: 14%;
+  height: 2.4%;
+  z-index: 2;
+  background: #efeff1;
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+.art--principal .tpl-logo-corner-br-paint {
+  left: 55%;
+  top: 91.6%;
+  width: 16%;
+  height: 2.4%;
+  z-index: 2;
+  background: #efeff1;
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+/* Vão entre logo e telefone — centro, sem tocar lírio */
+.art--principal .tpl-logo-gap-paint {
+  left: 36%;
+  top: 90.4%;
+  width: 34%;
+  height: 5.2%;
   z-index: 2;
   background: #efeff1;
   pointer-events: none;
   border-radius: 6px;
 }
 
-/* Fundo atrás do site/telefone + um pouco dos lados */
+/* Transparente acima do telefone — pinta até o bloco de contato */
+.art--principal .tpl-contact-top-paint {
+  left: 38%;
+  top: calc(92.8% - 4px);
+  width: 34%;
+  height: 3.8%;
+  z-index: 2;
+  background: #efeff1;
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+/* Fundo atrás do site/telefone — travado com o footer (não mexer no tamanho) */
 .art--principal .tpl-contact-paint {
-  left: 26%;
-  top: 92.6%;
-  width: 48%;
-  height: 4.8%;
+  left: 44%;
+  top: calc(95.2% - 4px);
+  width: 30%;
+  height: 3.6%;
   z-index: 2;
   background: #efeff1;
   pointer-events: none;
   border-radius: 6px;
+}
+
+/* Faixa branca só embaixo do telefone/site — travada */
+.art--principal .tpl-contact-bottom-paint {
+  left: 44%;
+  top: calc(97.4% - 4px);
+  width: 32%;
+  height: 2.2%;
+  z-index: 2;
+  background: #efeff1;
+  pointer-events: none;
+  border-radius: 0;
 }
 
 /* Asset da logo São Luiz — posição padrão do Principal */
 .art--principal .tpl-logo {
   left: 50%;
-  top: 87.2%;
+  top: 88.6%;
   width: max-content;
   max-width: 72%;
   z-index: 3;
@@ -1172,7 +1231,7 @@
   width: 68%;
   display: flex;
   flex-direction: column;
-  gap: 0.72rem;
+  gap: 0.48rem;
   padding: 0.2rem 0;
   background: transparent;
   z-index: 3;
@@ -1187,14 +1246,14 @@
   border-radius: 999px;
   padding: 0.42rem 0.55rem 0.42rem 0.4rem;
   background: #efeff1;
-  box-shadow: 0 0 0 6px #efeff1;
+  box-shadow: 0 0 0 3px #efeff1;
   min-width: 0;
   position: relative;
   z-index: 1;
 }
 
 .art--principal .tpl-card + .tpl-card {
-  margin-top: 0.12rem;
+  margin-top: 0;
 }
 
 .art--principal .tpl-card__icon {
@@ -1401,23 +1460,36 @@
   overflow: visible;
 }
 
+/*
+  CONTATO (telefone • site) — tamanho e posição TRAVADOS (Y -4px / calc).
+  Não alterar sem pedido explícito.
+*/
 .art--principal .tpl-footer {
-  left: 50%;
-  top: 93.1%;
+  left: 54%;
+  top: calc(96.4% - 4px);
+  transform: translateX(-50%);
   width: max-content;
   max-width: 58%;
+  min-width: 0;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   gap: 0.22rem;
-  padding: 0.12rem 0.5rem;
+  padding: 0.08rem 0.5rem 0.06rem 0.12rem;
   background: #efeff1;
-  box-shadow: -8px 0 0 #efeff1, 8px 0 0 #efeff1;
+  box-shadow: 6px 0 0 #efeff1, 0 4px 0 #efeff1;
   z-index: 3;
-  border-radius: 4px;
-  overflow: visible;
+  border-radius: 0 4px 4px 0;
+  overflow: hidden;
+  clip-path: inset(0 -8px -5px 0.55rem);
+  flex-shrink: 0;
+}
+
+.art--principal .tpl-footer .tpl-input--contact {
+  flex: 0 0 auto;
+  max-width: 10.5rem;
 }
 
 .art--principal .draggable-asset--active {

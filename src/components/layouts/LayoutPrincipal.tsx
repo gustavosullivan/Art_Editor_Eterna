@@ -25,9 +25,7 @@ export default function LayoutPrincipal({
   showPersonAge = true,
   showLogo = true,
   logoOffset = defaultAssetOffset,
-  contactOffset = defaultAssetOffset,
   onLogoOffsetChange,
-  onContactOffsetChange,
   onRemoveWakeCard,
   onRemoveBurialCard,
   onRemoveBirthDate,
@@ -83,7 +81,12 @@ export default function LayoutPrincipal({
       <div className="tpl tpl-burial-paint" aria-hidden="true" />
       {/* Cobre a logo do PNG + área do rodapé */}
       <div className="tpl tpl-logo-paint" aria-hidden="true" />
+      <div className="tpl tpl-logo-corner-bl-paint" aria-hidden="true" />
+      <div className="tpl tpl-logo-corner-br-paint" aria-hidden="true" />
+      <div className="tpl tpl-logo-gap-paint" aria-hidden="true" />
+      <div className="tpl tpl-contact-top-paint" aria-hidden="true" />
       <div className="tpl tpl-contact-paint" aria-hidden="true" />
+      <div className="tpl tpl-contact-bottom-paint" aria-hidden="true" />
 
       <div className="tpl tpl-person">
         {showPersonName ? (
@@ -229,14 +232,7 @@ export default function LayoutPrincipal({
         </DraggableAsset>
       ) : null}
 
-      <DraggableAsset
-        className="tpl tpl-footer"
-        offset={contactOffset}
-        onOffsetChange={(next) => onContactOffsetChange?.(next)}
-        disabled={!canEdit}
-        clamp={140}
-        axis="y"
-      >
+      <div className="tpl tpl-footer">
         <EditableText
           value={fields.phone}
           onChange={(value) => onFieldChange('phone', value)}
@@ -254,7 +250,7 @@ export default function LayoutPrincipal({
           className="tpl-input tpl-input--contact"
           plain
         />
-      </DraggableAsset>
+      </div>
     </article>
   )
 }
