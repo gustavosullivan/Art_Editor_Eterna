@@ -2,6 +2,7 @@ import EditableText from '../EditableText'
 import PhotoUpload from '../PhotoUpload'
 import CardIconAsset, { RemovableBlock } from '../CardIconAsset'
 import SaoLuizLogo from '../SaoLuizLogo'
+import HexLogoMark from '../HexLogoMark'
 import DraggableAsset, { defaultAssetOffset } from '../DraggableAsset'
 import type { LayoutProps } from './shared'
 import { defaultPhotoTransform } from '../../types'
@@ -46,6 +47,22 @@ export default function LayoutPrincipal({
           alt="Modelo Principal São Luiz"
           draggable={false}
         />
+        <div className="tpl tpl-preview-photo-cover" aria-hidden="true">
+          <svg viewBox="0 0 100 120" preserveAspectRatio="none">
+            <path
+              className="tpl-preview-photo-cover__fill"
+              fill="#f0f0f0"
+              d="M22 3.4 H78 C84 3.4 90 6.6 93.5 13.2 L97.8 24 C99.5 28.8 100 33.6 100 38.4 V81.6 C100 86.4 99.5 91.2 97.8 96 L93.5 106.8 C90 113.4 84 116.6 78 116.6 H22 C16 116.6 10 113.4 6.5 106.8 L2.2 96 C0.5 91.2 0 86.4 0 81.6 V38.4 C0 33.6 0.5 28.8 2.2 24 L6.5 13.2 C10 6.6 16 3.4 22 3.4 Z"
+            />
+            <path
+              fill="none"
+              stroke="#c4a46a"
+              strokeWidth="2.1"
+              strokeLinejoin="round"
+              d="M22 3.4 H78 C84 3.4 90 6.6 93.5 13.2 L97.8 24 C99.5 28.8 100 33.6 100 38.4 V81.6 C100 86.4 99.5 91.2 97.8 96 L93.5 106.8 C90 113.4 84 116.6 78 116.6 H22 C16 116.6 10 113.4 6.5 106.8 L2.2 96 C0.5 91.2 0 86.4 0 81.6 V38.4 C0 33.6 0.5 28.8 2.2 24 L6.5 13.2 C10 6.6 16 3.4 22 3.4 Z"
+            />
+          </svg>
+        </div>
       </article>
     )
   }
@@ -87,6 +104,10 @@ export default function LayoutPrincipal({
       <div className="tpl tpl-contact-top-paint" aria-hidden="true" />
       <div className="tpl tpl-contact-paint" aria-hidden="true" />
       <div className="tpl tpl-contact-bottom-paint" aria-hidden="true" />
+
+      <div className="tpl tpl-watermark" aria-hidden="true">
+        <HexLogoMark className="tpl-watermark__img" />
+      </div>
 
       <div className="tpl tpl-person">
         {showPersonName ? (

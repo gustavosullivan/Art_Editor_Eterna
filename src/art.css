@@ -956,6 +956,31 @@
   box-sizing: border-box;
 }
 
+/* Prévia: cobre a foto por completo e redesenha a moldura dourada */
+.art--principal.art--principal-preview .tpl-preview-photo-cover {
+  left: 30.15%;
+  top: 20.85%;
+  width: 40.2%;
+  height: 36.18%;
+  z-index: 3;
+  overflow: visible;
+  pointer-events: none;
+  background: transparent;
+}
+
+.art--principal.art--principal-preview .tpl-preview-photo-cover svg {
+  display: block;
+  overflow: visible;
+  width: 100%;
+  height: 100%;
+}
+
+.art--principal.art--principal-preview .tpl-preview-photo-cover__fill {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(1.055);
+}
+
 /*
   Pinta em volta da moldura — um pouco maior que a foto
   (tapa traço do layout antigo nos cantos de fora).
@@ -965,7 +990,7 @@
   top: 17.7%;
   width: 42.2%;
   height: 39.6%;
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
   background: transparent;
 }
@@ -1191,6 +1216,31 @@
   background: #efeff1;
   pointer-events: none;
   border-radius: 0;
+}
+
+/* Marca d'água — fundo fixo (x 0 · y -91) */
+.art--principal .tpl-watermark {
+  left: 50%;
+  top: 36%;
+  width: 88%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  transform: translate(-50%, -91px);
+  pointer-events: none;
+}
+
+.art--principal .tpl-watermark__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0.14;
+  mix-blend-mode: multiply;
+  filter: brightness(0.55) saturate(0.85);
+  pointer-events: none;
+  user-select: none;
 }
 
 /* Asset da logo São Luiz — posição padrão do Principal */
@@ -1802,6 +1852,31 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
+}
+
+.setimo-watermark {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  width: 88%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  transform: translate(-50%, -91px);
+  pointer-events: none;
+}
+
+.setimo-watermark__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0.14;
+  mix-blend-mode: multiply;
+  filter: brightness(0.55) saturate(0.85);
+  pointer-events: none;
+  user-select: none;
 }
 
 .setimo-decor__full {

@@ -1,6 +1,7 @@
 import EditableText from '../EditableText'
 import PhotoUpload from '../PhotoUpload'
 import SaoLuizLogo from '../SaoLuizLogo'
+import HexLogoMark from '../HexLogoMark'
 import CardIconAsset, { RemovableBlock } from '../CardIconAsset'
 import DraggableAsset, { defaultAssetOffset } from '../DraggableAsset'
 import type { LayoutProps } from './shared'
@@ -111,6 +112,10 @@ export default function LayoutSetimoDia({
   return (
     <article className="art art--setimo">
       <PrincipalDecor />
+
+      <div className="setimo-watermark" aria-hidden="true">
+        <HexLogoMark className="setimo-watermark__img" />
+      </div>
 
       <div className="setimo-inner">
         <SetimoTitle />
