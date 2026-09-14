@@ -151,6 +151,8 @@ export default function LayoutSetimoDia({
                     className="setimo-name setimo-input"
                     multiline
                     plain
+                    maxRows={3}
+                    clampOverflow
                   />
                 </RemovableBlock>
               )
@@ -166,7 +168,10 @@ export default function LayoutSetimoDia({
                 onChange={(value) => onFieldChange('memorialNote', value)}
                 ariaLabel="Texto memorial"
                 className="setimo-note setimo-input"
+                multiline
                 plain
+                maxRows={3}
+                clampOverflow
               />
             )}
           </div>
@@ -200,7 +205,10 @@ export default function LayoutSetimoDia({
                       onChange={(value) => onFieldChange('celebrationDate', value)}
                       ariaLabel="Data e horário da celebração"
                       className="setimo-card__value setimo-input"
+                      multiline
                       plain
+                      maxRows={3}
+                      clampOverflow
                     />
                   )}
                 </div>
@@ -225,7 +233,10 @@ export default function LayoutSetimoDia({
                       onChange={(value) => onFieldChange('ceremonyPlace', value)}
                       ariaLabel="Local da cerimônia"
                       className="setimo-card__value setimo-input"
+                      multiline
                       plain
+                      maxRows={3}
+                      clampOverflow
                     />
                   )}
                 </div>

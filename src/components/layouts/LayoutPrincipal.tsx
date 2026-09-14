@@ -114,15 +114,16 @@ export default function LayoutPrincipal({
           <RemovableBlock
             label="nome"
             interactive={canEdit}
-            className="tpl-person__name-wrap"
+            className={`tpl-person__name-wrap${fields.personName.length > 16 ? ' tpl-person__name-wrap--long' : ''}`}
             onRemove={() => onRemovePersonName?.()}
           >
             <EditableText
               value={fields.personName}
               onChange={(value) => onFieldChange('personName', value)}
               ariaLabel="Nome da pessoa"
-              className="tpl-input tpl-input--name"
+              className={`tpl-input tpl-input--name${fields.personName.length > 16 ? ' tpl-input--name-long' : ''}`}
               plain
+              clampOverflow
             />
           </RemovableBlock>
         ) : null}
@@ -142,6 +143,7 @@ export default function LayoutPrincipal({
                 ariaLabel="Idade"
                 className="tpl-input tpl-input--age"
                 plain
+                clampOverflow
               />
               <span>)</span>
             </div>
@@ -165,6 +167,7 @@ export default function LayoutPrincipal({
               ariaLabel="Data de nascimento"
               className="tpl-input tpl-input--date"
               plain
+              clampOverflow
             />
           </div>
         ) : null}
@@ -188,6 +191,7 @@ export default function LayoutPrincipal({
               ariaLabel="Data de falecimento"
               className="tpl-input tpl-input--date"
               plain
+              clampOverflow
             />
           </div>
         ) : null}
@@ -209,6 +213,7 @@ export default function LayoutPrincipal({
               className="tpl-input tpl-input--card"
               multiline
               plain
+              clampOverflow
             />
           </div>
         ) : null}
@@ -228,6 +233,7 @@ export default function LayoutPrincipal({
               className="tpl-input tpl-input--card"
               multiline
               plain
+              clampOverflow
             />
           </div>
         ) : null}
@@ -260,6 +266,7 @@ export default function LayoutPrincipal({
           ariaLabel="Telefone"
           className="tpl-input tpl-input--contact"
           plain
+          clampOverflow
         />
         <span className="tpl-footer__dot" aria-hidden="true">
           •
@@ -270,6 +277,7 @@ export default function LayoutPrincipal({
           ariaLabel="Site"
           className="tpl-input tpl-input--contact"
           plain
+          clampOverflow
         />
       </div>
     </article>

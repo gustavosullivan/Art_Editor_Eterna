@@ -1111,28 +1111,28 @@
   pointer-events: none;
 }
 
-/* Camada sob os cards — cobre residual ao lado do lírio, sem tapar o canto */
+/* Cobre os dois cards antigos do PNG (velório + localização) */
 .art--principal .tpl-cards-paint {
-  left: 22%;
-  top: 65.4%;
-  width: 60%;
-  height: 17.5%;
+  left: calc(14% + 17px);
+  top: calc(65.8% + 50px);
+  width: 70%;
+  height: 13.8%;
   z-index: 2;
   background: #efeff1;
   pointer-events: none;
-  border-radius: 6px;
+  border-radius: 0;
 }
 
-/* Atrás do card do maps + um pouco mais embaixo (acima da logo) */
+/* Atrás do card de localização — um pouco à direita e abaixo */
 .art--principal .tpl-burial-paint {
-  left: 23%;
-  top: 72.4%;
-  width: 58%;
-  height: 12.2%;
+  left: calc(14% + 17px);
+  top: calc(71.8% + 50px);
+  width: 70%;
+  height: 8.6%;
   z-index: 2;
   background: #efeff1;
   pointer-events: none;
-  border-radius: 12px;
+  border-radius: 0;
 }
 
 /* Cobre a logo do PNG / atrás do asset São Luiz (cantos + fundo) */
@@ -1685,6 +1685,7 @@
   box-shadow: none;
   -webkit-appearance: none;
   appearance: none;
+  overflow: hidden;
 }
 
 .art--principal .tpl-input:focus {
@@ -1699,6 +1700,27 @@
   font-weight: 700;
   text-align: center;
   color: #1a2744;
+  transition: font-size 0.15s ease, width 0.15s ease;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* > 16 caracteres: reduz ~3 unidades (0.3rem) para caber mais letras */
+.art--principal .tpl-input--name-long {
+  font-size: clamp(0.7rem, 3cqw, 0.98rem);
+}
+
+/* Nome longo: amplia até 30px em cada lado no eixo X (evita scroll) */
+.art--principal .tpl-person__name-wrap--long {
+  width: calc(100% + 60px);
+  max-width: none;
+  margin-left: -30px;
+  margin-right: -30px;
+}
+
+.art--principal .tpl-person__name-wrap--long .tpl-input--name {
+  width: 100%;
+  overflow: hidden;
 }
 
 .art--principal .tpl-input--age {
@@ -1728,9 +1750,11 @@
   font-size: clamp(0.55rem, 2.35cqw, 0.68rem);
   line-height: 1.35;
   min-height: 2.2rem;
+  max-height: 2.6rem;
   resize: none;
   color: #1a2744;
   text-align: left;
+  overflow: hidden;
 }
 
 .art--principal .tpl-input--contact {
@@ -1743,7 +1767,7 @@
   font-size: clamp(0.48rem, 2cqw, 0.58rem);
   color: #1a2744;
   white-space: nowrap;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .art.is-exporting .photo-frame__tools,
@@ -2104,16 +2128,30 @@
   justify-content: center;
   min-width: 0;
   padding-top: 0.1rem;
+  overflow: visible;
 }
 
 .setimo-name-wrap {
-  width: 100%;
+  width: calc(100% + 28px);
+  max-width: none;
+  margin-left: -28px;
+  overflow: visible;
+}
+
+.setimo-hero__copy > .setimo-name {
+  width: calc(100% + 28px);
+  margin-left: -28px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .setimo-name,
 input.setimo-name,
 textarea.setimo-name {
   width: 100%;
+  box-sizing: border-box;
   border: none;
   background: transparent;
   margin: 0;
@@ -2126,14 +2164,30 @@ textarea.setimo-name {
   text-align: left;
   resize: none;
   outline: none;
+  overflow: hidden;
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  line-break: anywhere;
+  min-height: 1.25em;
+  max-height: calc(1.25em * 3);
+}
+
+.setimo-name-wrap .removable-block,
+.setimo-name-wrap.removable-block {
+  width: 100%;
+  overflow: visible;
 }
 
 .setimo-note,
-input.setimo-note {
-  width: 100%;
+input.setimo-note,
+textarea.setimo-note,
+p.setimo-note {
+  width: calc(100% + 27px);
+  box-sizing: border-box;
   border: none;
   background: transparent;
-  margin: 0;
+  margin: 0 0 0 -27px;
   padding: 0;
   font-family: 'Libre Baskerville', Georgia, serif;
   font-size: clamp(0.72rem, 3cqw, 0.88rem);
@@ -2141,7 +2195,21 @@ input.setimo-note {
   color: var(--setimo-navy);
   line-height: 1.35;
   text-align: left;
+  resize: none;
   outline: none;
+  overflow: hidden;
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  line-break: anywhere;
+  min-height: 1.35em;
+  max-height: calc(1.35em * 3);
+}
+
+p.setimo-note {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .setimo-cards-drag {
@@ -2170,7 +2238,7 @@ input.setimo-note {
 
 .setimo-card {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.7rem;
   width: 100%;
   padding: 0.55rem 0.72rem;
@@ -2180,6 +2248,10 @@ input.setimo-note {
   box-sizing: border-box;
   position: relative;
   overflow: visible;
+}
+
+.art--setimo .setimo-card .card-icon-asset {
+  margin-top: 0.15rem;
 }
 
 .art--setimo .setimo-card .card-icon-asset,
@@ -2217,8 +2289,11 @@ input.setimo-note {
 }
 
 .setimo-card__value,
-input.setimo-card__value {
+input.setimo-card__value,
+textarea.setimo-card__value,
+p.setimo-card__value {
   width: 100%;
+  box-sizing: border-box;
   border: none;
   background: transparent;
   margin: 0;
@@ -2226,7 +2301,24 @@ input.setimo-card__value {
   font-family: 'Libre Baskerville', Georgia, serif;
   font-size: clamp(0.72rem, 3cqw, 0.88rem);
   color: var(--setimo-navy);
+  line-height: 1.3;
+  text-align: left;
+  resize: none;
   outline: none;
+  overflow: hidden;
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  line-break: anywhere;
+  min-height: 1.3em;
+  max-height: calc(1.3em * 3);
+}
+
+p.setimo-card__value {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .setimo-footer {
