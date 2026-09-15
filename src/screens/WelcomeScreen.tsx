@@ -66,9 +66,7 @@ export default function WelcomeScreen({ onConfirm, onBack }: WelcomeScreenProps)
 
       <header className="welcome__header">
         <h1 className="welcome__title">Bem-vindo</h1>
-        <p className="welcome__subtitle">
-          Escolha o layout do convite. O Modelo Principal é o oficial da São Luiz.
-        </p>
+        <p className="welcome__subtitle">Escolha o layout do convite.</p>
       </header>
 
       <section className="carousel" aria-label="Escolha de layout">
@@ -130,7 +128,6 @@ export default function WelcomeScreen({ onConfirm, onBack }: WelcomeScreenProps)
 
             <div className="carousel__meta">
               <p className="carousel__name">{selected.name}</p>
-              <p className="carousel__desc">{selected.description}</p>
             </div>
           </div>
 

@@ -1870,6 +1870,56 @@
   container-type: inline-size;
 }
 
+/* Prévia do carrossel — sem offsets que estouram o enquadramento */
+.art--setimo-preview {
+  overflow: hidden;
+}
+
+.art--setimo-preview .setimo-name-wrap,
+.art--setimo-preview .setimo-hero__copy > .setimo-name,
+.art--setimo-preview .setimo-note,
+.art--setimo-preview p.setimo-note {
+  margin-left: 0 !important;
+  width: 100% !important;
+  max-width: 100%;
+}
+
+.art--setimo-preview .setimo-hero__copy > .setimo-name,
+.art--setimo-preview p.setimo-note {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.art--setimo-preview .setimo-cards-drag {
+  transform: none !important;
+  width: 82%;
+  max-width: 82%;
+}
+
+.art--setimo-preview .setimo-card__value,
+.art--setimo-preview p.setimo-card__value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: none;
+  display: block;
+  -webkit-line-clamp: unset;
+}
+
+.art--setimo-preview .removable-block__select,
+.art--setimo-preview .removable-block__remove,
+.art--setimo-preview .card-icon-asset__hit,
+.art--setimo-preview .card-icon-asset__remove {
+  display: none !important;
+}
+
+.art--setimo-preview .setimo-watermark {
+  opacity: 0.9;
+}
+
 /* Decoração: lírios/BL do Principal + canto TR refeito */
 .setimo-decor {
   position: absolute;

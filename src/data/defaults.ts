@@ -20,11 +20,11 @@ export const layoutOptions: LayoutOption[] = [
   {
     id: 'principal',
     name: 'Modelo Principal',
-    description: 'Layout oficial São Luiz — cantos com lírios em relevo e moldura hexagonal.',
+    description: '',
   },
   {
     id: 'setimo',
     name: 'Missa de 7º Dia',
-    description: 'Temporário — fundo em assets, foto, cards e logo editáveis.',
+    description: '',
   },
 ]

@@ -110,7 +110,7 @@ export default function LayoutSetimoDia({
   const canEdit = !preview
 
   return (
-    <article className="art art--setimo">
+    <article className={`art art--setimo${preview ? ' art--setimo-preview' : ''}`}>
       <PrincipalDecor />
 
       <div className="setimo-watermark" aria-hidden="true">
@@ -136,7 +136,7 @@ export default function LayoutSetimoDia({
           <div className="setimo-hero__copy">
             {showPersonName ? (
               preview ? (
-                <p className="setimo-name">{fields.personName}</p>
+                <p className="setimo-name">Nome</p>
               ) : (
                 <RemovableBlock
                   label="nome"
@@ -161,7 +161,7 @@ export default function LayoutSetimoDia({
             <Ornament />
 
             {preview ? (
-              <p className="setimo-note">{fields.memorialNote}</p>
+              <p className="setimo-note">Inserir texto</p>
             ) : (
               <EditableText
                 value={fields.memorialNote}
