@@ -1,7 +1,7 @@
 import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react'
 import ArtLayout from '../components/layouts/ArtLayout'
 import PreviewFit from '../components/PreviewFit'
-import { defaultFields, layoutOptions } from '../data/defaults'
+import { classicoPreviewFields, defaultFields, layoutOptions } from '../data/defaults'
 import type { LayoutId } from '../types'
 
 type WelcomeScreenProps = {
@@ -39,6 +39,16 @@ export default function WelcomeScreen({ onConfirm, onBack }: WelcomeScreenProps)
     event.currentTarget.setPointerCapture(event.pointerId)
   }
 
+  function onSwipeMove(event: ReactPointerEvent<HTMLDivElement>) {
+    const start = swipeRef.current
+    if (!start?.active) return
+    const dx = event.clientX - start.x
+    const dy = event.clientY - start.y
+    if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.1) {
+      event.preventDefault()
+    }
+  }
+
   function onSwipeEnd(event: ReactPointerEvent<HTMLDivElement>) {
     const start = swipeRef.current
     swipeRef.current = null
@@ -46,7 +56,7 @@ export default function WelcomeScreen({ onConfirm, onBack }: WelcomeScreenProps)
 
     const dx = event.clientX - start.x
     const dy = event.clientY - start.y
-    if (Math.abs(dx) < 42 || Math.abs(dx) < Math.abs(dy) * 1.15) return
+    if (Math.abs(dx) < 36 || Math.abs(dx) < Math.abs(dy) * 1.1) return
 
     swipedRef.current = true
     go(dx < 0 ? 1 : -1)
@@ -65,8 +75,8 @@ export default function WelcomeScreen({ onConfirm, onBack }: WelcomeScreenProps)
       <div className="welcome__atmosphere" aria-hidden="true" />
 
       <header className="welcome__header">
-        <h1 className="welcome__title">Bem-vindo</h1>
-        <p className="welcome__subtitle">Escolha o layout do convite.</p>
+        <h1 className="welcome__title">Escolha o layout</h1>
+        <p className="welcome__subtitle">Deslize ou use as setas para ver os modelos.</p>
       </header>
 
       <section className="carousel" aria-label="Escolha de layout">
@@ -84,6 +94,7 @@ export default function WelcomeScreen({ onConfirm, onBack }: WelcomeScreenProps)
             <div
               className="carousel__scene"
               onPointerDown={onSwipeStart}
+              onPointerMove={onSwipeMove}
               onPointerUp={onSwipeEnd}
               onPointerCancel={() => {
                 swipeRef.current = null
@@ -112,7 +123,11 @@ export default function WelcomeScreen({ onConfirm, onBack }: WelcomeScreenProps)
                         <PreviewFit resetKey={`${option.id}-${offset === 0}`}>
                           <ArtLayout
                             layoutId={option.id}
-                            fields={defaultFields}
+                            fields={
+                              option.id === 'classico' || option.id === 'classico7dias'
+                                ? classicoPreviewFields
+                                : defaultFields
+                            }
                             photoUrl={null}
                             onFieldChange={() => undefined}
                             onPhotoChange={() => undefined}

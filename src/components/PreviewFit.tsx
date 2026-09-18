@@ -3,9 +3,14 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 type PreviewFitProps = {
   children: ReactNode
   resetKey?: string | number
+  className?: string
 }
 
-export default function PreviewFit({ children, resetKey }: PreviewFitProps) {
+export default function PreviewFit({
+  children,
+  resetKey,
+  className = 'carousel__preview',
+}: PreviewFitProps) {
   const outerRef = useRef<HTMLDivElement>(null)
   const measureRef = useRef<HTMLDivElement>(null)
   const [fit, setFit] = useState({ scale: 0.5, width: 0, height: 0 })
@@ -16,10 +21,11 @@ export default function PreviewFit({ children, resetKey }: PreviewFitProps) {
     if (!outer || !measure) return
 
     const update = () => {
-      const availableW = Math.max(outer.clientWidth - 12, 1)
-      const availableH = Math.max(outer.clientHeight - 12, 1)
-      const naturalW = Math.max(measure.scrollWidth, 1)
-      const naturalH = Math.max(measure.scrollHeight, 1)
+      const availableW = Math.max(outer.clientWidth - 8, 1)
+      const availableH = Math.max(outer.clientHeight - 8, 1)
+      const art = measure.querySelector('.art') as HTMLElement | null
+      const naturalW = Math.max(art?.offsetWidth || measure.scrollWidth, 1)
+      const naturalH = Math.max(art?.offsetHeight || measure.scrollHeight, 1)
       const scale = Math.min(availableW / naturalW, availableH / naturalH, 1)
 
       setFit({
@@ -44,7 +50,7 @@ export default function PreviewFit({ children, resetKey }: PreviewFitProps) {
   }, [resetKey, children])
 
   return (
-    <div ref={outerRef} className="carousel__preview">
+    <div ref={outerRef} className={className}>
       <div
         className="carousel__preview-shell"
         style={{ width: fit.width || undefined, height: fit.height || undefined }}

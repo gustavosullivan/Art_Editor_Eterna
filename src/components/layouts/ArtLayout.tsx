@@ -1,3 +1,5 @@
+import LayoutClassico from './LayoutClassico'
+import LayoutClassico7Dias from './LayoutClassico7Dias'
 import LayoutPrincipal from './LayoutPrincipal'
 import LayoutSetimoDia from './LayoutSetimoDia'
 import type { LayoutId } from '../../types'
@@ -8,6 +10,10 @@ export default function ArtLayout({
   ...props
 }: LayoutProps & { layoutId: LayoutId }) {
   switch (layoutId) {
+    case 'classico7dias':
+      return <LayoutClassico7Dias {...props} />
+    case 'classico':
+      return <LayoutClassico {...props} />
     case 'setimo':
       return <LayoutSetimoDia {...props} />
     case 'principal':

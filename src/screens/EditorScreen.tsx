@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
-import html2canvas from 'html2canvas'
 import ArtLayout from '../components/layouts/ArtLayout'
+import ExportSheet from '../components/ExportSheet'
 import { layoutOptions } from '../data/defaults'
-import { applyClippedPhotosToClone } from '../exportClippedPhoto'
+import { exportArt, type ExportPreset } from '../exportArt'
 import type { AssetOffset } from '../components/DraggableAsset'
 import type { ArtFields, LayoutId, PhotoTransform } from '../types'
 
@@ -73,6 +73,7 @@ export default function EditorScreen({
 }: EditorScreenProps) {
   const artRef = useRef<HTMLDivElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+  const [exportOpen, setExportOpen] = useState(false)
   const [downloading, setDownloading] = useState(false)
 
   function handleFile(file: File | undefined) {
@@ -83,101 +84,18 @@ export default function EditorScreen({
     onPhotoTransformChange({ x: 0, y: 0, scale: 1 })
   }
 
-  async function handleDownload() {
+  async function handleExport(preset: ExportPreset) {
     const target = artRef.current?.querySelector('.art') as HTMLElement | null
     if (!target || downloading) return
 
     setDownloading(true)
-    target.classList.add('is-exporting')
-
-    // espera o browser aplicar o CSS de exportação
-    await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
-    await new Promise((resolve) => setTimeout(resolve, 50))
-
-    const originalFields = Array.from(
-      target.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input:not([type="file"]):not([type="range"]), textarea'),
-    )
-
     try {
-      const canvas = await html2canvas(target, {
-        backgroundColor: '#ffffff',
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        allowTaint: true,
-        onclone: (_clonedDoc, element) => {
-          element.classList.add('is-exporting')
-
-          // html2canvas ignora clip-path SVG da moldura — foto já recortada
-          applyClippedPhotosToClone(target, element)
-
-          // html2canvas falha com <input>/<textarea> — troca por texto estático
-          const clonedFields = Array.from(
-            element.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
-              'input:not([type="file"]):not([type="range"]), textarea',
-            ),
-          )
-
-          clonedFields.forEach((cloneEl, index) => {
-            const original = originalFields[index]
-            if (!original) return
-            const cs = window.getComputedStyle(original)
-            const isArea = original.tagName === 'TEXTAREA'
-            const replacement = _clonedDoc.createElement(isArea ? 'div' : 'span')
-            replacement.className = original.className
-            replacement.textContent = original.value
-
-            replacement.style.display = isArea ? 'block' : 'inline-block'
-            replacement.style.boxSizing = 'border-box'
-            replacement.style.border = 'none'
-            replacement.style.background = 'transparent'
-            replacement.style.outline = 'none'
-            replacement.style.boxShadow = 'none'
-            replacement.style.padding = '0'
-            replacement.style.margin = '0'
-            replacement.style.resize = 'none'
-            replacement.style.fontFamily = cs.fontFamily
-            replacement.style.fontSize = cs.fontSize
-            replacement.style.fontWeight = cs.fontWeight
-            replacement.style.fontStyle = cs.fontStyle
-            replacement.style.letterSpacing = cs.letterSpacing
-            replacement.style.lineHeight = cs.lineHeight
-            replacement.style.color = cs.color
-            replacement.style.textAlign = cs.textAlign as string
-            replacement.style.width = `${original.offsetWidth}px`
-            replacement.style.minHeight = `${Math.max(original.offsetHeight, 1)}px`
-            replacement.style.whiteSpace = isArea ? 'pre-wrap' : 'pre'
-            replacement.style.wordBreak = isArea ? 'break-word' : 'normal'
-            replacement.style.overflow = 'hidden'
-            replacement.style.verticalAlign = 'baseline'
-
-            cloneEl.replaceWith(replacement)
-          })
-
-          element
-            .querySelectorAll('.no-export, .photo-frame__tools, .photo-frame__placeholder, .photo-frame__input')
-            .forEach((node) => {
-              ;(node as HTMLElement).style.display = 'none'
-            })
-        },
-      })
-
-      const slug = fields.personName
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-zA-Z0-9]+/g, '-')
-        .replace(/^-|-$/g, '')
-        .toLowerCase()
-
-      const link = document.createElement('a')
-      link.download = `homenagem-${slug || 'sao-luiz'}.png`
-      link.href = canvas.toDataURL('image/png')
-      link.click()
+      await exportArt(target, preset, fields.personName)
+      setExportOpen(false)
     } catch (error) {
       console.error(error)
       window.alert('Não foi possível baixar a arte. Tente novamente.')
     } finally {
-      target.classList.remove('is-exporting')
       setDownloading(false)
     }
   }
@@ -271,26 +189,30 @@ export default function EditorScreen({
               >
                 +
               </button>
-              <button type="button" className="editor__tool-link" onClick={() => fileRef.current?.click()}>
-                Trocar
-              </button>
-              <button
-                type="button"
-                className="editor__tool-link"
-                onClick={() => onPhotoTransformChange({ x: 0, y: 0, scale: 1 })}
-              >
-                Centralizar
-              </button>
-              <button type="button" className="editor__tool-link" onClick={onResetEdits}>
-                Desfazer
-              </button>
+              <div className="editor__tool-actions">
+                <button type="button" className="editor__tool-link" onClick={() => fileRef.current?.click()}>
+                  Trocar
+                </button>
+                <button
+                  type="button"
+                  className="editor__tool-link"
+                  onClick={() => onPhotoTransformChange({ x: 0, y: 0, scale: 1 })}
+                >
+                  Centralizar
+                </button>
+                <button type="button" className="editor__tool-link" onClick={onResetEdits}>
+                  Desfazer
+                </button>
+              </div>
             </div>
           ) : (
             <div className="editor__photo-tools editor__photo-tools--empty">
               <p className="editor__tip">Toque na moldura para adicionar a foto.</p>
-              <button type="button" className="editor__tool-link" onClick={onResetEdits}>
-                Desfazer
-              </button>
+              <div className="editor__tool-actions">
+                <button type="button" className="editor__tool-link" onClick={onResetEdits}>
+                  Desfazer
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -306,12 +228,21 @@ export default function EditorScreen({
         <button
           type="button"
           className="editor__download"
-          onClick={handleDownload}
+          onClick={() => setExportOpen(true)}
           disabled={downloading}
         >
           {downloading ? 'Gerando…' : 'Baixar arte'}
         </button>
       </div>
+
+      <ExportSheet
+        open={exportOpen}
+        busy={downloading}
+        onClose={() => {
+          if (!downloading) setExportOpen(false)
+        }}
+        onSelect={handleExport}
+      />
     </main>
   )
 }

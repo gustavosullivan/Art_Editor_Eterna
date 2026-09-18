@@ -4,7 +4,7 @@ import SaoLuizLogo from '../SaoLuizLogo'
 import HexLogoMark from '../HexLogoMark'
 import CardIconAsset, { RemovableBlock } from '../CardIconAsset'
 import DraggableAsset, { defaultAssetOffset } from '../DraggableAsset'
-import type { LayoutProps } from './shared'
+import { SetimoTitle, type LayoutProps } from './shared'
 import { defaultPhotoTransform } from '../../types'
 
 const asset = (file: string) => `${import.meta.env.BASE_URL}templates/${file}`
@@ -34,27 +34,6 @@ function CornerLilyBL() {
         draggable={false}
       />
     </div>
-  )
-}
-
-/** Título igual à referência: MISSA DE + Sétimo Dia + ornamento */
-function SetimoTitle() {
-  return (
-    <header className="setimo-title">
-      <p className="setimo-title__eyebrow">MISSA DE</p>
-      <h2 className="setimo-title__heading">
-        <span className="setimo-title__setimo">Sétimo</span>{' '}
-        <span className="setimo-title__dia">
-          <span className="setimo-title__d">D</span>
-          ia
-        </span>
-      </h2>
-      <div className="setimo-title__ornament" aria-hidden="true">
-        <span />
-        <i />
-        <span />
-      </div>
-    </header>
   )
 }
 

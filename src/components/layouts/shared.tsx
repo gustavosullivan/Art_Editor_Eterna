@@ -1,8 +1,9 @@
 import EditableText from '../EditableText'
-import PhotoUpload from '../PhotoUpload'
-import SaoLuizLogo from '../SaoLuizLogo'
 import type { ArtFields, PhotoTransform } from '../../types'
 import type { AssetOffset } from '../DraggableAsset'
+import SaoLuizLogo from '../SaoLuizLogo'
+import PhotoUpload from '../PhotoUpload'
+import { RemovableBlock } from '../CardIconAsset'
 
 export type LayoutProps = {
   fields: ArtFields
@@ -88,44 +89,105 @@ export function InvitationHeader() {
   )
 }
 
+/** Título Missa de Sétimo Dia (mesmo do layout setimo) */
+export function SetimoTitle() {
+  return (
+    <header className="setimo-title">
+      <p className="setimo-title__eyebrow">MISSA DE</p>
+      <h2 className="setimo-title__heading">
+        <span className="setimo-title__setimo">Sétimo</span>{' '}
+        <span className="setimo-title__dia">
+          <span className="setimo-title__d">D</span>
+          ia
+        </span>
+      </h2>
+      <div className="setimo-title__ornament" aria-hidden="true">
+        <span />
+        <i />
+        <span />
+      </div>
+    </header>
+  )
+}
+
 export function DateRow({
   fields,
   onFieldChange,
   preview,
-}: Pick<LayoutProps, 'fields' | 'onFieldChange' | 'preview'>) {
+  showBirthDate = true,
+  showDeathDate = true,
+  onRemoveBirthDate,
+  onRemoveDeathDate,
+}: Pick<
+  LayoutProps,
+  | 'fields'
+  | 'onFieldChange'
+  | 'preview'
+  | 'showBirthDate'
+  | 'showDeathDate'
+  | 'onRemoveBirthDate'
+  | 'onRemoveDeathDate'
+>) {
+  const canEdit = !preview
+  if (!showBirthDate && !showDeathDate) return null
+
   return (
     <div className="invite-dates">
-      <div className="invite-dates__item">
-        <span className="invite-dates__icon" aria-hidden="true">
-          <StarIcon />
-        </span>
-        {preview ? (
-          <span>{fields.birthDate}</span>
-        ) : (
-          <EditableText
-            value={fields.birthDate}
-            onChange={(value) => onFieldChange('birthDate', value)}
-            ariaLabel="Data de nascimento"
-            className="editable--date"
-          />
-        )}
-      </div>
-      <span className="invite-dates__sep" aria-hidden="true" />
-      <div className="invite-dates__item">
-        <span className="invite-dates__icon" aria-hidden="true">
-          <CrossIcon />
-        </span>
-        {preview ? (
-          <span>{fields.deathDate}</span>
-        ) : (
-          <EditableText
-            value={fields.deathDate}
-            onChange={(value) => onFieldChange('deathDate', value)}
-            ariaLabel="Data de falecimento"
-            className="editable--date"
-          />
-        )}
-      </div>
+      {showBirthDate ? (
+        <RemovableBlock
+          label="data de nascimento"
+          interactive={canEdit}
+          className="invite-dates__item-wrap"
+          onRemove={() => onRemoveBirthDate?.()}
+        >
+          <div className="invite-dates__item">
+            <span className="invite-dates__icon" aria-hidden="true">
+              <StarIcon />
+            </span>
+            {preview ? (
+              <span className="invite-dates__value">{fields.birthDate}</span>
+            ) : (
+              <EditableText
+                value={fields.birthDate}
+                onChange={(value) => onFieldChange('birthDate', value)}
+                ariaLabel="Data de nascimento"
+                className="editable--date"
+                autoWidth
+              />
+            )}
+          </div>
+        </RemovableBlock>
+      ) : null}
+
+      {showBirthDate && showDeathDate ? (
+        <span className="invite-dates__sep" aria-hidden="true" />
+      ) : null}
+
+      {showDeathDate ? (
+        <RemovableBlock
+          label="data de falecimento"
+          interactive={canEdit}
+          className="invite-dates__item-wrap"
+          onRemove={() => onRemoveDeathDate?.()}
+        >
+          <div className="invite-dates__item">
+            <span className="invite-dates__icon" aria-hidden="true">
+              <CrossIcon />
+            </span>
+            {preview ? (
+              <span className="invite-dates__value">{fields.deathDate}</span>
+            ) : (
+              <EditableText
+                value={fields.deathDate}
+                onChange={(value) => onFieldChange('deathDate', value)}
+                ariaLabel="Data de falecimento"
+                className="editable--date"
+                autoWidth
+              />
+            )}
+          </div>
+        </RemovableBlock>
+      ) : null}
     </div>
   )
 }
@@ -149,6 +211,9 @@ export function InfoCards({
             onChange={(value) => onFieldChange('wakeText', value)}
             ariaLabel="Informações do velório"
             multiline
+            plain
+            maxRows={3}
+            clampOverflow
             className="editable--card"
           />
         )}
@@ -165,6 +230,9 @@ export function InfoCards({
             onChange={(value) => onFieldChange('burialText', value)}
             ariaLabel="Informações do sepultamento"
             multiline
+            plain
+            maxRows={3}
+            clampOverflow
             className="editable--card"
           />
         )}
@@ -198,6 +266,7 @@ export function InvitationFooter({
               onChange={(value) => onFieldChange('phone', value)}
               ariaLabel="Telefone"
               className="editable--contact"
+              clampOverflow
             />
             <span className="invite-footer__dot" aria-hidden="true">
               •
@@ -207,6 +276,7 @@ export function InvitationFooter({
               onChange={(value) => onFieldChange('website', value)}
               ariaLabel="Site"
               className="editable--contact"
+              clampOverflow
             />
           </>
         )}
@@ -225,7 +295,7 @@ export function PersonBlock({
       {preview ? (
         <>
           <p className="invite-person__name">{fields.personName}</p>
-          <p className="invite-person__age">({fields.age})</p>
+          <p className="invite-person__age">{fields.age}</p>
         </>
       ) : (
         <>
@@ -234,17 +304,18 @@ export function PersonBlock({
             onChange={(value) => onFieldChange('personName', value)}
             ariaLabel="Nome da pessoa"
             className="editable--name"
+            multiline
+            plain
+            maxRows={3}
+            clampOverflow
           />
-          <div className="invite-person__age-row">
-            <span>(</span>
-            <EditableText
-              value={fields.age}
-              onChange={(value) => onFieldChange('age', value)}
-              ariaLabel="Idade"
-              className="editable--age"
-            />
-            <span>)</span>
-          </div>
+          <EditableText
+            value={fields.age}
+            onChange={(value) => onFieldChange('age', value)}
+            ariaLabel="Idade"
+            className="editable--age"
+            autoWidth
+          />
         </>
       )}
     </div>

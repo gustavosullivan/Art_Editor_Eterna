@@ -1,4 +1,4 @@
-export type LayoutId = 'principal' | 'setimo'
+export type LayoutId = 'classico7dias' | 'classico' | 'principal' | 'setimo'
 
 export type ArtFields = {
   personName: string

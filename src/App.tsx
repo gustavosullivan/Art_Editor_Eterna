@@ -28,7 +28,7 @@ const defaultCardsOffset: AssetOffset = { x: 0, y: 0 }
 
 export default function App() {
   const [step, setStep] = useState<Step>('splash')
-  const [layoutId, setLayoutId] = useState<LayoutId>('principal')
+  const [layoutId, setLayoutId] = useState<LayoutId>('classico7dias')
   const [fields, setFields] = useState<ArtFields>(defaultFields)
   const [photoUrl, setPhotoUrl] = useState<string | null>(null)
   const [photoTransform, setPhotoTransform] =
