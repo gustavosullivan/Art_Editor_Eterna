@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import ArtLayout from '../components/layouts/ArtLayout'
+import EditorArtFit from '../components/EditorArtFit'
 import ExportSheet from '../components/ExportSheet'
 import { layoutOptions } from '../data/defaults'
 import { exportArt, type ExportPreset } from '../exportArt'
@@ -120,33 +121,35 @@ export default function EditorScreen({
       </header>
 
       <div className="editor__canvas" ref={artRef}>
-        <ArtLayout
-          layoutId={layoutId}
-          fields={fields}
-          photoUrl={photoUrl}
-          photoTransform={photoTransform}
-          logoOffset={logoOffset}
-          cardsOffset={cardsOffset}
-          onFieldChange={onFieldChange}
-          onPhotoChange={onPhotoChange}
-          onPhotoTransformChange={onPhotoTransformChange}
-          onLogoOffsetChange={onLogoOffsetChange}
-          onCardsOffsetChange={onCardsOffsetChange}
-          showWakeCard={showWakeCard}
-          showBurialCard={showBurialCard}
-          showBirthDate={showBirthDate}
-          showDeathDate={showDeathDate}
-          showPersonName={showPersonName}
-          showPersonAge={showPersonAge}
-          showLogo={showLogo}
-          onRemoveWakeCard={onRemoveWakeCard}
-          onRemoveBurialCard={onRemoveBurialCard}
-          onRemoveBirthDate={onRemoveBirthDate}
-          onRemoveDeathDate={onRemoveDeathDate}
-          onRemovePersonName={onRemovePersonName}
-          onRemovePersonAge={onRemovePersonAge}
-          onRemoveLogo={onRemoveLogo}
-        />
+        <EditorArtFit resetKey={layoutId}>
+          <ArtLayout
+            layoutId={layoutId}
+            fields={fields}
+            photoUrl={photoUrl}
+            photoTransform={photoTransform}
+            logoOffset={logoOffset}
+            cardsOffset={cardsOffset}
+            onFieldChange={onFieldChange}
+            onPhotoChange={onPhotoChange}
+            onPhotoTransformChange={onPhotoTransformChange}
+            onLogoOffsetChange={onLogoOffsetChange}
+            onCardsOffsetChange={onCardsOffsetChange}
+            showWakeCard={showWakeCard}
+            showBurialCard={showBurialCard}
+            showBirthDate={showBirthDate}
+            showDeathDate={showDeathDate}
+            showPersonName={showPersonName}
+            showPersonAge={showPersonAge}
+            showLogo={showLogo}
+            onRemoveWakeCard={onRemoveWakeCard}
+            onRemoveBurialCard={onRemoveBurialCard}
+            onRemoveBirthDate={onRemoveBirthDate}
+            onRemoveDeathDate={onRemoveDeathDate}
+            onRemovePersonName={onRemovePersonName}
+            onRemovePersonAge={onRemovePersonAge}
+            onRemoveLogo={onRemoveLogo}
+          />
+        </EditorArtFit>
       </div>
 
       <div className="editor__footer">

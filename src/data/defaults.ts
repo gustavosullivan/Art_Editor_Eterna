@@ -16,19 +16,6 @@ export const defaultFields: ArtFields = {
   ceremonyPlace: 'Local da cerimônia',
 }
 
-/** Dados mais limpos só pro carrossel do Modelo Clássico */
-export const classicoPreviewFields: ArtFields = {
-  ...defaultFields,
-  personName: 'Claudina Danielli',
-  age: '95 anos',
-  birthDate: '12/04/1931',
-  deathDate: '28/08/2025',
-  celebrationDate: '30/08/2025 · 15h',
-  ceremonyPlace: 'Capela São Luiz',
-  phone: '54 3312.2688',
-  website: 'www.saoluiz.com.br',
-}
-
 export const layoutOptions: LayoutOption[] = [
   {
     id: 'classico7dias',
