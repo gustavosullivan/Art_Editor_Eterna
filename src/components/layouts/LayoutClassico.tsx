@@ -101,12 +101,11 @@ function FernFrond({ className = '' }: { className?: string }) {
   )
 }
 
-/** Fundo clássico: moldura + lírios + samambaias */
+/** Fundo clássico: lírios + samambaias */
 function ClassicoBackdrop() {
   return (
     <div className="classico-backdrop" aria-hidden="true">
       <div className="classico-backdrop__wash" />
-      <div className="classico-backdrop__frame" />
       <img
         className="classico-backdrop__lily classico-backdrop__lily--tr"
         src={asset('setimo-flora-tr.png')}
@@ -242,6 +241,9 @@ export default function LayoutClassico({
                   <MailIcon />
                   <span>{fields.website}</span>
                 </span>
+                <span className="classico-footer__sep" aria-hidden="true">
+                  |
+                </span>
                 <span className="classico-footer__item">
                   <PhoneIcon />
                   <span>{fields.phone}</span>
@@ -259,6 +261,9 @@ export default function LayoutClassico({
                     plain
                     clampOverflow
                   />
+                </span>
+                <span className="classico-footer__sep" aria-hidden="true">
+                  |
                 </span>
                 <span className="classico-footer__item">
                   <PhoneIcon />

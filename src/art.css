@@ -250,13 +250,14 @@
 
 .carousel__preview-fit {
   transform-origin: top left;
-  width: min(72vw, 280px);
+  width: 400px;
   will-change: transform;
 }
 
 .carousel__preview-fit .art {
   width: 100%;
   box-shadow: 0 14px 32px rgba(21, 32, 51, 0.18);
+  pointer-events: none;
 }
 
 .carousel__meta {
@@ -417,6 +418,7 @@
 
 .editor__canvas .art {
   width: min(100%, 400px);
+  flex-shrink: 0;
 }
 
 .editor__footer {
@@ -476,14 +478,19 @@
   transform: scale(0.985);
 }
 
-/* â€”â€”â€” Export sheet â€”â€”â€” */
+/* ——— Export sheet ——— */
 .export-sheet {
   position: fixed;
   inset: 0;
   z-index: 80;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
+  padding:
+    max(1rem, var(--safe-top))
+    max(1rem, var(--safe-right))
+    max(1rem, var(--safe-bottom))
+    max(1rem, var(--safe-left));
 }
 
 .export-sheet__backdrop {
@@ -491,7 +498,7 @@
   border: none;
   position: absolute;
   inset: 0;
-  background: rgba(15, 22, 34, 0.45);
+  background: rgba(15, 22, 34, 0.5);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -499,35 +506,28 @@
 .export-sheet__panel {
   position: relative;
   z-index: 1;
-  width: min(100%, 440px);
-  padding:
-    0.55rem
-    max(1rem, var(--safe-right))
-    max(1rem, var(--safe-bottom))
-    max(1rem, var(--safe-left));
-  border-radius: 18px 18px 0 0;
+  width: min(100%, 400px);
+  margin: 0 auto;
+  padding: 1rem 1.1rem 1.1rem;
+  border-radius: 16px;
   background: #f7f9fb;
-  box-shadow: 0 -12px 40px rgba(21, 32, 51, 0.18);
-  animation: export-sheet-up 0.28s ease-out;
+  box-shadow: 0 18px 48px rgba(21, 32, 51, 0.28);
+  animation: export-sheet-in 0.24s ease-out;
 }
 
-@keyframes export-sheet-up {
+@keyframes export-sheet-in {
   from {
-    transform: translateY(18px);
-    opacity: 0.6;
+    transform: translateY(10px) scale(0.97);
+    opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
 
 .export-sheet__handle {
-  width: 2.4rem;
-  height: 0.28rem;
-  margin: 0.15rem auto 0.85rem;
-  border-radius: 999px;
-  background: rgba(26, 39, 68, 0.18);
+  display: none;
 }
 
 .export-sheet__header {
@@ -917,7 +917,6 @@
 }
 
 .photo-frame--preview {
-  width: min(48%, 140px);
   pointer-events: none;
 }
 
@@ -1134,37 +1133,6 @@ textarea.editable--card {
     radial-gradient(circle at 88% 78%, rgba(26, 39, 68, 0.05), transparent 32%);
 }
 
-.classico-backdrop__frame {
-  position: absolute;
-  inset: 2.4%;
-  border: 1px solid rgba(196, 164, 106, 0.45);
-  border-radius: 2px;
-  box-shadow: inset 0 0 0 3px rgba(239, 239, 241, 0.92), inset 0 0 0 4px rgba(196, 164, 106, 0.28);
-}
-
-.classico-backdrop__frame::before,
-.classico-backdrop__frame::after {
-  content: '';
-  position: absolute;
-  width: 0.55rem;
-  height: 0.55rem;
-  border: 1.2px solid rgba(196, 164, 106, 0.7);
-  transform: rotate(45deg);
-  background: rgba(239, 239, 241, 0.9);
-}
-
-.classico-backdrop__frame::before {
-  top: -0.28rem;
-  left: 50%;
-  margin-left: -0.28rem;
-}
-
-.classico-backdrop__frame::after {
-  bottom: -0.28rem;
-  left: 50%;
-  margin-left: -0.28rem;
-}
-
 .classico-backdrop__lily {
   position: absolute;
   width: 38%;
@@ -1237,16 +1205,6 @@ textarea.editable--card {
   opacity: 0.2;
 }
 
-.art--classico-preview .classico-fern--left,
-.art--classico-preview .classico-fern--right {
-  opacity: 0.14;
-}
-
-.art--classico-preview .classico-fern--left-soft,
-.art--classico-preview .classico-fern--right-soft {
-  opacity: 0.16;
-}
-
 .art--classico .art__inner {
   position: relative;
   z-index: 2;
@@ -1254,9 +1212,10 @@ textarea.editable--card {
   box-sizing: border-box;
   align-items: center;
   justify-content: space-between;
-  gap: 0.35rem;
-  padding: 1.15rem 1.15rem 0.9rem;
+  gap: 0.22rem;
+  padding: 0.95rem 1.05rem 0.7rem;
   width: 100%;
+  min-height: 0;
 }
 
 .art--classico .invite-header,
@@ -1322,8 +1281,8 @@ textarea.editable--card {
 }
 
 .art--classico .classico-photo {
-  width: min(32%, 112px);
-  margin: 0.05rem auto;
+  width: min(28%, 100px);
+  margin: 0.02rem auto;
   flex-shrink: 0;
   display: flex;
   justify-content: center;
@@ -1423,17 +1382,21 @@ textarea.editable--card {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 0.45rem;
+  gap: 0.32rem;
+  flex-shrink: 1;
+  min-height: 0;
+  width: 100%;
 }
 
 .classico-card {
   width: 100%;
-  padding: 0.5rem 0.7rem;
+  padding: 0.38rem 0.62rem;
   border: 1.45px solid var(--classico-gold);
-  border-radius: 14px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.72);
   box-sizing: border-box;
   text-align: left;
+  flex-shrink: 0;
 }
 
 .classico-card__label {
@@ -1487,20 +1450,25 @@ p.classico-card__value {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
+  justify-content: flex-end;
+  gap: 0.35rem;
   margin-top: auto;
   padding-top: 0.2rem;
+  padding-bottom: 0.1rem;
   text-align: center;
+  flex-shrink: 0;
+  width: 100%;
 }
 
 .art--classico .classico-logo.brand-logo,
-.art--classico .brand-logo {
+.art--classico .classico-footer .brand-logo {
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin-inline: auto;
-  transform: scale(0.78);
-  transform-origin: center;
+  width: 100%;
+  margin: 0 auto;
+  transform: scale(0.72);
+  transform-origin: center center;
   color: var(--classico-navy);
 }
 
@@ -1517,23 +1485,36 @@ p.classico-card__value {
 
 .classico-footer__contact {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  gap: 0.22rem;
+  gap: 0.35rem;
   font-family: 'Manrope', system-ui, sans-serif;
-  font-size: 0.6rem;
+  font-size: 0.58rem;
+  line-height: 1.2;
   color: var(--classico-navy);
   width: 100%;
+  max-width: 94%;
+  flex-shrink: 0;
 }
 
 .classico-footer__item {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.28rem;
+  gap: 0.22rem;
   min-width: 0;
-  max-width: 100%;
+  max-width: 48%;
+  line-height: 1.2;
+}
+
+.classico-footer__sep {
+  color: var(--classico-gold);
+  flex-shrink: 0;
+  font-size: 0.55rem;
+  line-height: 1;
+  font-weight: 600;
 }
 
 .classico-footer__icon {
@@ -1599,107 +1580,13 @@ input.classico-footer__field {
 
 .art--classico-preview {
   overflow: hidden;
-}
-
-.art--classico-preview .art__inner {
-  gap: 0.28rem;
-  padding: 0.95rem 0.95rem 0.7rem;
-  justify-content: space-between;
-}
-
-.art--classico-preview .invite-header__script {
-  font-size: clamp(1.05rem, 4.4cqw, 1.35rem);
-}
-
-.art--classico-preview .invite-header__title {
-  font-size: clamp(1.05rem, 4.8cqw, 1.4rem);
-}
-
-.art--classico-preview .invite-header__ornament {
-  margin-top: 0.28rem;
-}
-
-.art--classico-preview .classico-photo {
-  width: min(28%, 98px);
-}
-
-.art--classico-preview .invite-person__name,
-.art--classico-preview .editable--name,
-.art--classico-preview p.invite-person__name {
-  font-size: clamp(0.82rem, 3.3cqw, 1rem);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-.art--classico-preview .invite-person__age,
-.art--classico-preview .editable--age {
-  font-size: 0.64rem;
-}
-
-.art--classico-preview .invite-dates {
-  gap: 0.35rem;
-  flex-wrap: nowrap;
-}
-
-.art--classico-preview .invite-dates__item {
-  font-size: 0.56rem;
-}
-
-.art--classico-preview .invite-dates__value {
-  white-space: nowrap;
-}
-
-.art--classico-preview .classico-cards {
-  gap: 0.32rem;
-}
-
-.art--classico-preview .classico-card {
-  padding: 0.38rem 0.55rem;
-}
-
-.art--classico-preview .classico-card__label {
-  font-size: 0.5rem;
-  margin-bottom: 0.1rem;
-}
-
-.art--classico-preview .classico-card__value,
-.art--classico-preview p.classico-card__value {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-height: none;
-  display: block;
-  font-size: 0.62rem;
-  -webkit-line-clamp: unset;
-}
-
-.art--classico-preview .classico-footer {
-  gap: 0.22rem;
-}
-
-.art--classico-preview .classico-logo.brand-logo,
-.art--classico-preview .brand-logo {
-  transform: scale(0.68);
-}
-
-.art--classico-preview .classico-footer__contact {
-  font-size: 0.52rem;
-  gap: 0.12rem;
-}
-
-.art--classico-preview .classico-backdrop__lily--tr,
-.art--classico-preview .classico-backdrop__lily--bl {
-  opacity: 0.18;
-}
-
-.art--classico-preview .classico-watermark {
-  opacity: 0.9;
+  pointer-events: none;
 }
 
 .art--classico-preview .removable-block__select,
-.art--classico-preview .removable-block__remove {
+.art--classico-preview .removable-block__remove,
+.art--classico-preview .photo-frame__tools,
+.art--classico-preview .photo-frame__input {
   display: none !important;
 }
 
@@ -1768,16 +1655,33 @@ input.classico-footer__field {
 
 .invite-footer__contact {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
   font-size: 0.68rem;
   color: var(--invite-navy);
+  text-align: center;
+  width: 100%;
+}
+
+.invite-footer__item {
+  display: inline-flex;
+  align-items: center;
+  text-align: center;
+  line-height: 1.25;
+  min-width: 0;
+}
+
+.invite-footer__sep {
+  color: var(--invite-gold);
+  flex-shrink: 0;
+  font-weight: 600;
 }
 
 .invite-footer__dot {
-  color: var(--invite-gold);
+  display: none;
 }
 
 /* Editable fields */
@@ -1851,29 +1755,18 @@ input.classico-footer__field {
   box-sizing: border-box;
 }
 
-/* Prévia: cobre a foto por completo e redesenha a moldura dourada */
-.art--principal.art--principal-preview .tpl-preview-photo-cover {
-  left: 30.15%;
-  top: 20.85%;
-  width: 40.2%;
-  height: 36.18%;
-  z-index: 3;
-  overflow: visible;
+/* Prévia do carrossel — mesma arte do editor (só esconde chrome) */
+.art--principal.art--principal-preview {
   pointer-events: none;
-  background: transparent;
 }
 
-.art--principal.art--principal-preview .tpl-preview-photo-cover svg {
-  display: block;
-  overflow: visible;
-  width: 100%;
-  height: 100%;
-}
-
-.art--principal.art--principal-preview .tpl-preview-photo-cover__fill {
-  transform-box: fill-box;
-  transform-origin: center;
-  transform: scale(1.055);
+.art--principal.art--principal-preview .removable-block__select,
+.art--principal.art--principal-preview .removable-block__remove,
+.art--principal.art--principal-preview .card-icon-asset__hit,
+.art--principal.art--principal-preview .card-icon-asset__remove,
+.art--principal.art--principal-preview .photo-frame__tools,
+.art--principal.art--principal-preview .photo-frame__input {
+  display: none !important;
 }
 
 /*
@@ -2790,9 +2683,53 @@ input.classico-footer__field {
   text-transform: uppercase;
   cursor: pointer;
   min-height: 44px;
-  padding: 0 0.45rem;
+  padding: 0.35rem 0.55rem;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+}
+
+.editor__mobile-dock {
+  display: none;
+}
+
+.editor__glass-btn {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.22) 100%
+  );
+  backdrop-filter: blur(16px) saturate(1.25);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  color: var(--navy);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  min-height: 46px;
+  min-width: 6.5rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 12px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 8px 22px rgba(21, 32, 51, 0.12);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.editor__glass-btn:active {
+  transform: scale(0.97);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.editor__tip--title {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  color: var(--navy);
 }
 
 /* ═══════════════════════════════════════════
@@ -2810,54 +2747,19 @@ input.classico-footer__field {
   container-type: inline-size;
 }
 
-/* Prévia do carrossel — sem offsets que estouram o enquadramento */
+/* Prévia do carrossel — mesma arte do editor (só esconde chrome) */
 .art--setimo-preview {
   overflow: hidden;
-}
-
-.art--setimo-preview .setimo-name-wrap,
-.art--setimo-preview .setimo-hero__copy > .setimo-name,
-.art--setimo-preview .setimo-note,
-.art--setimo-preview p.setimo-note {
-  margin-left: 0 !important;
-  width: 100% !important;
-  max-width: 100%;
-}
-
-.art--setimo-preview .setimo-hero__copy > .setimo-name,
-.art--setimo-preview p.setimo-note {
-  display: block;
-  -webkit-line-clamp: unset;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.art--setimo-preview .setimo-cards-drag {
-  transform: none !important;
-  width: 82%;
-  max-width: 82%;
-}
-
-.art--setimo-preview .setimo-card__value,
-.art--setimo-preview p.setimo-card__value {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-height: none;
-  display: block;
-  -webkit-line-clamp: unset;
+  pointer-events: none;
 }
 
 .art--setimo-preview .removable-block__select,
 .art--setimo-preview .removable-block__remove,
 .art--setimo-preview .card-icon-asset__hit,
-.art--setimo-preview .card-icon-asset__remove {
+.art--setimo-preview .card-icon-asset__remove,
+.art--setimo-preview .photo-frame__tools,
+.art--setimo-preview .photo-frame__input {
   display: none !important;
-}
-
-.art--setimo-preview .setimo-watermark {
-  opacity: 0.9;
 }
 
 /* Decoração: lírios/BL do Principal + canto TR refeito */
@@ -2953,17 +2855,20 @@ input.classico-footer__field {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6.5% 9% 4.5%;
+  justify-content: space-between;
+  padding: 5.5% 9% 3.8%;
   box-sizing: border-box;
+  min-height: 0;
 }
 
 /* Título — componente igual à referência */
 .setimo-title {
   text-align: center;
   width: 100%;
-  margin-bottom: 4%;
+  margin-bottom: 2.5%;
   position: relative;
   z-index: 3;
+  flex-shrink: 0;
 }
 
 .setimo-title__eyebrow {
@@ -3072,7 +2977,9 @@ input.classico-footer__field {
   gap: 0.65rem 0.8rem;
   align-items: center;
   width: 100%;
-  margin-bottom: 5%;
+  margin-bottom: 2.5%;
+  flex-shrink: 1;
+  min-height: 0;
 }
 
 .setimo-hero__photo {
@@ -3207,8 +3114,10 @@ p.setimo-note {
   max-width: 78%;
   margin-left: auto;
   margin-right: 0;
-  margin-bottom: auto;
+  margin-bottom: 0.35rem;
   align-self: flex-end;
+  flex-shrink: 1;
+  min-height: 0;
 }
 
 .art--setimo .setimo-cards-drag.draggable-asset--active {
@@ -3315,9 +3224,11 @@ p.setimo-card__value {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.32rem;
   width: 100%;
-  margin-top: 6%;
+  margin-top: auto;
+  padding-top: 0.35rem;
+  flex-shrink: 0;
 }
 
 .setimo-logo-wrap {
@@ -3327,7 +3238,7 @@ p.setimo-card__value {
 
 .art--setimo .setimo-logo-asset.brand-logo,
 .art--setimo .brand-logo {
-  transform: scale(0.92);
+  transform: scale(0.88);
   transform-origin: center;
   color: var(--setimo-navy);
 }
@@ -3349,19 +3260,37 @@ p.setimo-card__value {
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  gap: 0.28rem;
+  gap: 0.32rem;
   font-family: 'Manrope', system-ui, sans-serif;
-  font-size: 0.62rem;
+  font-size: 0.58rem;
+  line-height: 1.2;
   color: var(--setimo-navy);
   width: 100%;
-  max-width: 78%;
+  max-width: 90%;
+  text-align: center;
+  flex-shrink: 0;
 }
 
-.setimo-footer__dot {
+.setimo-footer__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+  min-width: 0;
+  max-width: 46%;
+}
+
+.setimo-footer__sep {
   color: var(--setimo-gold);
   flex-shrink: 0;
   font-size: 0.55rem;
   line-height: 1;
+  font-weight: 600;
+}
+
+.setimo-footer__dot {
+  display: none;
 }
 
 .setimo-footer__field,
@@ -3373,7 +3302,7 @@ input.setimo-footer__field {
   text-align: center;
   min-width: 0;
   width: auto;
-  max-width: 10rem;
+  max-width: 11rem;
   padding: 0;
   outline: none;
   white-space: nowrap;
@@ -3395,6 +3324,30 @@ input.setimo-footer__field {
   .carousel__stage {
     grid-template-columns: 1fr;
     padding-inline: 0;
+  }
+
+  /* Logo menor e centralizada no rodapé — evita cobrir o card de local */
+  .art--classico .classico-logo.brand-logo,
+  .art--classico .classico-footer .brand-logo {
+    transform: scale(0.58);
+    transform-origin: center center;
+    margin: 0 auto;
+  }
+
+  .art--classico .classico-footer {
+    gap: 0.2rem;
+    padding-top: 0.12rem;
+    align-items: center;
+  }
+
+  .art--classico .classico-cards {
+    gap: 0.28rem;
+  }
+
+  .art--setimo .setimo-logo-asset.brand-logo,
+  .art--setimo .setimo-footer .brand-logo {
+    transform: scale(0.62);
+    transform-origin: center center;
   }
 
   .carousel__nav {
@@ -3427,10 +3380,6 @@ input.setimo-footer__field {
     width: min(68%, 250px);
   }
 
-  .carousel__preview-fit {
-    width: min(68vw, 250px);
-  }
-
   .carousel__slide--left {
     transform: translate3d(-36%, 2%, -100px) rotateY(24deg) scale(0.76);
   }
@@ -3460,16 +3409,59 @@ input.setimo-footer__field {
     letter-spacing: 0.08em;
   }
 
+  .editor__bar {
+    display: none;
+  }
+
+  .editor__mobile-dock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    padding-inline: 0.1rem;
+  }
+
+  .editor__tool-link--undo {
+    display: none;
+  }
+
+  .editor__photo-tools--empty {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'tip';
+  }
+
+  .editor__photo-tools--empty .editor__tool-actions {
+    display: none;
+  }
+
   .editor__canvas {
-    padding-top: 0.5rem;
+    padding-top: 0.35rem;
+    padding-bottom: 0.25rem;
+    align-items: center;
+  }
+
+  .editor__canvas .art {
+    width: min(
+      100%,
+      400px,
+      calc((100dvh - 11.5rem) * 768 / 1024)
+    );
   }
 
   .editor__footer {
     gap: 0.4rem;
+    background: transparent;
+    border-top: none;
   }
 
   .editor__tip {
     font-size: 0.72rem;
+  }
+
+  .editor__tip--title {
+    text-align: center;
+    width: 100%;
   }
 }
 
@@ -3553,10 +3545,6 @@ input.setimo-footer__field {
 
   .carousel__track {
     width: min(58%, 320px);
-  }
-
-  .carousel__preview-fit {
-    width: min(52vw, 300px);
   }
 
   .welcome__actions {

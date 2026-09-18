@@ -1,7 +1,7 @@
 import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react'
 import ArtLayout from '../components/layouts/ArtLayout'
 import PreviewFit from '../components/PreviewFit'
-import { classicoPreviewFields, defaultFields, layoutOptions } from '../data/defaults'
+import { defaultFields, layoutOptions } from '../data/defaults'
 import type { LayoutId } from '../types'
 
 type WelcomeScreenProps = {
@@ -123,11 +123,7 @@ export default function WelcomeScreen({ onConfirm, onBack }: WelcomeScreenProps)
                         <PreviewFit resetKey={`${option.id}-${offset === 0}`}>
                           <ArtLayout
                             layoutId={option.id}
-                            fields={
-                              option.id === 'classico' || option.id === 'classico7dias'
-                                ? classicoPreviewFields
-                                : defaultFields
-                            }
+                            fields={defaultFields}
                             photoUrl={null}
                             onFieldChange={() => undefined}
                             onPhotoChange={() => undefined}

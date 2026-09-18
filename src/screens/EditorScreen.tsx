@@ -100,15 +100,20 @@ export default function EditorScreen({
     }
   }
 
+  const layoutName =
+    layoutOptions.find((item) => item.id === layoutId)?.name ?? 'Editar arte'
+  const emptyTip =
+    layoutId === 'classico7dias'
+      ? layoutName
+      : 'Toque na moldura para adicionar a foto.'
+
   return (
     <main className="editor">
       <header className="editor__bar">
         <button type="button" className="editor__bar-btn" onClick={onBack}>
           Voltar
         </button>
-        <p className="editor__bar-title">
-          {layoutOptions.find((item) => item.id === layoutId)?.name ?? 'Editar arte'}
-        </p>
+        <p className="editor__bar-title">{layoutName}</p>
         <button type="button" className="editor__bar-btn" onClick={onChangeLayout}>
           Layouts
         </button>
@@ -200,21 +205,42 @@ export default function EditorScreen({
                 >
                   Centralizar
                 </button>
-                <button type="button" className="editor__tool-link" onClick={onResetEdits}>
+                <button
+                  type="button"
+                  className="editor__tool-link editor__tool-link--undo"
+                  onClick={onResetEdits}
+                >
                   Desfazer
                 </button>
               </div>
             </div>
           ) : (
             <div className="editor__photo-tools editor__photo-tools--empty">
-              <p className="editor__tip">Toque na moldura para adicionar a foto.</p>
+              <p
+                className={`editor__tip${layoutId === 'classico7dias' ? ' editor__tip--title' : ''}`}
+              >
+                {emptyTip}
+              </p>
               <div className="editor__tool-actions">
-                <button type="button" className="editor__tool-link" onClick={onResetEdits}>
+                <button
+                  type="button"
+                  className="editor__tool-link editor__tool-link--undo"
+                  onClick={onResetEdits}
+                >
                   Desfazer
                 </button>
               </div>
             </div>
           )}
+        </div>
+
+        <div className="editor__mobile-dock">
+          <button type="button" className="editor__glass-btn" onClick={onBack}>
+            Voltar
+          </button>
+          <button type="button" className="editor__glass-btn" onClick={onResetEdits}>
+            Desfazer
+          </button>
         </div>
 
         <input

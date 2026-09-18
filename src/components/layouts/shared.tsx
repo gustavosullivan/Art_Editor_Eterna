@@ -253,28 +253,28 @@ export function InvitationFooter({
       <div className="invite-footer__contact">
         {preview ? (
           <>
-            <span>{fields.phone}</span>
-            <span className="invite-footer__dot" aria-hidden="true">
-              •
+            <span className="invite-footer__item">{fields.website}</span>
+            <span className="invite-footer__sep" aria-hidden="true">
+              |
             </span>
-            <span>{fields.website}</span>
+            <span className="invite-footer__item">{fields.phone}</span>
           </>
         ) : (
           <>
             <EditableText
-              value={fields.phone}
-              onChange={(value) => onFieldChange('phone', value)}
-              ariaLabel="Telefone"
+              value={fields.website}
+              onChange={(value) => onFieldChange('website', value)}
+              ariaLabel="Site / e-mail"
               className="editable--contact"
               clampOverflow
             />
-            <span className="invite-footer__dot" aria-hidden="true">
-              •
+            <span className="invite-footer__sep" aria-hidden="true">
+              |
             </span>
             <EditableText
-              value={fields.website}
-              onChange={(value) => onFieldChange('website', value)}
-              ariaLabel="Site"
+              value={fields.phone}
+              onChange={(value) => onFieldChange('phone', value)}
+              ariaLabel="Telefone"
               className="editable--contact"
               clampOverflow
             />

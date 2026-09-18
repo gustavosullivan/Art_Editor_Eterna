@@ -25,7 +25,10 @@ export default function PreviewFit({
       const availableH = Math.max(outer.clientHeight - 8, 1)
       const art = measure.querySelector('.art') as HTMLElement | null
       const naturalW = Math.max(art?.offsetWidth || measure.scrollWidth, 1)
-      const naturalH = Math.max(art?.offsetHeight || measure.scrollHeight, 1)
+      const naturalH = Math.max(
+        art?.offsetHeight || art?.scrollHeight || measure.scrollHeight,
+        1,
+      )
       const scale = Math.min(availableW / naturalW, availableH / naturalH, 1)
 
       setFit({
@@ -36,11 +39,17 @@ export default function PreviewFit({
     }
 
     update()
-    const frame = window.requestAnimationFrame(update)
+    const frame = window.requestAnimationFrame(() => {
+      update()
+      window.requestAnimationFrame(update)
+    })
     const fontsReady = document.fonts?.ready?.then(update)
     const observer = new ResizeObserver(update)
     observer.observe(outer)
     observer.observe(measure)
+    if (measure.querySelector('.art')) {
+      observer.observe(measure.querySelector('.art') as Element)
+    }
 
     return () => {
       window.cancelAnimationFrame(frame)

@@ -115,7 +115,7 @@ export default function LayoutSetimoDia({
           <div className="setimo-hero__copy">
             {showPersonName ? (
               preview ? (
-                <p className="setimo-name">Nome</p>
+                <p className="setimo-name">{fields.personName}</p>
               ) : (
                 <RemovableBlock
                   label="nome"
@@ -140,7 +140,7 @@ export default function LayoutSetimoDia({
             <Ornament />
 
             {preview ? (
-              <p className="setimo-note">Inserir texto</p>
+              <p className="setimo-note">{fields.memorialNote}</p>
             ) : (
               <EditableText
                 value={fields.memorialNote}
@@ -239,30 +239,32 @@ export default function LayoutSetimoDia({
           <div className="setimo-footer__contact">
             {preview ? (
               <>
-                <span>{fields.phone}</span>
-                <span className="setimo-footer__dot" aria-hidden="true">
-                  •
+                <span className="setimo-footer__item">{fields.website}</span>
+                <span className="setimo-footer__sep" aria-hidden="true">
+                  |
                 </span>
-                <span>{fields.website}</span>
+                <span className="setimo-footer__item">{fields.phone}</span>
               </>
             ) : (
               <>
                 <EditableText
+                  value={fields.website}
+                  onChange={(value) => onFieldChange('website', value)}
+                  ariaLabel="Site / e-mail"
+                  className="setimo-footer__field setimo-input setimo-footer__item"
+                  plain
+                  clampOverflow
+                />
+                <span className="setimo-footer__sep" aria-hidden="true">
+                  |
+                </span>
+                <EditableText
                   value={fields.phone}
                   onChange={(value) => onFieldChange('phone', value)}
                   ariaLabel="Telefone"
-                  className="setimo-footer__field setimo-input"
+                  className="setimo-footer__field setimo-input setimo-footer__item"
                   plain
-                />
-                <span className="setimo-footer__dot" aria-hidden="true">
-                  •
-                </span>
-                <EditableText
-                  value={fields.website}
-                  onChange={(value) => onFieldChange('website', value)}
-                  ariaLabel="Site"
-                  className="setimo-footer__field setimo-input"
-                  plain
+                  clampOverflow
                 />
               </>
             )}
