@@ -153,7 +153,7 @@ export default function EditorScreen({
       </div>
 
       <div className="editor__footer">
-        <div className="editor__photo-slot">
+        <div className={`editor__photo-slot${photoUrl ? '' : ' editor__photo-slot--empty'}`}>
           {photoUrl ? (
             <div className="editor__photo-tools">
               <button

@@ -409,6 +409,26 @@ button {
   max-width: 100%;
 }
 
+.brand-logo--asset {
+  gap: 0;
+}
+
+.brand-logo__img {
+  display: block;
+  width: auto;
+  height: clamp(2.4rem, 9vw, 3.6rem);
+  max-width: min(100%, 220px);
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.brand-logo--compact .brand-logo__img {
+  height: clamp(1.55rem, 5.5vw, 2.15rem);
+  max-width: min(100%, 168px);
+}
+
 .brand-logo__mark {
   width: clamp(48px, 13vw, 74px);
   height: auto;

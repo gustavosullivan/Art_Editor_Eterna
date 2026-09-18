@@ -150,6 +150,10 @@
   touch-action: none;
   cursor: grab;
   user-select: none;
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse 70% 65% at 50% 48%, rgba(26, 39, 68, 0.12), transparent 72%),
+    radial-gradient(ellipse 55% 45% at 50% 100%, rgba(15, 22, 34, 0.08), transparent 70%);
 }
 
 .carousel__scene:active {
@@ -258,6 +262,26 @@
   width: 100%;
   box-shadow: 0 14px 32px rgba(21, 32, 51, 0.18);
   pointer-events: none;
+}
+
+/* Só no seletor: contorno preto + sombra pra destacar o papel clean */
+.carousel__preview-fit .art--classico {
+  outline: 2px solid #111827;
+  outline-offset: 0;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.95),
+    0 10px 0 rgba(17, 24, 39, 0.06),
+    0 22px 48px rgba(15, 22, 34, 0.38),
+    0 4px 14px rgba(15, 22, 34, 0.18);
+}
+
+.carousel__slide--center .carousel__preview-fit .art--classico {
+  outline-width: 2.5px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.98),
+    0 12px 0 rgba(17, 24, 39, 0.07),
+    0 28px 56px rgba(15, 22, 34, 0.42),
+    0 6px 18px rgba(15, 22, 34, 0.2);
 }
 
 .carousel__meta {
@@ -1121,17 +1145,17 @@ textarea.editable--card {
   max-height: calc(1.4em * 3);
 }
 
-/* Modelo Clássico — mesma proporção dos demais + marca d'água */
+/* Modelo Clássico — papel limpo (contorno preto só no seletor) */
 .art--classico {
   --classico-navy: #1a2744;
   --classico-gold: #c4a46a;
-  --classico-paper: #efeff1;
+  --classico-paper: #f7f8fa;
   width: min(100%, 400px);
   aspect-ratio: 768 / 1024;
   background:
-    radial-gradient(ellipse 70% 45% at 50% 8%, rgba(255, 255, 255, 0.72), transparent 65%),
-    radial-gradient(ellipse 55% 40% at 50% 100%, rgba(196, 164, 106, 0.08), transparent 70%),
-    linear-gradient(168deg, #f5f7f9 0%, var(--classico-paper) 42%, #e8eef4 100%);
+    radial-gradient(ellipse 70% 45% at 50% 8%, rgba(255, 255, 255, 0.85), transparent 65%),
+    radial-gradient(ellipse 55% 40% at 50% 100%, rgba(196, 164, 106, 0.06), transparent 70%),
+    linear-gradient(168deg, #ffffff 0%, var(--classico-paper) 48%, #eef1f5 100%);
   overflow: hidden;
   padding: 0;
   container-type: inline-size;
@@ -1151,78 +1175,6 @@ textarea.editable--card {
   background:
     radial-gradient(circle at 12% 18%, rgba(196, 164, 106, 0.07), transparent 28%),
     radial-gradient(circle at 88% 78%, rgba(26, 39, 68, 0.05), transparent 32%);
-}
-
-.classico-backdrop__lily {
-  position: absolute;
-  width: 38%;
-  height: auto;
-  object-fit: contain;
-  opacity: 0.22;
-  filter: saturate(0.75) brightness(1.05);
-  user-select: none;
-}
-
-.classico-backdrop__lily--tr {
-  top: -1%;
-  right: -3%;
-  width: 42%;
-  opacity: 0.28;
-}
-
-.classico-backdrop__lily--bl {
-  left: -4%;
-  bottom: -2%;
-  width: 36%;
-  opacity: 0.2;
-  transform: scaleX(-1) rotate(-8deg);
-}
-
-.classico-fern {
-  position: absolute;
-  width: 18%;
-  height: auto;
-  color: #1a2744;
-  opacity: 0.16;
-  pointer-events: none;
-  user-select: none;
-  filter: drop-shadow(0 0 0.5px rgba(196, 164, 106, 0.25));
-}
-
-.classico-fern--left {
-  left: -1.5%;
-  top: 22%;
-  width: 17%;
-  transform: rotate(-12deg);
-  color: #1a2744;
-  opacity: 0.18;
-}
-
-.classico-fern--right {
-  right: -1.5%;
-  top: 34%;
-  width: 16%;
-  transform: scaleX(-1) rotate(-8deg);
-  color: #1a2744;
-  opacity: 0.16;
-}
-
-.classico-fern--left-soft {
-  left: 1%;
-  bottom: 18%;
-  width: 13%;
-  transform: rotate(18deg) scaleY(0.92);
-  color: #c4a46a;
-  opacity: 0.22;
-}
-
-.classico-fern--right-soft {
-  right: 0.5%;
-  bottom: 26%;
-  width: 12%;
-  transform: scaleX(-1) rotate(14deg) scaleY(0.9);
-  color: #c4a46a;
-  opacity: 0.2;
 }
 
 .art--classico .art__inner {
@@ -1487,20 +1439,14 @@ p.classico-card__value {
   justify-content: center;
   width: 100%;
   margin: 0 auto;
-  transform: scale(0.72);
-  transform-origin: center center;
+  transform: none;
   color: var(--classico-navy);
 }
 
-.art--classico .brand-logo__mark path {
-  stroke: var(--classico-navy);
-  stroke-width: 2.2;
-  fill: none;
-}
-
-.art--classico .brand-logo__name,
-.art--classico .brand-logo__tag {
-  color: var(--classico-navy);
+.art--classico .classico-logo .brand-logo__img,
+.art--classico .classico-footer .brand-logo__img {
+  height: 1.85rem;
+  max-width: 150px;
 }
 
 .classico-footer__contact {
@@ -1655,8 +1601,12 @@ input.classico-footer__field {
 }
 
 .invite-footer .brand-logo {
-  transform: scale(0.72);
-  transform-origin: center;
+  transform: none;
+}
+
+.invite-footer .brand-logo__img {
+  height: 1.7rem;
+  max-width: 140px;
 }
 
 .brand-logo--compact .brand-logo__mark {
@@ -1943,12 +1893,12 @@ input.classico-footer__field {
   border-radius: 0;
 }
 
-/* Cobre a logo do PNG / atrás do asset São Luiz (cantos + fundo) */
+/* Cobre a logo antiga do PNG / atrás do asset São Luiz */
 .art--principal .tpl-logo-paint {
-  left: 32%;
-  top: 85.2%;
-  width: 42%;
-  height: 9.2%;
+  left: 28%;
+  top: 84.5%;
+  width: 48%;
+  height: 10.5%;
   z-index: 2;
   background: #efeff1;
   pointer-events: none;
@@ -2084,7 +2034,7 @@ input.classico-footer__field {
 
 .art--principal .tpl-logo__asset.brand-logo,
 .art--principal .tpl-logo .brand-logo {
-  gap: 0.4rem;
+  gap: 0;
   color: #1a2744;
   transform: none;
   max-width: none;
@@ -2092,37 +2042,9 @@ input.classico-footer__field {
   flex-shrink: 0;
 }
 
-.art--principal .tpl-logo .brand-logo__mark {
-  width: clamp(1.45rem, 6.6cqw, 1.85rem);
-  stroke: #1a2744;
-  stroke-width: 2.1;
-  flex-shrink: 0;
-}
-
-.art--principal .tpl-logo .brand-logo__text {
-  min-width: max-content;
-  overflow: visible;
-}
-
-.art--principal .tpl-logo .brand-logo__name {
-  font-size: clamp(0.68rem, 3cqw, 0.86rem);
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-  overflow: visible;
-}
-
-.art--principal .tpl-logo .brand-logo__rule {
-  height: 1px;
-  background: #c4a46a;
-  width: 100%;
-}
-
-.art--principal .tpl-logo .brand-logo__tag {
-  font-size: clamp(0.36rem, 1.55cqw, 0.46rem);
-  letter-spacing: 0.28em;
-  margin-right: 0;
-  white-space: nowrap;
-  overflow: visible;
+.art--principal .tpl-logo .brand-logo__img {
+  height: clamp(1.55rem, 6.4cqw, 2rem);
+  max-width: clamp(8.5rem, 38cqw, 12rem);
 }
 
 /* Nome / idade — inputs sobre o papel */
@@ -3258,20 +3180,14 @@ p.setimo-card__value {
 
 .art--setimo .setimo-logo-asset.brand-logo,
 .art--setimo .brand-logo {
-  transform: scale(0.88);
-  transform-origin: center;
+  transform: none;
   color: var(--setimo-navy);
 }
 
-.art--setimo .brand-logo__mark path {
-  stroke: var(--setimo-navy);
-  stroke-width: 2.2;
-  fill: none;
-}
-
-.art--setimo .brand-logo__name,
-.art--setimo .brand-logo__tag {
-  color: var(--setimo-navy);
+.art--setimo .setimo-logo-asset .brand-logo__img,
+.art--setimo .brand-logo__img {
+  height: 2rem;
+  max-width: 168px;
 }
 
 .setimo-footer__contact {
@@ -3349,9 +3265,14 @@ input.setimo-footer__field {
   /* Logo menor e centralizada no rodapé — evita cobrir o card de local */
   .art--classico .classico-logo.brand-logo,
   .art--classico .classico-footer .brand-logo {
-    transform: scale(0.58);
-    transform-origin: center center;
+    transform: none;
     margin: 0 auto;
+  }
+
+  .art--classico .classico-logo .brand-logo__img,
+  .art--classico .classico-footer .brand-logo__img {
+    height: 1.35rem;
+    max-width: 120px;
   }
 
   .art--classico .classico-footer {
@@ -3366,8 +3287,13 @@ input.setimo-footer__field {
 
   .art--setimo .setimo-logo-asset.brand-logo,
   .art--setimo .setimo-footer .brand-logo {
-    transform: scale(0.62);
-    transform-origin: center center;
+    transform: none;
+  }
+
+  .art--setimo .setimo-logo-asset .brand-logo__img,
+  .art--setimo .setimo-footer .brand-logo__img {
+    height: 1.35rem;
+    max-width: 120px;
   }
 
   .carousel__nav {
@@ -3447,24 +3373,39 @@ input.setimo-footer__field {
   }
 
   .editor__photo-tools--empty {
-    grid-template-columns: 1fr;
-    grid-template-areas: 'tip';
-  }
-
-  .editor__photo-tools--empty .editor__tool-actions {
     display: none;
   }
 
+  .editor__photo-slot--empty {
+    min-height: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
   .editor__canvas {
-    padding-top: 0.25rem;
-    padding-bottom: 0.2rem;
+    padding:
+      max(0px, var(--safe-top))
+      0
+      0;
     align-items: center;
+    justify-content: center;
+    background: #dfe5ec;
+  }
+
+  .editor__art-fit {
+    width: 100%;
+    height: 100%;
   }
 
   .editor__footer {
-    gap: 0.4rem;
-    background: transparent;
-    border-top: none;
+    gap: 0.35rem;
+    background: rgba(248, 250, 251, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(26, 35, 50, 0.08);
+    padding-top: 0.4rem;
   }
 
   .editor__tip {
@@ -3474,6 +3415,10 @@ input.setimo-footer__field {
   .editor__tip--title {
     text-align: center;
     width: 100%;
+  }
+
+  .editor__download {
+    min-height: 48px;
   }
 }
 

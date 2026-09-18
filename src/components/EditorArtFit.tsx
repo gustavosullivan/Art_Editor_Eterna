@@ -6,7 +6,7 @@ type EditorArtFitProps = {
 }
 
 /**
- * Escala a arte dinamicamente para caber no canvas do editor
+ * Escala a arte dinamicamente para preencher o canvas do editor
  * (mobile/desktop), sem alterar o tamanho natural do .art no export.
  */
 export default function EditorArtFit({ children, resetKey }: EditorArtFitProps) {
@@ -20,15 +20,16 @@ export default function EditorArtFit({ children, resetKey }: EditorArtFitProps) 
     if (!outer || !measure) return
 
     const update = () => {
-      const availableW = Math.max(outer.clientWidth - 4, 1)
-      const availableH = Math.max(outer.clientHeight - 4, 1)
+      const availableW = Math.max(outer.clientWidth, 1)
+      const availableH = Math.max(outer.clientHeight, 1)
       const art = measure.querySelector('.art') as HTMLElement | null
       const naturalW = Math.max(art?.offsetWidth || measure.scrollWidth, 1)
       const naturalH = Math.max(
         art?.offsetHeight || art?.scrollHeight || measure.scrollHeight,
         1,
       )
-      const scale = Math.min(availableW / naturalW, availableH / naturalH, 1)
+      // Preenche o canvas sem cortar (permite upscale no mobile)
+      const scale = Math.min(availableW / naturalW, availableH / naturalH)
 
       setFit({
         scale,
