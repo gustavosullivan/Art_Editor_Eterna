@@ -41,22 +41,56 @@ function fileSlug(personName: string) {
 }
 
 function resolveExportBg(target: HTMLElement) {
-  const paper =
-    getComputedStyle(target).backgroundColor ||
-    getComputedStyle(target).getPropertyValue('--classico-paper') ||
-    '#efeff1'
-  return paper && paper !== 'rgba(0, 0, 0, 0)' && paper !== 'transparent'
-    ? paper
-    : '#efeff1'
+  const fromVar = getComputedStyle(target).getPropertyValue('--classico-paper').trim()
+  if (fromVar) return fromVar
+
+  const paper = getComputedStyle(target).backgroundColor
+  if (paper && paper !== 'rgba(0, 0, 0, 0)' && paper !== 'transparent') return paper
+
+  return '#f7f8fa'
 }
 
-async function captureArt(target: HTMLElement) {
+/** Tira o scale do editor pra html2canvas medir o tamanho natural da arte */
+async function withNaturalArtScale<T>(
+  target: HTMLElement,
+  run: () => Promise<T>,
+): Promise<T> {
+  const measure = target.closest('.editor__art-measure') as HTMLElement | null
+  const shell = target.closest('.editor__art-shell') as HTMLElement | null
+  const prevMeasure = measure?.style.transform ?? ''
+  const prevShellW = shell?.style.width ?? ''
+  const prevShellH = shell?.style.height ?? ''
+
+  if (measure) measure.style.transform = 'none'
+  if (shell) {
+    shell.style.width = `${target.offsetWidth}px`
+    shell.style.height = `${target.offsetHeight}px`
+  }
+
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
+  await new Promise((resolve) => setTimeout(resolve, 40))
+
+  try {
+    return await run()
+  } finally {
+    if (measure) measure.style.transform = prevMeasure
+    if (shell) {
+      shell.style.width = prevShellW
+      shell.style.height = prevShellH
+    }
+  }
+}
+
+async function captureArt(target: HTMLElement, pixelRatio: number) {
   const exportBg = resolveExportBg(target)
   const originalFields = Array.from(
     target.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
       'input:not([type="file"]):not([type="range"]), textarea',
     ),
   )
+
+  const width = Math.max(1, Math.ceil(target.offsetWidth))
+  const height = Math.max(1, Math.ceil(target.offsetHeight))
 
   target.classList.add('is-exporting')
   await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
@@ -65,14 +99,16 @@ async function captureArt(target: HTMLElement) {
   try {
     return await html2canvas(target, {
       backgroundColor: exportBg,
-      scale: 2,
+      scale: pixelRatio,
       useCORS: true,
       logging: false,
       allowTaint: true,
       x: 0,
       y: 0,
-      width: Math.ceil(target.offsetWidth),
-      height: Math.ceil(target.offsetHeight),
+      width,
+      height,
+      windowWidth: width,
+      windowHeight: height,
       scrollX: 0,
       scrollY: 0,
       onclone: (_clonedDoc, element) => {
@@ -83,8 +119,22 @@ async function captureArt(target: HTMLElement) {
         element.style.border = 'none'
         element.style.overflow = 'hidden'
         element.style.backgroundColor = exportBg
+        element.style.filter = 'none'
+        element.style.width = `${width}px`
+        element.style.height = `${height}px`
+        element.style.maxWidth = 'none'
+        element.style.transform = 'none'
 
         applyClippedPhotosToClone(target, element)
+
+        element.querySelectorAll<HTMLElement>('.classico-watermark__img').forEach((img) => {
+          img.style.mixBlendMode = 'normal'
+          img.style.filter = 'none'
+          img.style.opacity = '0.11'
+        })
+        element.querySelectorAll<HTMLElement>('.classico-backdrop__wash').forEach((el) => {
+          el.style.opacity = '0'
+        })
 
         const clonedFields = Array.from(
           element.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
@@ -142,8 +192,13 @@ async function captureArt(target: HTMLElement) {
   }
 }
 
-/** Encaixa a arte no tamanho social, preenchendo o fundo com a cor do papel */
-function fitToSocial(source: HTMLCanvasElement, w: number, h: number, bg: string) {
+/** Preenche o formato social (cover) — tamanho exato, sem barras */
+function fitToSocial(
+  source: HTMLCanvasElement,
+  w: number,
+  h: number,
+  bg: string,
+) {
   const out = document.createElement('canvas')
   out.width = w
   out.height = h
@@ -153,11 +208,13 @@ function fitToSocial(source: HTMLCanvasElement, w: number, h: number, bg: string
   ctx.fillStyle = bg
   ctx.fillRect(0, 0, w, h)
 
-  const scale = Math.min(w / source.width, h / source.height)
+  const scale = Math.max(w / source.width, h / source.height)
   const dw = source.width * scale
   const dh = source.height * scale
   const dx = (w - dw) / 2
   const dy = (h - dh) / 2
+  ctx.imageSmoothingEnabled = true
+  ctx.imageSmoothingQuality = 'high'
   ctx.drawImage(source, dx, dy, dw, dh)
   return out
 }
@@ -167,32 +224,34 @@ function triggerDownload(href: string, filename: string) {
   link.download = filename
   link.href = href
   link.rel = 'noopener'
+  link.style.display = 'none'
   document.body.appendChild(link)
   link.click()
   link.remove()
 }
 
-async function saveBlob(blob: Blob, filename: string, title: string) {
-  const file = new File([blob], filename, { type: blob.type })
+/** Desktop: download direto. Mobile: share nativo (Salvar imagem), com fallback. */
+async function saveBlob(blob: Blob, filename: string) {
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
 
-  try {
-    if (
-      typeof navigator.canShare === 'function' &&
-      navigator.canShare({ files: [file] })
-    ) {
-      await navigator.share({ files: [file], title })
-      return
+  if (isMobile && typeof navigator.canShare === 'function') {
+    const file = new File([blob], filename, { type: blob.type })
+    try {
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'Homenagem São Luiz' })
+        return
+      }
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return
+      // cai no download se o share falhar
     }
-  } catch (error) {
-    // usuário cancelou o share — não cai no fallback
-    if (error instanceof DOMException && error.name === 'AbortError') return
   }
 
   const url = URL.createObjectURL(blob)
   try {
     triggerDownload(url, filename)
   } finally {
-    window.setTimeout(() => URL.revokeObjectURL(url), 2500)
+    window.setTimeout(() => URL.revokeObjectURL(url), 4000)
   }
 }
 
@@ -216,27 +275,37 @@ export async function exportArt(
 ) {
   const slug = fileSlug(personName) || 'sao-luiz'
   const bg = resolveExportBg(target)
-  const source = await captureArt(target)
 
-  if (preset === 'pdf') {
-    const w = source.width
-    const h = source.height
-    const pdf = new jsPDF({
-      orientation: h >= w ? 'portrait' : 'landscape',
-      unit: 'px',
-      format: [w, h],
-      hotfixes: ['px_scaling'],
-      compress: true,
-    })
-    const dataUrl = source.toDataURL('image/jpeg', 0.92)
-    pdf.addImage(dataUrl, 'JPEG', 0, 0, w, h, undefined, 'FAST')
-    const blob = pdf.output('blob')
-    await saveBlob(blob, `homenagem-${slug}.pdf`, 'Homenagem São Luiz')
-    return
-  }
+  await withNaturalArtScale(target, async () => {
+    if (preset === 'pdf') {
+      const source = await captureArt(target, 2)
+      const w = source.width
+      const h = source.height
+      const pdf = new jsPDF({
+        orientation: h >= w ? 'portrait' : 'landscape',
+        unit: 'px',
+        format: [w, h],
+        hotfixes: ['px_scaling'],
+        compress: true,
+      })
+      const dataUrl = source.toDataURL('image/jpeg', 0.92)
+      pdf.addImage(dataUrl, 'JPEG', 0, 0, w, h, undefined, 'FAST')
+      const blob = pdf.output('blob')
+      await saveBlob(blob, `homenagem-${slug}.pdf`)
+      return
+    }
 
-  const size = SOCIAL_SIZES[preset]
-  const social = fitToSocial(source, size.w, size.h, bg)
-  const blob = await canvasToBlob(social, 'image/jpeg', 0.92)
-  await saveBlob(blob, `homenagem-${slug}-${preset}.jpg`, 'Homenagem São Luiz')
+    const size = SOCIAL_SIZES[preset]
+    const artW = Math.max(1, target.offsetWidth)
+    const artH = Math.max(1, target.offsetHeight)
+    // Captura com resolução suficiente pro formato final
+    const pixelRatio = Math.min(
+      4,
+      Math.max(2, Math.ceil(Math.max(size.w / artW, size.h / artH) * 1.05)),
+    )
+    const source = await captureArt(target, pixelRatio)
+    const social = fitToSocial(source, size.w, size.h, bg)
+    const blob = await canvasToBlob(social, 'image/jpeg', 0.92)
+    await saveBlob(blob, `homenagem-${slug}-${preset}.jpg`)
+  })
 }

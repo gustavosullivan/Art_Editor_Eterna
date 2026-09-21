@@ -151,9 +151,7 @@
   cursor: grab;
   user-select: none;
   border-radius: 12px;
-  background:
-    radial-gradient(ellipse 70% 65% at 50% 48%, rgba(26, 39, 68, 0.12), transparent 72%),
-    radial-gradient(ellipse 55% 45% at 50% 100%, rgba(15, 22, 34, 0.08), transparent 70%);
+  background: transparent;
 }
 
 .carousel__scene:active {
@@ -186,6 +184,12 @@
     filter 0.45s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  outline: none;
+}
+
+.carousel__slide:focus,
+.carousel__slide:focus-visible {
+  outline: none;
 }
 
 .carousel__slide--center {
@@ -264,24 +268,16 @@
   pointer-events: none;
 }
 
-/* Só no seletor: contorno preto + sombra pra destacar o papel clean */
+/* Só no seletor: contorno preto limpo, sem faixa/sombra colorida */
 .carousel__preview-fit .art--classico {
-  outline: 2px solid #111827;
-  outline-offset: 0;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.95),
-    0 10px 0 rgba(17, 24, 39, 0.06),
-    0 22px 48px rgba(15, 22, 34, 0.38),
-    0 4px 14px rgba(15, 22, 34, 0.18);
+  outline: none;
+  border: 1.5px solid #111827;
+  box-shadow: 0 10px 24px rgba(15, 22, 34, 0.14);
 }
 
 .carousel__slide--center .carousel__preview-fit .art--classico {
-  outline-width: 2.5px;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.98),
-    0 12px 0 rgba(17, 24, 39, 0.07),
-    0 28px 56px rgba(15, 22, 34, 0.42),
-    0 6px 18px rgba(15, 22, 34, 0.2);
+  border-width: 2px;
+  box-shadow: 0 12px 28px rgba(15, 22, 34, 0.16);
 }
 
 .carousel__meta {
@@ -542,7 +538,7 @@
   border: none;
   position: absolute;
   inset: 0;
-  background: rgba(15, 22, 34, 0.5);
+  background: rgba(15, 22, 34, 0.32);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -555,7 +551,8 @@
   padding: 1rem 1.1rem 1.1rem;
   border-radius: 16px;
   background: #f7f9fb;
-  box-shadow: 0 18px 48px rgba(21, 32, 51, 0.28);
+  border: 1px solid rgba(26, 39, 68, 0.08);
+  box-shadow: 0 8px 24px rgba(21, 32, 51, 0.12);
   animation: export-sheet-in 0.24s ease-out;
 }
 
@@ -970,6 +967,7 @@
   outline: none !important;
   border: none !important;
   overflow: hidden !important;
+  filter: none !important;
 }
 
 .art.is-exporting .no-export,
@@ -981,6 +979,23 @@
   border-color: transparent !important;
   background: transparent !important;
   padding-inline: 0;
+}
+
+/* html2canvas suja mix-blend / filter — achata na exportação */
+.art.is-exporting .classico-watermark__img {
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  opacity: 0.11 !important;
+}
+
+.art.is-exporting .classico-backdrop__wash {
+  opacity: 0 !important;
+}
+
+.art.is-exporting.art--classico .photo-frame--rounded .photo-frame__hit {
+  box-shadow: none !important;
+  filter: none !important;
+  border: 2px solid var(--classico-gold);
 }
 
 /* Person / dates / cards */
@@ -1152,13 +1167,13 @@ textarea.editable--card {
   --classico-paper: #f7f8fa;
   width: min(100%, 400px);
   aspect-ratio: 768 / 1024;
-  background:
-    radial-gradient(ellipse 70% 45% at 50% 8%, rgba(255, 255, 255, 0.85), transparent 65%),
-    radial-gradient(ellipse 55% 40% at 50% 100%, rgba(196, 164, 106, 0.06), transparent 70%),
-    linear-gradient(168deg, #ffffff 0%, var(--classico-paper) 48%, #eef1f5 100%);
+  background: linear-gradient(180deg, #ffffff 0%, var(--classico-paper) 100%);
   overflow: hidden;
   padding: 0;
   container-type: inline-size;
+  box-shadow: none;
+  outline: none;
+  border: none;
 }
 
 .classico-backdrop {
@@ -1172,9 +1187,11 @@ textarea.editable--card {
 .classico-backdrop__wash {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 12% 18%, rgba(196, 164, 106, 0.07), transparent 28%),
-    radial-gradient(circle at 88% 78%, rgba(26, 39, 68, 0.05), transparent 32%);
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(255, 255, 255, 0.55),
+    transparent 55%
+  );
 }
 
 .art--classico .art__inner {
@@ -1183,9 +1200,10 @@ textarea.editable--card {
   height: 100%;
   box-sizing: border-box;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 0.28rem;
-  padding: 1rem 1.1rem 0.75rem;
+  /* +35px no topo — título/moldura/nome/datas descem; rodapé fica no fim */
+  padding: calc(1rem + 35px) 1.1rem 0.75rem;
   width: 100%;
   min-height: 0;
 }
@@ -1200,6 +1218,10 @@ textarea.editable--card {
   max-width: 86%;
   margin-inline: auto;
   box-sizing: border-box;
+}
+
+.art--classico .classico-footer {
+  margin-top: auto;
 }
 
 .art--classico .invite-header {
@@ -1408,6 +1430,15 @@ p.classico-card__value {
   max-height: calc(1.35em * 3);
 }
 
+.classico-card__value--compact,
+input.classico-card__value--compact,
+textarea.classico-card__value--compact,
+p.classico-card__value--compact {
+  font-size: clamp(0.58rem, 2.4cqw, 0.68rem);
+  line-height: 1.3;
+  max-height: calc(1.3em * 3);
+}
+
 p.classico-card__value {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -1529,7 +1560,9 @@ input.classico-footer__field {
   align-items: center;
   justify-content: center;
   overflow: visible;
-  transform: translate(calc(-50% + 4px), calc(-50% - 110px));
+  /* valores fixos: x:5 y:0 scale:2.50 */
+  transform: translate(calc(-50% + 9px), calc(-50% - 110px)) scale(2.5);
+  transform-origin: center center;
   pointer-events: none;
 }
 
@@ -1537,9 +1570,9 @@ input.classico-footer__field {
   display: block;
   width: 100%;
   height: auto;
-  opacity: 0.14;
-  mix-blend-mode: multiply;
-  filter: brightness(0.55) saturate(0.85);
+  opacity: 0.12;
+  mix-blend-mode: normal;
+  filter: none;
   pointer-events: none;
   user-select: none;
 }

@@ -95,7 +95,10 @@ export default function LayoutClassico({
     >
       <ClassicoBackdrop />
 
-      <div className="classico-watermark" aria-hidden="true">
+      <div
+        className="classico-watermark"
+        aria-hidden="true"
+      >
         <HexLogoMark className="classico-watermark__img" />
       </div>
 
@@ -129,13 +132,17 @@ export default function LayoutClassico({
             <div className="classico-card">
               <p className="classico-card__label">DATA DA CELEBRAÇÃO</p>
               {preview ? (
-                <p className="classico-card__value">{fields.celebrationDate}</p>
+                <p
+                  className={`classico-card__value${fields.celebrationDate.length > 18 ? ' classico-card__value--compact' : ''}`}
+                >
+                  {fields.celebrationDate}
+                </p>
               ) : (
                 <EditableText
                   value={fields.celebrationDate}
                   onChange={(value) => onFieldChange('celebrationDate', value)}
                   ariaLabel="Data e horário da celebração"
-                  className="classico-card__value"
+                  className={`classico-card__value${fields.celebrationDate.length > 18 ? ' classico-card__value--compact' : ''}`}
                   multiline
                   plain
                   maxRows={3}
@@ -149,13 +156,17 @@ export default function LayoutClassico({
             <div className="classico-card">
               <p className="classico-card__label">LOCAL DA CERIMÔNIA</p>
               {preview ? (
-                <p className="classico-card__value">{fields.ceremonyPlace}</p>
+                <p
+                  className={`classico-card__value${fields.ceremonyPlace.length > 18 ? ' classico-card__value--compact' : ''}`}
+                >
+                  {fields.ceremonyPlace}
+                </p>
               ) : (
                 <EditableText
                   value={fields.ceremonyPlace}
                   onChange={(value) => onFieldChange('ceremonyPlace', value)}
                   ariaLabel="Local da cerimônia"
-                  className="classico-card__value"
+                  className={`classico-card__value${fields.ceremonyPlace.length > 18 ? ' classico-card__value--compact' : ''}`}
                   multiline
                   plain
                   maxRows={3}

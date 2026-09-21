@@ -65,7 +65,7 @@ export default function ExportSheet({
             Baixar arte
           </h2>
           <p className="export-sheet__subtitle">
-            Escolha o formato para salvar ou publicar.
+            O arquivo será baixado no tamanho do formato escolhido.
           </p>
         </header>
 

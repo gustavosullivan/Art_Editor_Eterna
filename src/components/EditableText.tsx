@@ -142,11 +142,13 @@ export default function EditableText({
     value,
     onChange: handleChange,
     onFocus: () => {
+      // Evita scrollIntoView que empurra a arte e corta o topo no editor
+      const x = window.scrollX
+      const y = window.scrollY
       window.requestAnimationFrame(() => {
-        fieldRef.current?.scrollIntoView({
-          block: 'center',
-          behavior: 'smooth',
-        })
+        window.scrollTo(x, y)
+        const canvas = fieldRef.current?.closest('.editor__canvas')
+        if (canvas) canvas.scrollTop = 0
       })
     },
     'aria-label': ariaLabel,
