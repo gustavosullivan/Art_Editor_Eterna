@@ -3,7 +3,6 @@ import PhotoUpload from '../PhotoUpload'
 import SaoLuizLogo from '../SaoLuizLogo'
 import HexLogoMark from '../HexLogoMark'
 import CardIconAsset, { RemovableBlock } from '../CardIconAsset'
-import DraggableAsset, { defaultAssetOffset } from '../DraggableAsset'
 import { SetimoTitle, type LayoutProps } from './shared'
 import { defaultPhotoTransform } from '../../types'
 
@@ -79,8 +78,6 @@ export default function LayoutSetimoDia({
   showBurialCard = true,
   showPersonName = true,
   showLogo = true,
-  cardsOffset = defaultAssetOffset,
-  onCardsOffsetChange,
   onRemoveWakeCard,
   onRemoveBurialCard,
   onRemovePersonName,
@@ -156,15 +153,7 @@ export default function LayoutSetimoDia({
           </div>
         </div>
 
-        <DraggableAsset
-          className="setimo-cards-drag"
-          offset={cardsOffset}
-          onOffsetChange={(next) => onCardsOffsetChange?.(next)}
-          disabled={!canEdit}
-          axis="x"
-          anchor="start"
-          clamp={100}
-        >
+        <div className="setimo-cards-drag">
           <div className="setimo-cards">
             {showWakeCard ? (
               <div className="setimo-card">
@@ -175,7 +164,18 @@ export default function LayoutSetimoDia({
                   onRemove={() => onRemoveWakeCard?.()}
                 />
                 <div className="setimo-card__body">
-                  <p className="setimo-card__label">DATA DA CELEBRAÇÃO</p>
+                  {preview ? (
+                    <p className="setimo-card__label">{fields.celebrationLabel}</p>
+                  ) : (
+                    <EditableText
+                      value={fields.celebrationLabel}
+                      onChange={(value) => onFieldChange('celebrationLabel', value)}
+                      ariaLabel="Título do card de data"
+                      className="setimo-card__label setimo-input"
+                      plain
+                      clampOverflow
+                    />
+                  )}
                   {preview ? (
                     <p className="setimo-card__value">{fields.celebrationDate}</p>
                   ) : (
@@ -203,7 +203,18 @@ export default function LayoutSetimoDia({
                   onRemove={() => onRemoveBurialCard?.()}
                 />
                 <div className="setimo-card__body">
-                  <p className="setimo-card__label">LOCAL DA CERIMÔNIA</p>
+                  {preview ? (
+                    <p className="setimo-card__label">{fields.ceremonyLabel}</p>
+                  ) : (
+                    <EditableText
+                      value={fields.ceremonyLabel}
+                      onChange={(value) => onFieldChange('ceremonyLabel', value)}
+                      ariaLabel="Título do card de local"
+                      className="setimo-card__label setimo-input"
+                      plain
+                      clampOverflow
+                    />
+                  )}
                   {preview ? (
                     <p className="setimo-card__value">{fields.ceremonyPlace}</p>
                   ) : (
@@ -222,7 +233,7 @@ export default function LayoutSetimoDia({
               </div>
             ) : null}
           </div>
-        </DraggableAsset>
+        </div>
 
         <footer className="setimo-footer">
           {showLogo ? (

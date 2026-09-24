@@ -3,7 +3,6 @@ import PhotoUpload from '../PhotoUpload'
 import CardIconAsset, { RemovableBlock } from '../CardIconAsset'
 import SaoLuizLogo from '../SaoLuizLogo'
 import HexLogoMark from '../HexLogoMark'
-import DraggableAsset, { defaultAssetOffset } from '../DraggableAsset'
 import type { LayoutProps } from './shared'
 import { defaultPhotoTransform } from '../../types'
 
@@ -25,8 +24,6 @@ export default function LayoutPrincipal({
   showPersonName = true,
   showPersonAge = true,
   showLogo = true,
-  logoOffset = defaultAssetOffset,
-  onLogoOffsetChange,
   onRemoveWakeCard,
   onRemoveBurialCard,
   onRemoveBirthDate,
@@ -217,14 +214,7 @@ export default function LayoutPrincipal({
       </div>
 
       {showLogo ? (
-        <DraggableAsset
-          className="tpl tpl-logo"
-          offset={logoOffset}
-          onOffsetChange={(next) => onLogoOffsetChange?.(next)}
-          disabled={!canEdit}
-          clamp={140}
-          axis="y"
-        >
+        <div className="tpl tpl-logo">
           <RemovableBlock
             label="logo São Luiz"
             interactive={canEdit}
@@ -233,7 +223,7 @@ export default function LayoutPrincipal({
           >
             <SaoLuizLogo compact className="tpl-logo__asset" />
           </RemovableBlock>
-        </DraggableAsset>
+        </div>
       ) : null}
 
       <div className="tpl tpl-footer">

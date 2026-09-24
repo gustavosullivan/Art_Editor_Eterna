@@ -11,8 +11,12 @@ export type ArtFields = {
   website: string
   /** Texto sob o nome (Missa de 7º Dia) */
   memorialNote: string
+  /** Rótulo do card de data (clássicos) */
+  celebrationLabel: string
   /** Data e horário da celebração */
   celebrationDate: string
+  /** Rótulo do card de local (clássicos) */
+  ceremonyLabel: string
   /** Local da cerimônia */
   ceremonyPlace: string
 }

@@ -12,7 +12,9 @@ export const defaultFields: ArtFields = {
   phone: '54 3312.2688',
   website: 'www.lucianocogo.com.br',
   memorialNote: 'Inserir texto',
+  celebrationLabel: 'DATA DA CELEBRAÇÃO',
   celebrationDate: 'Data e horário',
+  ceremonyLabel: 'LOCAL DA CERIMÔNIA',
   ceremonyPlace: 'Local da cerimônia',
 }
 

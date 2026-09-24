@@ -41,10 +41,14 @@ function fileSlug(personName: string) {
 }
 
 function resolveExportBg(target: HTMLElement) {
-  const fromVar = getComputedStyle(target).getPropertyValue('--classico-paper').trim()
+  const style = getComputedStyle(target)
+  const fromVar =
+    style.getPropertyValue('--classico-paper').trim() ||
+    style.getPropertyValue('--setimo-paper').trim() ||
+    style.getPropertyValue('--invite-paper').trim()
   if (fromVar) return fromVar
 
-  const paper = getComputedStyle(target).backgroundColor
+  const paper = style.backgroundColor
   if (paper && paper !== 'rgba(0, 0, 0, 0)' && paper !== 'transparent') return paper
 
   return '#f7f8fa'
@@ -127,11 +131,15 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
 
         applyClippedPhotosToClone(target, element)
 
-        element.querySelectorAll<HTMLElement>('.classico-watermark__img').forEach((img) => {
-          img.style.mixBlendMode = 'normal'
-          img.style.filter = 'none'
-          img.style.opacity = '0.11'
-        })
+        element
+          .querySelectorAll<HTMLElement>(
+            '.classico-watermark__img, .setimo-watermark__img, .tpl-watermark__img',
+          )
+          .forEach((img) => {
+            img.style.mixBlendMode = 'normal'
+            img.style.filter = 'none'
+            img.style.opacity = '0.11'
+          })
         element.querySelectorAll<HTMLElement>('.classico-backdrop__wash').forEach((el) => {
           el.style.opacity = '0'
         })

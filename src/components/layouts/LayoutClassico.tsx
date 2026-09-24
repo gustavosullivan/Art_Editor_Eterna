@@ -130,7 +130,18 @@ export default function LayoutClassico({
         <div className="classico-cards">
           {showWakeCard ? (
             <div className="classico-card">
-              <p className="classico-card__label">DATA DA CELEBRAÇÃO</p>
+              {preview ? (
+                <p className="classico-card__label">{fields.celebrationLabel}</p>
+              ) : (
+                <EditableText
+                  value={fields.celebrationLabel}
+                  onChange={(value) => onFieldChange('celebrationLabel', value)}
+                  ariaLabel="Título do card de data"
+                  className="classico-card__label"
+                  plain
+                  clampOverflow
+                />
+              )}
               {preview ? (
                 <p
                   className={`classico-card__value${fields.celebrationDate.length > 18 ? ' classico-card__value--compact' : ''}`}
@@ -154,7 +165,18 @@ export default function LayoutClassico({
 
           {showBurialCard ? (
             <div className="classico-card">
-              <p className="classico-card__label">LOCAL DA CERIMÔNIA</p>
+              {preview ? (
+                <p className="classico-card__label">{fields.ceremonyLabel}</p>
+              ) : (
+                <EditableText
+                  value={fields.ceremonyLabel}
+                  onChange={(value) => onFieldChange('ceremonyLabel', value)}
+                  ariaLabel="Título do card de local"
+                  className="classico-card__label"
+                  plain
+                  clampOverflow
+                />
+              )}
               {preview ? (
                 <p
                   className={`classico-card__value${fields.ceremonyPlace.length > 18 ? ' classico-card__value--compact' : ''}`}

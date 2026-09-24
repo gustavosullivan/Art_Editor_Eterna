@@ -982,7 +982,9 @@
 }
 
 /* html2canvas suja mix-blend / filter — achata na exportação */
-.art.is-exporting .classico-watermark__img {
+.art.is-exporting .classico-watermark__img,
+.art.is-exporting .setimo-watermark__img,
+.art.is-exporting .tpl-watermark__img {
   mix-blend-mode: normal !important;
   filter: none !important;
   opacity: 0.11 !important;
@@ -1393,14 +1395,27 @@ textarea.editable--card {
   flex-shrink: 0;
 }
 
-.classico-card__label {
+.classico-card__label,
+input.classico-card__label {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  background: transparent;
   margin: 0 0 0.2rem;
+  padding: 0;
+  font-family: inherit;
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--classico-navy);
   text-align: left;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .classico-card__value,
@@ -2048,6 +2063,7 @@ input.classico-footer__field {
   background: transparent;
   border-radius: 0;
   overflow: visible;
+  transform: translateX(-50%);
 }
 
 .art--principal .tpl-logo__block {
@@ -2435,14 +2451,6 @@ input.classico-footer__field {
 .art--principal .tpl-footer .tpl-input--contact {
   flex: 0 0 auto;
   max-width: 10.5rem;
-}
-
-.art--principal .draggable-asset--active {
-  cursor: grab;
-}
-
-.art--principal .draggable-asset--active:active {
-  cursor: grabbing;
 }
 
 .art--principal .tpl-footer__dot {
@@ -3095,14 +3103,6 @@ p.setimo-note {
   min-height: 0;
 }
 
-.art--setimo .setimo-cards-drag.draggable-asset--active {
-  cursor: grab;
-}
-
-.art--setimo .setimo-cards-drag.draggable-asset--active:active {
-  cursor: grabbing;
-}
-
 .setimo-cards {
   display: flex;
   flex-direction: column;
@@ -3152,14 +3152,25 @@ p.setimo-note {
   gap: 0.1rem;
 }
 
-.setimo-card__label {
+.setimo-card__label,
+input.setimo-card__label {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  background: transparent;
   margin: 0;
+  padding: 0;
   font-family: 'Manrope', system-ui, sans-serif;
   font-size: clamp(0.48rem, 2cqw, 0.58rem);
   font-weight: 700;
   letter-spacing: 0.12em;
   color: var(--setimo-navy);
   text-transform: uppercase;
+  outline: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .setimo-card__value,
@@ -3327,6 +3338,11 @@ input.setimo-footer__field {
   .art--setimo .setimo-footer .brand-logo__img {
     height: 1.35rem;
     max-width: 120px;
+  }
+
+  /* Longe do detalhe azul do canto inferior esquerdo (só mobile) */
+  .art--setimo .setimo-footer__contact {
+    transform: translateX(18px);
   }
 
   .carousel__nav {
