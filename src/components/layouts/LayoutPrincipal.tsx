@@ -31,12 +31,16 @@ export default function LayoutPrincipal({
   onRemovePersonName,
   onRemovePersonAge,
   onRemoveLogo,
+  classicoBorder = 'off',
 }: LayoutProps) {
   const templateSrc = `${import.meta.env.BASE_URL}templates/convite-principal.png`
   const canEdit = !preview
 
   return (
     <article className={`art art--principal${preview ? ' art--principal-preview' : ''}`}>
+      {!preview && classicoBorder === 'navy' ? (
+        <div className="classico-edge classico-edge--navy" aria-hidden="true" />
+      ) : null}
       <img
         className="art__template"
         src={templateSrc}

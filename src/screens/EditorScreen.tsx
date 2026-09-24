@@ -6,6 +6,7 @@ import { layoutOptions } from '../data/defaults'
 import { exportArt, type ExportPreset } from '../exportArt'
 import type { AssetOffset } from '../components/DraggableAsset'
 import type { ArtFields, ClassicoBorderMode, LayoutId, PhotoTransform } from '../types'
+import { watermarkTunes } from '../data/watermarks'
 
 type EditorScreenProps = {
   layoutId: LayoutId
@@ -44,14 +45,10 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
 }
 
-const BORDER_CYCLE: ClassicoBorderMode[] = ['off', 'combo', 'navy', 'gold']
-
-const BORDER_LABEL: Record<ClassicoBorderMode, string> = {
+const BORDER_LABEL = {
   off: 'Borda',
-  combo: 'Mista',
   navy: 'Azul',
-  gold: 'Ouro',
-}
+} as const
 
 export default function EditorScreen({
   layoutId,
@@ -83,14 +80,24 @@ export default function EditorScreen({
   onRemoveLogo,
   onResetEdits,
   onBack,
-  onChangeLayout,
 }: EditorScreenProps) {
   const artRef = useRef<HTMLDivElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const [exportOpen, setExportOpen] = useState(false)
   const [downloading, setDownloading] = useState(false)
+  const [flash, setFlash] = useState<'back' | 'undo' | null>(null)
 
-  const isClassicoLayout = layoutId === 'classico' || layoutId === 'classico7dias'
+  const borderOn = classicoBorder === 'navy'
+
+  function blink(which: 'back' | 'undo', action: () => void, delay = 0) {
+    setFlash(null)
+    window.setTimeout(() => setFlash(which), 16)
+    window.setTimeout(() => {
+      setFlash((current) => (current === which ? null : current))
+    }, 560)
+    if (delay > 0) window.setTimeout(action, delay)
+    else action()
+  }
 
   function handleFile(file: File | undefined) {
     if (!file || !file.type.startsWith('image/')) return
@@ -110,7 +117,7 @@ export default function EditorScreen({
         target,
         preset,
         fields.personName,
-        isClassicoLayout ? classicoBorder : 'off',
+        classicoBorder,
       )
       setExportOpen(false)
     } catch (error) {
@@ -122,9 +129,7 @@ export default function EditorScreen({
   }
 
   function cycleBorder() {
-    const index = BORDER_CYCLE.indexOf(classicoBorder)
-    const next = BORDER_CYCLE[(index + 1) % BORDER_CYCLE.length]
-    onClassicoBorderChange(next)
+    onClassicoBorderChange(borderOn ? 'off' : 'navy')
   }
 
   const layoutName =
@@ -137,24 +142,14 @@ export default function EditorScreen({
   return (
     <main className="editor">
       <header className="editor__bar">
-        <div className="editor__bar-start">
-          <button type="button" className="editor__bar-btn" onClick={onBack}>
-            Voltar
-          </button>
-          {isClassicoLayout ? (
-            <button
-              type="button"
-              className={`editor__bar-btn editor__bar-btn--border${classicoBorder !== 'off' ? ' is-on' : ''}`}
-              onClick={cycleBorder}
-              aria-label={`Moldura: ${classicoBorder === 'off' ? 'desligada' : classicoBorder}. Toque para alternar.`}
-            >
-              {BORDER_LABEL[classicoBorder]}
-            </button>
-          ) : null}
-        </div>
         <p className="editor__bar-title">{layoutName}</p>
-        <button type="button" className="editor__bar-btn editor__bar-btn--end" onClick={onChangeLayout}>
-          Layouts
+        <button
+          type="button"
+          className="editor__download editor__download--bar"
+          onClick={() => setExportOpen(true)}
+          disabled={downloading}
+        >
+          {downloading ? 'Gerando…' : 'Baixar arte'}
         </button>
       </header>
 
@@ -187,6 +182,11 @@ export default function EditorScreen({
             onRemovePersonName={onRemovePersonName}
             onRemovePersonAge={onRemovePersonAge}
             onRemoveLogo={onRemoveLogo}
+            watermark={
+              layoutId === 'classico' || layoutId === 'classico7dias'
+                ? watermarkTunes[layoutId]
+                : undefined
+            }
           />
         </EditorArtFit>
       </div>
@@ -277,23 +277,27 @@ export default function EditorScreen({
         </div>
 
         <div className="editor__mobile-dock">
-          <div className="editor__mobile-dock-start">
-            <button type="button" className="editor__glass-btn" onClick={onBack}>
-              Voltar
-            </button>
-            {isClassicoLayout ? (
-              <button
-                type="button"
-                className={`editor__glass-btn editor__glass-btn--border${classicoBorder !== 'off' ? ' is-on' : ''}`}
-                onClick={cycleBorder}
-                aria-label={`Moldura: ${classicoBorder === 'off' ? 'desligada' : classicoBorder}. Toque para alternar.`}
-              >
-                {BORDER_LABEL[classicoBorder]}
-              </button>
-            ) : null}
-          </div>
-          <button type="button" className="editor__glass-btn" onClick={onResetEdits}>
+          <button
+            type="button"
+            className={`editor__glass-btn${flash === 'back' ? ' is-flash' : ''}`}
+            onClick={() => blink('back', onBack, 280)}
+          >
+            Voltar
+          </button>
+          <button
+            type="button"
+            className={`editor__glass-btn${flash === 'undo' ? ' is-flash' : ''}`}
+            onClick={() => blink('undo', onResetEdits)}
+          >
             Desfazer
+          </button>
+          <button
+            type="button"
+            className={`editor__glass-btn editor__glass-btn--border${borderOn ? ' is-on' : ''}`}
+            onClick={cycleBorder}
+            aria-label={borderOn ? 'Moldura azul. Toque para tirar.' : 'Sem moldura. Toque para borda azul.'}
+          >
+            {borderOn ? BORDER_LABEL.navy : BORDER_LABEL.off}
           </button>
         </div>
 
@@ -305,14 +309,6 @@ export default function EditorScreen({
           onChange={(event) => handleFile(event.target.files?.[0])}
         />
 
-        <button
-          type="button"
-          className="editor__download"
-          onClick={() => setExportOpen(true)}
-          disabled={downloading}
-        >
-          {downloading ? 'Gerando…' : 'Baixar arte'}
-        </button>
       </div>
 
       <ExportSheet

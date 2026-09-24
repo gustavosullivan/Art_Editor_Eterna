@@ -2,6 +2,7 @@ import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointer
 import ArtLayout from '../components/layouts/ArtLayout'
 import PreviewFit from '../components/PreviewFit'
 import { defaultFields, layoutOptions } from '../data/defaults'
+import { watermarkTunes } from '../data/watermarks'
 import type { LayoutId } from '../types'
 
 type WelcomeScreenProps = {
@@ -128,6 +129,11 @@ export default function WelcomeScreen({ onConfirm, onBack }: WelcomeScreenProps)
                             onFieldChange={() => undefined}
                             onPhotoChange={() => undefined}
                             preview
+                            watermark={
+                              option.id === 'classico' || option.id === 'classico7dias'
+                                ? watermarkTunes[option.id]
+                                : undefined
+                            }
                           />
                         </PreviewFit>
                       </div>
