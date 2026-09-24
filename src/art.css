@@ -1034,7 +1034,7 @@
 .art.is-exporting.art--classico .photo-frame--rounded .photo-frame__hit {
   box-shadow: none !important;
   filter: none !important;
-  border: 2px solid var(--classico-gold);
+  border: 2px solid #243656;
 }
 
 /* Person / dates / cards */
@@ -1391,9 +1391,9 @@ textarea.editable--card {
   aspect-ratio: 0.8 / 1;
   border-radius: 20%;
   box-shadow:
-    0 0 0 1.2px var(--classico-gold),
+    0 0 0 1.2px #243656,
     0 0 0 2.5px var(--classico-paper),
-    0 0 0 3.6px var(--classico-gold);
+    0 0 0 3.6px #243656;
 }
 
 .art--classico .photo-frame--rounded .photo-frame__img,
@@ -1431,6 +1431,7 @@ textarea.editable--card {
 .art--classico .invite-person__age-row,
 .art--classico .editable--age {
   font-size: 0.72rem;
+  color: #243656;
 }
 
 .art--classico .invite-dates {
@@ -1484,7 +1485,7 @@ textarea.editable--card {
 .classico-card {
   width: 100%;
   padding: 0.38rem 0.62rem;
-  border: 1.45px solid var(--classico-gold);
+  border: 1.45px solid #243656;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.72);
   box-sizing: border-box;
