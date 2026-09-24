@@ -1213,7 +1213,7 @@ textarea.editable--card {
   border: none;
 }
 
-/* Contorno nas extremidades da arte (exportável via border, sem sombra externa) */
+/* Contorno nas extremidades da arte */
 .classico-edge {
   position: absolute;
   inset: 0;
@@ -1240,17 +1240,11 @@ textarea.editable--card {
 }
 
 .classico-edge--navy {
-  border: 2px solid var(--classico-border-navy);
+  border: 1.75px solid var(--classico-border-navy);
 }
 
 .classico-edge--gold {
-  border: 2px solid var(--classico-gold);
-}
-
-.art.is-exporting .classico-edge,
-.art.is-exporting .classico-edge__inner {
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
+  border: 1.75px solid var(--classico-gold);
 }
 
 .classico-backdrop {

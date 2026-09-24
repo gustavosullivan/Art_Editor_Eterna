@@ -3,7 +3,7 @@ export type LayoutId = 'classico7dias' | 'classico' | 'principal' | 'setimo'
 /** Moldura dos layouts clássicos */
 export type ClassicoBorderMode = 'combo' | 'navy' | 'gold' | 'off'
 
-export const defaultClassicoBorder: ClassicoBorderMode = 'combo'
+export const defaultClassicoBorder: ClassicoBorderMode = 'off'
 
 export type ArtFields = {
   personName: string

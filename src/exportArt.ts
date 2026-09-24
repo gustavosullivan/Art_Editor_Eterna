@@ -1,6 +1,7 @@
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
 import { applyClippedPhotosToClone } from './exportClippedPhoto'
+import type { ClassicoBorderMode } from './types'
 
 export type ExportPreset = 'pdf' | 'instagram' | 'facebook'
 
@@ -147,7 +148,7 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
           el.style.opacity = '0'
         })
 
-        // Moldura: esconde no clone e redesenha no canvas (extremidades fiéis)
+        // Moldura CSS some na captura — pintamos depois no canvas final
         element.querySelectorAll<HTMLElement>('.classico-edge').forEach((el) => {
           el.style.display = 'none'
         })
@@ -208,46 +209,38 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
   }
 }
 
-/** Moldura clássica nas 4 extremidades (fillRect — sem corte de stroke) */
-function burnClassicoEdge(canvas: HTMLCanvasElement, art: HTMLElement) {
-  const edge = art.querySelector('.classico-edge')
-  if (!edge) return canvas
-
-  let mode: 'combo' | 'navy' | 'gold' | null = null
-  if (edge.classList.contains('classico-edge--combo')) mode = 'combo'
-  else if (edge.classList.contains('classico-edge--navy')) mode = 'navy'
-  else if (edge.classList.contains('classico-edge--gold')) mode = 'gold'
-  if (!mode) return canvas
+/**
+ * Pinta a moldura direto no canvas final (4 lados, espessura estável).
+ * Não depende do tamanho do DOM — evita borda grossa/cortada.
+ */
+function paintClassicoBorder(canvas: HTMLCanvasElement, mode: ClassicoBorderMode) {
+  if (mode === 'off') return canvas
 
   const ctx = canvas.getContext('2d')
   if (!ctx) return canvas
 
   const w = canvas.width
   const h = canvas.height
-  // Espessura proporcional à arte em tela (~1.5–2px CSS), limitada pra não engrossar no export
-  const cssW = Math.max(1, art.offsetWidth)
-  const unit = w / cssW
-  const outer = Math.max(2, Math.round(1.5 * unit))
-  const inner = Math.max(2, Math.round(1.25 * unit))
+  const shortSide = Math.min(w, h)
+  // ~2–4px em 1080; fina e uniforme
+  const outer = Math.max(2, Math.min(4, Math.round(shortSide * 0.0026)))
+  const inner = Math.max(1, Math.min(3, outer - 1))
   const navy = '#152a52'
   const gold = '#d4a84a'
 
   function drawFrame(color: string, inset: number, thickness: number) {
+    if (thickness < 1) return
+    const i = Math.max(0, inset)
     const t = thickness
-    const i = inset
-    if (t < 1 || w - i * 2 <= 0 || h - i * 2 <= 0) return
-    ctx!.fillStyle = color
-    // topo
-    ctx!.fillRect(i, i, w - i * 2, t)
-    // base
-    ctx!.fillRect(i, h - i - t, w - i * 2, t)
-    // esquerda
-    ctx!.fillRect(i, i, t, h - i * 2)
-    // direita
-    ctx!.fillRect(w - i - t, i, t, h - i * 2)
+    if (w - i * 2 < t * 2 || h - i * 2 < t * 2) return
+
+    ctx.fillStyle = color
+    ctx.fillRect(i, i, w - i * 2, t)
+    ctx.fillRect(i, h - i - t, w - i * 2, t)
+    ctx.fillRect(i, i + t, t, h - i * 2 - t * 2)
+    ctx.fillRect(w - i - t, i + t, t, h - i * 2 - t * 2)
   }
 
-  ctx.save()
   if (mode === 'combo') {
     drawFrame(navy, 0, outer)
     drawFrame(gold, outer, inner)
@@ -256,11 +249,11 @@ function burnClassicoEdge(canvas: HTMLCanvasElement, art: HTMLElement) {
   } else {
     drawFrame(gold, 0, outer)
   }
-  ctx.restore()
+
   return canvas
 }
 
-/** Preenche o canvas social no tamanho exato (mesma proporção 4:5 — sem faixa nem corte) */
+/** Escala a captura pro tamanho social exato (arte já é 4:5) */
 function fitToSocial(
   source: HTMLCanvasElement,
   w: number,
@@ -277,43 +270,8 @@ function fitToSocial(
   ctx.fillRect(0, 0, w, h)
   ctx.imageSmoothingEnabled = true
   ctx.imageSmoothingQuality = 'high'
-  // Proporção já alinhada na captura — escala direto pro pixel size do preset
   ctx.drawImage(source, 0, 0, w, h)
   return out
-}
-
-/** Força a arte na proporção do preset social antes de capturar */
-async function withSocialAspect<T>(
-  target: HTMLElement,
-  size: { w: number; h: number },
-  run: () => Promise<T>,
-): Promise<T> {
-  const prev = {
-    aspectRatio: target.style.aspectRatio,
-    width: target.style.width,
-    height: target.style.height,
-    maxWidth: target.style.maxWidth,
-  }
-
-  const baseW = Math.max(1, Math.round(target.offsetWidth))
-  const baseH = Math.max(1, Math.round((baseW * size.h) / size.w))
-
-  target.style.aspectRatio = 'unset'
-  target.style.maxWidth = 'none'
-  target.style.width = `${baseW}px`
-  target.style.height = `${baseH}px`
-
-  await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
-  await new Promise((resolve) => setTimeout(resolve, 40))
-
-  try {
-    return await run()
-  } finally {
-    target.style.aspectRatio = prev.aspectRatio
-    target.style.width = prev.width
-    target.style.height = prev.height
-    target.style.maxWidth = prev.maxWidth
-  }
 }
 
 function triggerDownload(href: string, filename: string) {
@@ -340,7 +298,6 @@ async function saveBlob(blob: Blob, filename: string) {
       }
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') return
-      // cai no download se o share falhar
     }
   }
 
@@ -369,6 +326,7 @@ export async function exportArt(
   target: HTMLElement,
   preset: ExportPreset,
   personName: string,
+  classicoBorder: ClassicoBorderMode = 'off',
 ) {
   const slug = fileSlug(personName) || 'sao-luiz'
   const bg = resolveExportBg(target)
@@ -376,7 +334,7 @@ export async function exportArt(
   await withNaturalArtScale(target, async () => {
     if (preset === 'pdf') {
       const source = await captureArt(target, 2)
-      burnClassicoEdge(source, target)
+      paintClassicoBorder(source, classicoBorder)
       const w = source.width
       const h = source.height
       const pdf = new jsPDF({
@@ -394,19 +352,16 @@ export async function exportArt(
     }
 
     const size = SOCIAL_SIZES[preset]
-    await withSocialAspect(target, size, async () => {
-      const artW = Math.max(1, target.offsetWidth)
-      const artH = Math.max(1, target.offsetHeight)
-      // Captura com resolução suficiente pro formato final
-      const pixelRatio = Math.min(
-        4,
-        Math.max(2, Math.ceil(Math.max(size.w / artW, size.h / artH) * 1.05)),
-      )
-      const source = await captureArt(target, pixelRatio)
-      const social = fitToSocial(source, size.w, size.h, bg)
-      burnClassicoEdge(social, target)
-      const blob = await canvasToBlob(social, 'image/jpeg', 0.92)
-      await saveBlob(blob, `homenagem-${slug}-${preset}.jpg`)
-    })
+    const artW = Math.max(1, target.offsetWidth)
+    const artH = Math.max(1, target.offsetHeight)
+    const pixelRatio = Math.min(
+      3,
+      Math.max(2, Math.ceil(Math.max(size.w / artW, size.h / artH))),
+    )
+    const source = await captureArt(target, pixelRatio)
+    const social = fitToSocial(source, size.w, size.h, bg)
+    paintClassicoBorder(social, classicoBorder)
+    const blob = await canvasToBlob(social, 'image/jpeg', 0.92)
+    await saveBlob(blob, `homenagem-${slug}-${preset}.jpg`)
   })
 }

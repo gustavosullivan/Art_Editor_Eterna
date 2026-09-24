@@ -106,7 +106,12 @@ export default function EditorScreen({
 
     setDownloading(true)
     try {
-      await exportArt(target, preset, fields.personName)
+      await exportArt(
+        target,
+        preset,
+        fields.personName,
+        isClassicoLayout ? classicoBorder : 'off',
+      )
       setExportOpen(false)
     } catch (error) {
       console.error(error)
