@@ -1198,7 +1198,7 @@ textarea.editable--card {
   --classico-border-navy: #152a52;
   --classico-paper: #e8eef6;
   width: min(100%, 400px);
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 768 / 1024;
   background: linear-gradient(
     185deg,
     #f5f8fc 0%,
@@ -1273,7 +1273,7 @@ textarea.editable--card {
   justify-content: flex-start;
   gap: 0.28rem;
   /* +35px no topo — título/moldura/nome/datas descem; rodapé fica no fim */
-  padding: calc(1rem + 35px) 1.1rem 0.75rem;
+  padding: calc(1rem + 18px) 1.1rem 0.75rem;
   width: 100%;
   min-height: 0;
 }
@@ -1848,7 +1848,7 @@ input.classico-footer__field {
 .art--principal {
   position: relative;
   width: min(100%, 400px);
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 768 / 1024;
   background: #efeff1;
   overflow: hidden;
   padding: 0;
@@ -2843,7 +2843,7 @@ input.classico-footer__field {
   --setimo-gold: #c4a46a;
   --setimo-paper: #efeff1;
   width: min(100%, 400px);
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 768 / 1086;
   background: var(--setimo-paper);
   overflow: hidden;
   padding: 0;

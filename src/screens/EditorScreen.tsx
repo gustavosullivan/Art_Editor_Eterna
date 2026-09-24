@@ -44,13 +44,13 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
 }
 
-const BORDER_CYCLE: ClassicoBorderMode[] = ['combo', 'navy', 'gold', 'off']
+const BORDER_CYCLE: ClassicoBorderMode[] = ['off', 'combo', 'navy', 'gold']
 
 const BORDER_LABEL: Record<ClassicoBorderMode, string> = {
-  combo: 'Borda · Mista',
-  navy: 'Borda · Azul',
-  gold: 'Borda · Ouro',
-  off: 'Borda · Off',
+  off: 'Borda',
+  combo: 'Mista',
+  navy: 'Azul',
+  gold: 'Ouro',
 }
 
 export default function EditorScreen({
@@ -146,7 +146,7 @@ export default function EditorScreen({
               type="button"
               className={`editor__bar-btn editor__bar-btn--border${classicoBorder !== 'off' ? ' is-on' : ''}`}
               onClick={cycleBorder}
-              aria-label={`Moldura da arte: ${BORDER_LABEL[classicoBorder]}. Toque para alternar.`}
+              aria-label={`Moldura: ${classicoBorder === 'off' ? 'desligada' : classicoBorder}. Toque para alternar.`}
             >
               {BORDER_LABEL[classicoBorder]}
             </button>
@@ -286,7 +286,7 @@ export default function EditorScreen({
                 type="button"
                 className={`editor__glass-btn editor__glass-btn--border${classicoBorder !== 'off' ? ' is-on' : ''}`}
                 onClick={cycleBorder}
-                aria-label={`Moldura da arte: ${BORDER_LABEL[classicoBorder]}. Toque para alternar.`}
+                aria-label={`Moldura: ${classicoBorder === 'off' ? 'desligada' : classicoBorder}. Toque para alternar.`}
               >
                 {BORDER_LABEL[classicoBorder]}
               </button>

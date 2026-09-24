@@ -210,19 +210,24 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
 }
 
 /**
- * Pinta a moldura direto no canvas final (4 lados, espessura estável).
- * Não depende do tamanho do DOM — evita borda grossa/cortada.
+ * Pinta a moldura no canvas final, alinhada à arte (não à faixa do contain).
+ * artRect = área onde a arte foi desenhada dentro do canvas.
  */
-function paintClassicoBorder(canvas: HTMLCanvasElement, mode: ClassicoBorderMode) {
+function paintClassicoBorder(
+  canvas: HTMLCanvasElement,
+  mode: ClassicoBorderMode,
+  artRect?: { x: number; y: number; w: number; h: number },
+) {
   if (mode === 'off') return canvas
 
   const ctx = canvas.getContext('2d')
   if (!ctx) return canvas
 
-  const w = canvas.width
-  const h = canvas.height
+  const x0 = artRect?.x ?? 0
+  const y0 = artRect?.y ?? 0
+  const w = artRect?.w ?? canvas.width
+  const h = artRect?.h ?? canvas.height
   const shortSide = Math.min(w, h)
-  // ~2–4px em 1080; fina e uniforme
   const outer = Math.max(2, Math.min(4, Math.round(shortSide * 0.0026)))
   const inner = Math.max(1, Math.min(3, outer - 1))
   const navy = '#152a52'
@@ -236,10 +241,10 @@ function paintClassicoBorder(canvas: HTMLCanvasElement, mode: ClassicoBorderMode
     if (w - i * 2 < t * 2 || h - i * 2 < t * 2) return
 
     g.fillStyle = color
-    g.fillRect(i, i, w - i * 2, t)
-    g.fillRect(i, h - i - t, w - i * 2, t)
-    g.fillRect(i, i + t, t, h - i * 2 - t * 2)
-    g.fillRect(w - i - t, i + t, t, h - i * 2 - t * 2)
+    g.fillRect(x0 + i, y0 + i, w - i * 2, t)
+    g.fillRect(x0 + i, y0 + h - i - t, w - i * 2, t)
+    g.fillRect(x0 + i, y0 + i + t, t, h - i * 2 - t * 2)
+    g.fillRect(x0 + w - i - t, y0 + i + t, t, h - i * 2 - t * 2)
   }
 
   if (mode === 'combo') {
@@ -254,25 +259,33 @@ function paintClassicoBorder(canvas: HTMLCanvasElement, mode: ClassicoBorderMode
   return canvas
 }
 
-/** Escala a captura pro tamanho social exato (arte já é 4:5) */
+/** Encaixa a arte no formato social sem cortar nem distorcer (contain) */
 function fitToSocial(
   source: HTMLCanvasElement,
   w: number,
   h: number,
   bg: string,
-) {
+): { canvas: HTMLCanvasElement; artRect: { x: number; y: number; w: number; h: number } } {
   const out = document.createElement('canvas')
   out.width = w
   out.height = h
   const ctx = out.getContext('2d')
-  if (!ctx) return source
+  if (!ctx) {
+    return { canvas: source, artRect: { x: 0, y: 0, w: source.width, h: source.height } }
+  }
 
   ctx.fillStyle = bg
   ctx.fillRect(0, 0, w, h)
+
+  const scale = Math.min(w / source.width, h / source.height)
+  const dw = source.width * scale
+  const dh = source.height * scale
+  const dx = (w - dw) / 2
+  const dy = (h - dh) / 2
   ctx.imageSmoothingEnabled = true
   ctx.imageSmoothingQuality = 'high'
-  ctx.drawImage(source, 0, 0, w, h)
-  return out
+  ctx.drawImage(source, dx, dy, dw, dh)
+  return { canvas: out, artRect: { x: dx, y: dy, w: dw, h: dh } }
 }
 
 function triggerDownload(href: string, filename: string) {
@@ -360,8 +373,8 @@ export async function exportArt(
       Math.max(2, Math.ceil(Math.max(size.w / artW, size.h / artH))),
     )
     const source = await captureArt(target, pixelRatio)
-    const social = fitToSocial(source, size.w, size.h, bg)
-    paintClassicoBorder(social, classicoBorder)
+    const { canvas: social, artRect } = fitToSocial(source, size.w, size.h, bg)
+    paintClassicoBorder(social, classicoBorder, artRect)
     const blob = await canvasToBlob(social, 'image/jpeg', 0.92)
     await saveBlob(blob, `homenagem-${slug}-${preset}.jpg`)
   })
