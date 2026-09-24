@@ -227,6 +227,7 @@ function paintClassicoBorder(canvas: HTMLCanvasElement, mode: ClassicoBorderMode
   const inner = Math.max(1, Math.min(3, outer - 1))
   const navy = '#152a52'
   const gold = '#d4a84a'
+  const g = ctx
 
   function drawFrame(color: string, inset: number, thickness: number) {
     if (thickness < 1) return
@@ -234,11 +235,11 @@ function paintClassicoBorder(canvas: HTMLCanvasElement, mode: ClassicoBorderMode
     const t = thickness
     if (w - i * 2 < t * 2 || h - i * 2 < t * 2) return
 
-    ctx.fillStyle = color
-    ctx.fillRect(i, i, w - i * 2, t)
-    ctx.fillRect(i, h - i - t, w - i * 2, t)
-    ctx.fillRect(i, i + t, t, h - i * 2 - t * 2)
-    ctx.fillRect(w - i - t, i + t, t, h - i * 2 - t * 2)
+    g.fillStyle = color
+    g.fillRect(i, i, w - i * 2, t)
+    g.fillRect(i, h - i - t, w - i * 2, t)
+    g.fillRect(i, i + t, t, h - i * 2 - t * 2)
+    g.fillRect(w - i - t, i + t, t, h - i * 2 - t * 2)
   }
 
   if (mode === 'combo') {
