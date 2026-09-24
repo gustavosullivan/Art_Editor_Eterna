@@ -1225,26 +1225,26 @@ textarea.editable--card {
 
 .classico-edge__inner {
   position: absolute;
-  inset: 2.5px;
+  inset: 1.5px;
   box-sizing: border-box;
   border-radius: 0;
   pointer-events: none;
 }
 
 .classico-edge--combo {
-  border: 2.5px solid var(--classico-border-navy);
+  border: 1.5px solid var(--classico-border-navy);
 }
 
 .classico-edge--combo .classico-edge__inner {
-  border: 2px solid var(--classico-gold);
+  border: 1.25px solid var(--classico-gold);
 }
 
 .classico-edge--navy {
-  border: 3px solid var(--classico-border-navy);
+  border: 2px solid var(--classico-border-navy);
 }
 
 .classico-edge--gold {
-  border: 3px solid var(--classico-gold);
+  border: 2px solid var(--classico-gold);
 }
 
 .art.is-exporting .classico-edge,

@@ -208,7 +208,7 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
   }
 }
 
-/** Redesenha a moldura clássica nas extremidades do canvas (export fiel) */
+/** Moldura clássica nas 4 extremidades (fillRect — sem corte de stroke) */
 function burnClassicoEdge(canvas: HTMLCanvasElement, art: HTMLElement) {
   const edge = art.querySelector('.classico-edge')
   if (!edge) return canvas
@@ -224,34 +224,37 @@ function burnClassicoEdge(canvas: HTMLCanvasElement, art: HTMLElement) {
 
   const w = canvas.width
   const h = canvas.height
-  const artW = Math.max(1, art.offsetWidth)
-  const unit = w / artW
+  // Espessura proporcional à arte em tela (~1.5–2px CSS), limitada pra não engrossar no export
+  const cssW = Math.max(1, art.offsetWidth)
+  const unit = w / cssW
+  const outer = Math.max(2, Math.round(1.5 * unit))
+  const inner = Math.max(2, Math.round(1.25 * unit))
   const navy = '#152a52'
   const gold = '#d4a84a'
 
-  function strokeFrame(color: string, insetCss: number, widthCss: number) {
-    const line = Math.max(1, widthCss * unit)
-    const inset = insetCss * unit
-    ctx!.strokeStyle = color
-    ctx!.lineWidth = line
-    ctx!.lineJoin = 'miter'
-    const half = line / 2
-    ctx!.strokeRect(
-      inset + half,
-      inset + half,
-      Math.max(0, w - inset * 2 - line),
-      Math.max(0, h - inset * 2 - line),
-    )
+  function drawFrame(color: string, inset: number, thickness: number) {
+    const t = thickness
+    const i = inset
+    if (t < 1 || w - i * 2 <= 0 || h - i * 2 <= 0) return
+    ctx!.fillStyle = color
+    // topo
+    ctx!.fillRect(i, i, w - i * 2, t)
+    // base
+    ctx!.fillRect(i, h - i - t, w - i * 2, t)
+    // esquerda
+    ctx!.fillRect(i, i, t, h - i * 2)
+    // direita
+    ctx!.fillRect(w - i - t, i, t, h - i * 2)
   }
 
   ctx.save()
   if (mode === 'combo') {
-    strokeFrame(navy, 0, 2.5)
-    strokeFrame(gold, 2.5, 2)
+    drawFrame(navy, 0, outer)
+    drawFrame(gold, outer, inner)
   } else if (mode === 'navy') {
-    strokeFrame(navy, 0, 3)
+    drawFrame(navy, 0, outer)
   } else {
-    strokeFrame(gold, 0, 3)
+    drawFrame(gold, 0, outer)
   }
   ctx.restore()
   return canvas
@@ -400,8 +403,8 @@ export async function exportArt(
         Math.max(2, Math.ceil(Math.max(size.w / artW, size.h / artH) * 1.05)),
       )
       const source = await captureArt(target, pixelRatio)
-      burnClassicoEdge(source, target)
       const social = fitToSocial(source, size.w, size.h, bg)
+      burnClassicoEdge(social, target)
       const blob = await canvasToBlob(social, 'image/jpeg', 0.92)
       await saveBlob(blob, `homenagem-${slug}-${preset}.jpg`)
     })
