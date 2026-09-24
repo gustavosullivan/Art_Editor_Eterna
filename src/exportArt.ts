@@ -137,11 +137,19 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
           )
           .forEach((img) => {
             img.style.mixBlendMode = 'normal'
-            img.style.filter = 'none'
-            img.style.opacity = '0.11'
+            const isClassico = img.classList.contains('classico-watermark__img')
+            img.style.filter = isClassico
+              ? 'brightness(0.72) sepia(0.9) hue-rotate(185deg) saturate(2.8)'
+              : 'none'
+            img.style.opacity = isClassico ? '0.26' : '0.11'
           })
         element.querySelectorAll<HTMLElement>('.classico-backdrop__wash').forEach((el) => {
           el.style.opacity = '0'
+        })
+
+        // Moldura: esconde no clone e redesenha no canvas (extremidades fiéis)
+        element.querySelectorAll<HTMLElement>('.classico-edge').forEach((el) => {
+          el.style.display = 'none'
         })
 
         const clonedFields = Array.from(
@@ -200,7 +208,56 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
   }
 }
 
-/** Preenche o formato social (cover) — tamanho exato, sem barras */
+/** Redesenha a moldura clássica nas extremidades do canvas (export fiel) */
+function burnClassicoEdge(canvas: HTMLCanvasElement, art: HTMLElement) {
+  const edge = art.querySelector('.classico-edge')
+  if (!edge) return canvas
+
+  let mode: 'combo' | 'navy' | 'gold' | null = null
+  if (edge.classList.contains('classico-edge--combo')) mode = 'combo'
+  else if (edge.classList.contains('classico-edge--navy')) mode = 'navy'
+  else if (edge.classList.contains('classico-edge--gold')) mode = 'gold'
+  if (!mode) return canvas
+
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return canvas
+
+  const w = canvas.width
+  const h = canvas.height
+  const artW = Math.max(1, art.offsetWidth)
+  const unit = w / artW
+  const navy = '#152a52'
+  const gold = '#d4a84a'
+
+  function strokeFrame(color: string, insetCss: number, widthCss: number) {
+    const line = Math.max(1, widthCss * unit)
+    const inset = insetCss * unit
+    ctx!.strokeStyle = color
+    ctx!.lineWidth = line
+    ctx!.lineJoin = 'miter'
+    const half = line / 2
+    ctx!.strokeRect(
+      inset + half,
+      inset + half,
+      Math.max(0, w - inset * 2 - line),
+      Math.max(0, h - inset * 2 - line),
+    )
+  }
+
+  ctx.save()
+  if (mode === 'combo') {
+    strokeFrame(navy, 0, 2.5)
+    strokeFrame(gold, 2.5, 2)
+  } else if (mode === 'navy') {
+    strokeFrame(navy, 0, 3)
+  } else {
+    strokeFrame(gold, 0, 3)
+  }
+  ctx.restore()
+  return canvas
+}
+
+/** Preenche o canvas social no tamanho exato (mesma proporção 4:5 — sem faixa nem corte) */
 function fitToSocial(
   source: HTMLCanvasElement,
   w: number,
@@ -215,16 +272,45 @@ function fitToSocial(
 
   ctx.fillStyle = bg
   ctx.fillRect(0, 0, w, h)
-
-  const scale = Math.max(w / source.width, h / source.height)
-  const dw = source.width * scale
-  const dh = source.height * scale
-  const dx = (w - dw) / 2
-  const dy = (h - dh) / 2
   ctx.imageSmoothingEnabled = true
   ctx.imageSmoothingQuality = 'high'
-  ctx.drawImage(source, dx, dy, dw, dh)
+  // Proporção já alinhada na captura — escala direto pro pixel size do preset
+  ctx.drawImage(source, 0, 0, w, h)
   return out
+}
+
+/** Força a arte na proporção do preset social antes de capturar */
+async function withSocialAspect<T>(
+  target: HTMLElement,
+  size: { w: number; h: number },
+  run: () => Promise<T>,
+): Promise<T> {
+  const prev = {
+    aspectRatio: target.style.aspectRatio,
+    width: target.style.width,
+    height: target.style.height,
+    maxWidth: target.style.maxWidth,
+  }
+
+  const baseW = Math.max(1, Math.round(target.offsetWidth))
+  const baseH = Math.max(1, Math.round((baseW * size.h) / size.w))
+
+  target.style.aspectRatio = 'unset'
+  target.style.maxWidth = 'none'
+  target.style.width = `${baseW}px`
+  target.style.height = `${baseH}px`
+
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
+  await new Promise((resolve) => setTimeout(resolve, 40))
+
+  try {
+    return await run()
+  } finally {
+    target.style.aspectRatio = prev.aspectRatio
+    target.style.width = prev.width
+    target.style.height = prev.height
+    target.style.maxWidth = prev.maxWidth
+  }
 }
 
 function triggerDownload(href: string, filename: string) {
@@ -287,6 +373,7 @@ export async function exportArt(
   await withNaturalArtScale(target, async () => {
     if (preset === 'pdf') {
       const source = await captureArt(target, 2)
+      burnClassicoEdge(source, target)
       const w = source.width
       const h = source.height
       const pdf = new jsPDF({
@@ -304,16 +391,19 @@ export async function exportArt(
     }
 
     const size = SOCIAL_SIZES[preset]
-    const artW = Math.max(1, target.offsetWidth)
-    const artH = Math.max(1, target.offsetHeight)
-    // Captura com resolução suficiente pro formato final
-    const pixelRatio = Math.min(
-      4,
-      Math.max(2, Math.ceil(Math.max(size.w / artW, size.h / artH) * 1.05)),
-    )
-    const source = await captureArt(target, pixelRatio)
-    const social = fitToSocial(source, size.w, size.h, bg)
-    const blob = await canvasToBlob(social, 'image/jpeg', 0.92)
-    await saveBlob(blob, `homenagem-${slug}-${preset}.jpg`)
+    await withSocialAspect(target, size, async () => {
+      const artW = Math.max(1, target.offsetWidth)
+      const artH = Math.max(1, target.offsetHeight)
+      // Captura com resolução suficiente pro formato final
+      const pixelRatio = Math.min(
+        4,
+        Math.max(2, Math.ceil(Math.max(size.w / artW, size.h / artH) * 1.05)),
+      )
+      const source = await captureArt(target, pixelRatio)
+      burnClassicoEdge(source, target)
+      const social = fitToSocial(source, size.w, size.h, bg)
+      const blob = await canvasToBlob(social, 'image/jpeg', 0.92)
+      await saveBlob(blob, `homenagem-${slug}-${preset}.jpg`)
+    })
   })
 }

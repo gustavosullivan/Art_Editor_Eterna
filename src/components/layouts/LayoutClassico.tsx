@@ -9,7 +9,7 @@ import {
   SetimoTitle,
   type LayoutProps,
 } from './shared'
-import { defaultPhotoTransform } from '../../types'
+import { defaultClassicoBorder, defaultPhotoTransform } from '../../types'
 
 export type ClassicoTitleVariant = 'homenagem' | 'setimo'
 
@@ -83,6 +83,7 @@ export default function LayoutClassico({
   showBirthDate = true,
   showDeathDate = true,
   showLogo = true,
+  classicoBorder = defaultClassicoBorder,
   onRemoveBirthDate,
   onRemoveDeathDate,
   titleVariant = 'homenagem',
@@ -94,6 +95,17 @@ export default function LayoutClassico({
       className={`art art--classico${isSetimoTitle ? ' art--classico-7dias' : ''}${preview ? ' art--classico-preview' : ''}`}
     >
       <ClassicoBackdrop />
+
+      {!preview && classicoBorder !== 'off' ? (
+        <div
+          className={`classico-edge classico-edge--${classicoBorder}`}
+          aria-hidden="true"
+        >
+          {classicoBorder === 'combo' ? (
+            <span className="classico-edge__inner" />
+          ) : null}
+        </div>
+      ) : null}
 
       <div
         className="classico-watermark"

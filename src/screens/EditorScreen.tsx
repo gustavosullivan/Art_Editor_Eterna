@@ -5,7 +5,7 @@ import ExportSheet from '../components/ExportSheet'
 import { layoutOptions } from '../data/defaults'
 import { exportArt, type ExportPreset } from '../exportArt'
 import type { AssetOffset } from '../components/DraggableAsset'
-import type { ArtFields, LayoutId, PhotoTransform } from '../types'
+import type { ArtFields, ClassicoBorderMode, LayoutId, PhotoTransform } from '../types'
 
 type EditorScreenProps = {
   layoutId: LayoutId
@@ -14,6 +14,7 @@ type EditorScreenProps = {
   photoTransform: PhotoTransform
   logoOffset: AssetOffset
   cardsOffset: AssetOffset
+  classicoBorder: ClassicoBorderMode
   showWakeCard: boolean
   showBurialCard: boolean
   showBirthDate: boolean
@@ -26,6 +27,7 @@ type EditorScreenProps = {
   onPhotoTransformChange: (transform: PhotoTransform) => void
   onLogoOffsetChange: (offset: AssetOffset) => void
   onCardsOffsetChange: (offset: AssetOffset) => void
+  onClassicoBorderChange: (mode: ClassicoBorderMode) => void
   onRemoveWakeCard: () => void
   onRemoveBurialCard: () => void
   onRemoveBirthDate: () => void
@@ -42,6 +44,15 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
 }
 
+const BORDER_CYCLE: ClassicoBorderMode[] = ['combo', 'navy', 'gold', 'off']
+
+const BORDER_LABEL: Record<ClassicoBorderMode, string> = {
+  combo: 'Borda · Mista',
+  navy: 'Borda · Azul',
+  gold: 'Borda · Ouro',
+  off: 'Borda · Off',
+}
+
 export default function EditorScreen({
   layoutId,
   fields,
@@ -49,6 +60,7 @@ export default function EditorScreen({
   photoTransform,
   logoOffset,
   cardsOffset,
+  classicoBorder,
   showWakeCard,
   showBurialCard,
   showBirthDate,
@@ -61,6 +73,7 @@ export default function EditorScreen({
   onPhotoTransformChange,
   onLogoOffsetChange,
   onCardsOffsetChange,
+  onClassicoBorderChange,
   onRemoveWakeCard,
   onRemoveBurialCard,
   onRemoveBirthDate,
@@ -76,6 +89,8 @@ export default function EditorScreen({
   const fileRef = useRef<HTMLInputElement>(null)
   const [exportOpen, setExportOpen] = useState(false)
   const [downloading, setDownloading] = useState(false)
+
+  const isClassicoLayout = layoutId === 'classico' || layoutId === 'classico7dias'
 
   function handleFile(file: File | undefined) {
     if (!file || !file.type.startsWith('image/')) return
@@ -101,6 +116,12 @@ export default function EditorScreen({
     }
   }
 
+  function cycleBorder() {
+    const index = BORDER_CYCLE.indexOf(classicoBorder)
+    const next = BORDER_CYCLE[(index + 1) % BORDER_CYCLE.length]
+    onClassicoBorderChange(next)
+  }
+
   const layoutName =
     layoutOptions.find((item) => item.id === layoutId)?.name ?? 'Editar arte'
   const emptyTip =
@@ -111,11 +132,23 @@ export default function EditorScreen({
   return (
     <main className="editor">
       <header className="editor__bar">
-        <button type="button" className="editor__bar-btn" onClick={onBack}>
-          Voltar
-        </button>
+        <div className="editor__bar-start">
+          <button type="button" className="editor__bar-btn" onClick={onBack}>
+            Voltar
+          </button>
+          {isClassicoLayout ? (
+            <button
+              type="button"
+              className={`editor__bar-btn editor__bar-btn--border${classicoBorder !== 'off' ? ' is-on' : ''}`}
+              onClick={cycleBorder}
+              aria-label={`Moldura da arte: ${BORDER_LABEL[classicoBorder]}. Toque para alternar.`}
+            >
+              {BORDER_LABEL[classicoBorder]}
+            </button>
+          ) : null}
+        </div>
         <p className="editor__bar-title">{layoutName}</p>
-        <button type="button" className="editor__bar-btn" onClick={onChangeLayout}>
+        <button type="button" className="editor__bar-btn editor__bar-btn--end" onClick={onChangeLayout}>
           Layouts
         </button>
       </header>
@@ -129,6 +162,7 @@ export default function EditorScreen({
             photoTransform={photoTransform}
             logoOffset={logoOffset}
             cardsOffset={cardsOffset}
+            classicoBorder={classicoBorder}
             onFieldChange={onFieldChange}
             onPhotoChange={onPhotoChange}
             onPhotoTransformChange={onPhotoTransformChange}
@@ -238,9 +272,21 @@ export default function EditorScreen({
         </div>
 
         <div className="editor__mobile-dock">
-          <button type="button" className="editor__glass-btn" onClick={onBack}>
-            Voltar
-          </button>
+          <div className="editor__mobile-dock-start">
+            <button type="button" className="editor__glass-btn" onClick={onBack}>
+              Voltar
+            </button>
+            {isClassicoLayout ? (
+              <button
+                type="button"
+                className={`editor__glass-btn editor__glass-btn--border${classicoBorder !== 'off' ? ' is-on' : ''}`}
+                onClick={cycleBorder}
+                aria-label={`Moldura da arte: ${BORDER_LABEL[classicoBorder]}. Toque para alternar.`}
+              >
+                {BORDER_LABEL[classicoBorder]}
+              </button>
+            ) : null}
+          </div>
           <button type="button" className="editor__glass-btn" onClick={onResetEdits}>
             Desfazer
           </button>

@@ -60,7 +60,7 @@
   font-family: var(--font-display);
   font-size: clamp(1.55rem, 6.5vw, 2.35rem);
   font-weight: 600;
-  color: var(--navy);
+  color: var(--gold);
   line-height: 1;
 }
 
@@ -293,7 +293,7 @@
 .carousel__name {
   margin: 0;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--gold);
   font-size: 0.92rem;
   line-height: 1.3;
   letter-spacing: 0.01em;
@@ -395,6 +395,14 @@
   border-bottom: 1px solid rgba(26, 35, 50, 0.08);
 }
 
+.editor__bar-start {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  justify-self: start;
+  min-width: 0;
+}
+
 .editor__bar-title {
   margin: 0;
   font-size: 0.72rem;
@@ -418,10 +426,21 @@
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  white-space: nowrap;
 }
 
-.editor__bar-btn:last-child {
+.editor__bar-btn--end {
   justify-self: end;
+}
+
+.editor__bar-btn--border {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding-inline: 0.35rem;
+}
+
+.editor__bar-btn--border.is-on {
+  color: #9a7a2e;
 }
 
 .editor__canvas {
@@ -987,6 +1006,15 @@
 .art.is-exporting .tpl-watermark__img {
   mix-blend-mode: normal !important;
   filter: none !important;
+}
+
+.art.is-exporting .classico-watermark__img {
+  opacity: 0.26 !important;
+  filter: brightness(0.72) sepia(0.9) hue-rotate(185deg) saturate(2.8) !important;
+}
+
+.art.is-exporting .setimo-watermark__img,
+.art.is-exporting .tpl-watermark__img {
   opacity: 0.11 !important;
 }
 
@@ -1162,20 +1190,67 @@ textarea.editable--card {
   max-height: calc(1.4em * 3);
 }
 
-/* Modelo Clássico — papel limpo (contorno preto só no seletor) */
+/* Modelo Clássico — papel em tons claros de azul */
 .art--classico {
   --classico-navy: #1a2744;
-  --classico-gold: #c4a46a;
-  --classico-paper: #f7f8fa;
+  --classico-gold: #d4a84a;
+  --classico-gold-shine: #f0d078;
+  --classico-border-navy: #152a52;
+  --classico-paper: #e8eef6;
   width: min(100%, 400px);
-  aspect-ratio: 768 / 1024;
-  background: linear-gradient(180deg, #ffffff 0%, var(--classico-paper) 100%);
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(
+    185deg,
+    #f5f8fc 0%,
+    #e8eef6 48%,
+    #dde6f2 100%
+  );
   overflow: hidden;
   padding: 0;
   container-type: inline-size;
   box-shadow: none;
   outline: none;
   border: none;
+}
+
+/* Contorno nas extremidades da arte (exportável via border, sem sombra externa) */
+.classico-edge {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  border-radius: 0;
+  box-sizing: border-box;
+}
+
+.classico-edge__inner {
+  position: absolute;
+  inset: 2.5px;
+  box-sizing: border-box;
+  border-radius: 0;
+  pointer-events: none;
+}
+
+.classico-edge--combo {
+  border: 2.5px solid var(--classico-border-navy);
+}
+
+.classico-edge--combo .classico-edge__inner {
+  border: 2px solid var(--classico-gold);
+}
+
+.classico-edge--navy {
+  border: 3px solid var(--classico-border-navy);
+}
+
+.classico-edge--gold {
+  border: 3px solid var(--classico-gold);
+}
+
+.art.is-exporting .classico-edge,
+.art.is-exporting .classico-edge__inner {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
 .classico-backdrop {
@@ -1189,11 +1264,10 @@ textarea.editable--card {
 .classico-backdrop__wash {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    circle at 50% 0%,
-    rgba(255, 255, 255, 0.55),
-    transparent 55%
-  );
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.65), transparent 52%),
+    radial-gradient(circle at 15% 85%, rgba(90, 130, 180, 0.07), transparent 42%),
+    radial-gradient(circle at 90% 70%, rgba(26, 55, 100, 0.05), transparent 40%);
 }
 
 .art--classico .art__inner {
@@ -1232,10 +1306,26 @@ textarea.editable--card {
 
 .art--classico .invite-header__script {
   font-size: clamp(1.2rem, 5vw, 1.55rem);
+  color: var(--classico-gold);
+  text-shadow:
+    0 0 1px var(--classico-gold-shine),
+    0 1px 0 rgba(255, 235, 180, 0.55),
+    0 1px 3px rgba(120, 80, 10, 0.28);
 }
 
 .art--classico .invite-header__title {
   font-size: clamp(1.2rem, 5.4vw, 1.6rem);
+  color: var(--classico-gold);
+  text-shadow:
+    0 0 1px var(--classico-gold-shine),
+    0 1px 0 rgba(255, 235, 180, 0.55),
+    0 1px 3px rgba(120, 80, 10, 0.28);
+}
+
+.art--classico .invite-header__ornament span,
+.art--classico .invite-header__ornament i {
+  background: var(--classico-gold);
+  box-shadow: 0 0 4px rgba(240, 208, 120, 0.65);
 }
 
 /* Clássico de 7 Dias — mesmo título do layout setimo, legível no papel */
@@ -1247,33 +1337,43 @@ textarea.editable--card {
 .art--classico-7dias .setimo-title__eyebrow {
   color: var(--classico-gold);
   font-size: clamp(0.52rem, 2.4cqw, 0.68rem);
+  text-shadow:
+    0 0 1px var(--classico-gold-shine),
+    0 1px 0 rgba(255, 235, 180, 0.55),
+    0 1px 3px rgba(120, 80, 10, 0.28);
 }
 
 .art--classico-7dias .setimo-title__heading {
-  color: var(--classico-navy);
+  color: var(--classico-gold);
   font-size: clamp(1.85rem, 9.5cqw, 2.55rem);
   line-height: 0.95;
+  text-shadow:
+    0 0 1px var(--classico-gold-shine),
+    0 1px 0 rgba(255, 235, 180, 0.55),
+    0 1px 3px rgba(120, 80, 10, 0.28);
 }
 
 .art--classico-7dias .setimo-title__dia {
-  color: var(--classico-navy);
-  -webkit-text-fill-color: var(--classico-navy);
+  color: var(--classico-gold);
+  -webkit-text-fill-color: var(--classico-gold);
 }
 
 .art--classico-7dias .setimo-title__d {
   background: none;
   -webkit-background-clip: unset;
   background-clip: unset;
-  -webkit-text-fill-color: var(--classico-navy);
-  color: var(--classico-navy);
+  -webkit-text-fill-color: var(--classico-gold);
+  color: var(--classico-gold);
 }
 
 .art--classico-7dias .setimo-title__ornament span {
   background: var(--classico-gold);
+  box-shadow: 0 0 4px rgba(240, 208, 120, 0.65);
 }
 
 .art--classico-7dias .setimo-title__ornament i {
   background: var(--classico-gold);
+  box-shadow: 0 0 4px rgba(240, 208, 120, 0.65);
 }
 
 .art--classico .classico-photo {
@@ -1409,7 +1509,8 @@ input.classico-card__label {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--classico-navy);
+  color: var(--classico-gold);
+  text-shadow: 0 0 1px rgba(240, 208, 120, 0.45);
   text-align: left;
   outline: none;
   resize: none;
@@ -1585,9 +1686,10 @@ input.classico-footer__field {
   display: block;
   width: 100%;
   height: auto;
-  opacity: 0.12;
+  opacity: 0.26;
   mix-blend-mode: normal;
-  filter: none;
+  /* Tom azul navy — combina com o papel clássico */
+  filter: brightness(0.72) sepia(0.9) hue-rotate(185deg) saturate(2.8);
   pointer-events: none;
   user-select: none;
 }
@@ -1595,6 +1697,10 @@ input.classico-footer__field {
 .art--classico-preview {
   overflow: hidden;
   pointer-events: none;
+}
+
+.art--classico-preview .classico-edge {
+  display: none !important;
 }
 
 .art--classico-preview .removable-block__select,
@@ -1748,7 +1854,7 @@ input.classico-footer__field {
 .art--principal {
   position: relative;
   width: min(100%, 400px);
-  aspect-ratio: 768 / 1024;
+  aspect-ratio: 4 / 5;
   background: #efeff1;
   overflow: hidden;
   padding: 0;
@@ -2675,6 +2781,14 @@ input.classico-footer__field {
   display: none;
 }
 
+.editor__mobile-dock-start {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
 .editor__glass-btn {
   appearance: none;
   border: 1px solid rgba(255, 255, 255, 0.55);
@@ -2700,6 +2814,18 @@ input.classico-footer__field {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  white-space: nowrap;
+}
+
+.editor__glass-btn--border {
+  min-width: 0;
+  padding-inline: 0.75rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+}
+
+.editor__glass-btn--border.is-on {
+  color: #9a7a2e;
 }
 
 .editor__glass-btn:active {
@@ -2723,7 +2849,7 @@ input.classico-footer__field {
   --setimo-gold: #c4a46a;
   --setimo-paper: #efeff1;
   width: min(100%, 400px);
-  aspect-ratio: 768 / 1086;
+  aspect-ratio: 4 / 5;
   background: var(--setimo-paper);
   overflow: hidden;
   padding: 0;

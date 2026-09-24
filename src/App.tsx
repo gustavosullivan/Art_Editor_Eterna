@@ -5,8 +5,10 @@ import SplashScreen from './screens/SplashScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
 import { type AssetOffset } from './components/DraggableAsset'
 import {
+  defaultClassicoBorder,
   defaultPhotoTransform,
   type ArtFields,
+  type ClassicoBorderMode,
   type LayoutId,
   type PhotoTransform,
 } from './types'
@@ -35,6 +37,8 @@ export default function App() {
     useState<PhotoTransform>(defaultPhotoTransform)
   const [logoOffset, setLogoOffset] = useState<AssetOffset>(defaultLogoOffset)
   const [cardsOffset, setCardsOffset] = useState<AssetOffset>(defaultCardsOffset)
+  const [classicoBorder, setClassicoBorder] =
+    useState<ClassicoBorderMode>(defaultClassicoBorder)
   const [visibility, setVisibility] = useState(defaultVisibility)
 
   function updateField<K extends keyof ArtFields>(key: K, value: ArtFields[K]) {
@@ -46,6 +50,7 @@ export default function App() {
     setPhotoTransform(defaultPhotoTransform)
     setLogoOffset(defaultLogoOffset)
     setCardsOffset(defaultCardsOffset)
+    setClassicoBorder(defaultClassicoBorder)
     setVisibility(defaultVisibility)
   }
 
@@ -80,6 +85,7 @@ export default function App() {
       photoTransform={photoTransform}
       logoOffset={logoOffset}
       cardsOffset={cardsOffset}
+      classicoBorder={classicoBorder}
       showWakeCard={visibility.wake}
       showBurialCard={visibility.burial}
       showBirthDate={visibility.birth}
@@ -92,6 +98,7 @@ export default function App() {
       onPhotoTransformChange={setPhotoTransform}
       onLogoOffsetChange={setLogoOffset}
       onCardsOffsetChange={setCardsOffset}
+      onClassicoBorderChange={setClassicoBorder}
       onRemoveWakeCard={() => setVisibility((v) => ({ ...v, wake: false }))}
       onRemoveBurialCard={() => setVisibility((v) => ({ ...v, burial: false }))}
       onRemoveBirthDate={() => setVisibility((v) => ({ ...v, birth: false }))}

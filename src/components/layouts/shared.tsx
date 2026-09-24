@@ -1,5 +1,5 @@
 import EditableText from '../EditableText'
-import type { ArtFields, PhotoTransform } from '../../types'
+import type { ArtFields, ClassicoBorderMode, PhotoTransform } from '../../types'
 import type { AssetOffset } from '../DraggableAsset'
 import SaoLuizLogo from '../SaoLuizLogo'
 import PhotoUpload from '../PhotoUpload'
@@ -20,6 +20,8 @@ export type LayoutProps = {
   showPersonName?: boolean
   showPersonAge?: boolean
   showLogo?: boolean
+  /** Moldura dos clássicos: mista / azul / ouro / off */
+  classicoBorder?: ClassicoBorderMode
   logoOffset?: AssetOffset
   onLogoOffsetChange?: (offset: AssetOffset) => void
   cardsOffset?: AssetOffset
