@@ -96,6 +96,20 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
 
   const width = Math.max(1, Math.ceil(target.offsetWidth))
   const height = Math.max(1, Math.ceil(target.offsetHeight))
+  const artRect = target.getBoundingClientRect()
+  const watermarkBoxes = Array.from(
+    target.querySelectorAll<HTMLElement>(
+      '.classico-watermark, .setimo-watermark, .tpl-watermark',
+    ),
+  ).map((mark) => {
+    const box = mark.getBoundingClientRect()
+    return {
+      left: box.left - artRect.left,
+      top: box.top - artRect.top,
+      width: box.width,
+      height: box.height,
+    }
+  })
 
   target.classList.add('is-exporting')
   await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
@@ -131,6 +145,21 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
         element.style.transform = 'none'
 
         applyClippedPhotosToClone(target, element)
+
+        element
+          .querySelectorAll<HTMLElement>(
+            '.classico-watermark, .setimo-watermark, .tpl-watermark',
+          )
+          .forEach((mark, index) => {
+            const box = watermarkBoxes[index]
+            if (!box) return
+            mark.style.transform = 'none'
+            mark.style.left = `${box.left}px`
+            mark.style.top = `${box.top}px`
+            mark.style.width = `${box.width}px`
+            mark.style.height = `${box.height}px`
+            mark.style.margin = '0'
+          })
 
         element
           .querySelectorAll<HTMLElement>(
@@ -230,7 +259,7 @@ function paintClassicoBorder(
   const shortSide = Math.min(w, h)
   const outer = Math.max(2, Math.min(4, Math.round(shortSide * 0.0026)))
   const inner = Math.max(1, Math.min(3, outer - 1))
-  const navy = '#152a52'
+  const navy = '#243656'
   const gold = '#d4a84a'
   const g = ctx
 

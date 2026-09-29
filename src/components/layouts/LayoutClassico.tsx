@@ -9,6 +9,7 @@ import {
   SetimoTitle,
   type LayoutProps,
 } from './shared'
+import { watermarkTransform } from '../../data/watermarks'
 import { defaultClassicoBorder, defaultPhotoTransform } from '../../types'
 
 export type ClassicoTitleVariant = 'homenagem' | 'setimo'
@@ -87,6 +88,7 @@ export default function LayoutClassico({
   onRemoveBirthDate,
   onRemoveDeathDate,
   titleVariant = 'homenagem',
+  watermark,
 }: LayoutClassicoProps) {
   const isSetimoTitle = titleVariant === 'setimo'
 
@@ -110,6 +112,13 @@ export default function LayoutClassico({
       <div
         className="classico-watermark"
         aria-hidden="true"
+        style={
+          watermark
+            ? {
+                transform: watermarkTransform(watermark),
+              }
+            : undefined
+        }
       >
         <HexLogoMark className="classico-watermark__img" />
       </div>

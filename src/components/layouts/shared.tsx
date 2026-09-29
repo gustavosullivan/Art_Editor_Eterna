@@ -38,8 +38,13 @@ export type LayoutProps = {
   onRemovePersonName?: () => void
   onRemovePersonAge?: () => void
   onRemoveLogo?: () => void
+<<<<<<< HEAD
   onRemoveTitle?: () => void
   onRemoveContact?: () => void
+=======
+  /** Posição e escala da marca d'água (clássico / 7 dias) */
+  watermark?: { x: number; y: number; scale: number }
+>>>>>>> dd71d82ce1c571773a9646b2010efc6ae17a9eb8
 }
 
 function ClockIcon() {

@@ -82,11 +82,15 @@ export default function LayoutSetimoDia({
   onRemoveBurialCard,
   onRemovePersonName,
   onRemoveLogo,
+  classicoBorder = 'off',
 }: LayoutProps) {
   const canEdit = !preview
 
   return (
     <article className={`art art--setimo${preview ? ' art--setimo-preview' : ''}`}>
+      {!preview && classicoBorder === 'navy' ? (
+        <div className="classico-edge classico-edge--navy" aria-hidden="true" />
+      ) : null}
       <PrincipalDecor />
 
       <div className="setimo-watermark" aria-hidden="true">
