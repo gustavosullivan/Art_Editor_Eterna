@@ -1,4 +1,4 @@
-export type LayoutId = 'classico7dias' | 'classico' | 'principal' | 'setimo'
+export type LayoutId = 'classico7dias' | 'classico' | 'principal' | 'setimo' | 'livre'
 
 /** Moldura dos layouts clássicos */
 export type ClassicoBorderMode = 'combo' | 'navy' | 'gold' | 'off'

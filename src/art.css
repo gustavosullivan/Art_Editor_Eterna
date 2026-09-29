@@ -336,13 +336,46 @@
 
 .welcome__actions {
   display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 0.55rem;
+  grid-template-columns: 0.85fr 1fr 1.15fr;
+  gap: 0.45rem;
   align-items: center;
   flex-shrink: 0;
   width: 100%;
   max-width: 420px;
   margin-inline: auto;
+}
+
+.welcome__actions .link-back {
+  padding-inline: 0.45rem;
+  letter-spacing: 0.06em;
+  font-size: 0.7rem;
+}
+
+.welcome__create {
+  appearance: none;
+  width: 100%;
+  min-width: 0;
+  min-height: clamp(46px, 6.5vh, 54px);
+  padding: 0.75rem 0.45rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--gold);
+  background: #fff;
+  color: var(--navy);
+  font-size: clamp(0.72rem, 1.6vh, 0.82rem);
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.welcome__create:hover {
+  background: rgba(196, 165, 116, 0.14);
+}
+
+.welcome__create:active {
+  background: rgba(196, 165, 116, 0.22);
 }
 
 .welcome__ok {
@@ -1262,6 +1295,60 @@ textarea.editable--card {
     radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.65), transparent 52%),
     radial-gradient(circle at 15% 85%, rgba(90, 130, 180, 0.07), transparent 42%),
     radial-gradient(circle at 90% 70%, rgba(26, 55, 100, 0.05), transparent 40%);
+}
+
+/* Arte em branco — criar do zero */
+.art--livre {
+  background: #f7f5f1;
+}
+
+.livre-title {
+  width: 100%;
+  text-align: center;
+}
+
+.livre-title__text,
+.livre-title__field,
+textarea.livre-title__field {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 4.6cqw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--classico-navy, #1a2744);
+  resize: none;
+}
+
+.art--livre input::placeholder,
+.art--livre textarea::placeholder {
+  color: rgba(26, 39, 68, 0.38);
+}
+
+.art--livre .editable--date {
+  min-width: 9ch;
+}
+
+.art--livre .editable--age,
+.art--livre .editable--age.editable--auto-width {
+  min-width: 6ch;
+}
+
+.art--livre .classico-footer__field,
+.art--livre input.classico-footer__field {
+  min-width: 5.5rem;
+}
+
+.art--livre .classico-card {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding-inline: 0;
 }
 
 .art--classico .art__inner {
@@ -3419,6 +3506,179 @@ input.setimo-footer__field {
   right: -0.55rem;
 }
 
+/* Layout criar — mover, grade e tamanho do texto */
+.livre-piece {
+  position: relative;
+  z-index: 1;
+  width: max-content;
+  max-width: 100%;
+  margin-inline: auto;
+  touch-action: none;
+  user-select: none;
+  --char-scale: 1;
+  font-size: calc(15px * var(--char-scale));
+}
+
+.livre-piece--stretch {
+  width: 100%;
+}
+
+.art--livre .art__inner > .livre-piece--stretch {
+  max-width: 86%;
+}
+
+.livre-piece.is-selected {
+  outline: 1.5px dashed rgba(21, 42, 82, 0.75);
+  outline-offset: 5px;
+  border-radius: 6px;
+  z-index: 5;
+}
+
+.livre-piece input,
+.livre-piece textarea {
+  user-select: text;
+}
+
+.livre-piece__more,
+.livre-piece__remove {
+  position: absolute;
+  top: -0.5rem;
+  z-index: 6;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.livre-piece__remove {
+  right: -0.45rem;
+  background: #b42318;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.livre-piece__more {
+  right: 0.95rem;
+  background: #1a2744;
+  color: #fff;
+  font-size: 0.95rem;
+  line-height: 0;
+  letter-spacing: 0;
+}
+
+.livre-piece__size {
+  position: absolute;
+  top: 0.95rem;
+  right: 0;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.22rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 18px rgba(26, 35, 50, 0.14);
+}
+
+.livre-piece__size button {
+  appearance: none;
+  border: none;
+  min-width: 1.7rem;
+  height: 1.55rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: #1a2744;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.livre-piece__size span {
+  min-width: 2.4rem;
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #1a2744;
+}
+
+.livre-guides {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(21, 42, 82, 0.28), rgba(21, 42, 82, 0.28)) center / 1px 100% no-repeat,
+    linear-gradient(rgba(21, 42, 82, 0.28), rgba(21, 42, 82, 0.28)) center / 100% 1px no-repeat,
+    repeating-linear-gradient(to right, rgba(21, 42, 82, 0.1) 0 1px, transparent 1px 12.5%),
+    repeating-linear-gradient(to bottom, rgba(21, 42, 82, 0.1) 0 1px, transparent 1px 12.5%);
+}
+
+.art--livre .livre-piece textarea.livre-title__field,
+.art--livre .livre-piece .livre-title__text {
+  font-size: 1.5em;
+}
+
+.art--livre .livre-piece textarea.editable--name,
+.art--livre .livre-piece .invite-person__name {
+  font-size: 1.15em;
+}
+
+.art--livre .livre-piece .editable--age,
+.art--livre .livre-piece .invite-person__age {
+  font-size: 0.85em;
+}
+
+.art--livre .livre-piece .invite-dates__item,
+.art--livre .livre-piece .editable--date,
+.art--livre .livre-piece .invite-dates__value {
+  font-size: 0.78em;
+}
+
+.art--livre .livre-piece .classico-card__label,
+.art--livre .livre-piece input.classico-card__label {
+  font-size: 0.62em;
+}
+
+.art--livre .livre-piece textarea.classico-card__value,
+.art--livre .livre-piece .classico-card__value {
+  font-size: 0.84em;
+}
+
+.art--livre .livre-piece .classico-footer__field,
+.art--livre .livre-piece input.classico-footer__field,
+.art--livre .livre-piece .classico-footer__item {
+  font-size: 0.72em;
+}
+
+.art--livre .livre-piece[data-piece='logo'] .brand-logo__img {
+  height: calc(1.85rem * var(--char-scale, 1));
+}
+
+.art.is-exporting .livre-piece {
+  outline: none !important;
+}
+
+.art.is-exporting .livre-piece__more,
+.art.is-exporting .livre-piece__remove,
+.art.is-exporting .livre-piece__size,
+.art.is-exporting .livre-guides {
+  display: none !important;
+}
+
 
 @media (max-width: 719px) {
   .carousel__stage {
@@ -3515,6 +3775,7 @@ input.setimo-footer__field {
   }
 
   .welcome__actions .link-back,
+  .welcome__create,
   .welcome__ok {
     min-height: 48px;
   }
@@ -3685,6 +3946,40 @@ input.setimo-footer__field {
   }
 }
 
+/* Faixa de vidro só no mobile — Voltar, Criar e OK */
+@media (max-width: 719px), (max-height: 480px) and (orientation: landscape) {
+  .welcome {
+    max-width: none;
+    width: 100%;
+    margin-inline: 0;
+    padding-bottom: 0;
+    padding-left: max(0.55rem, var(--safe-left));
+    padding-right: max(0.55rem, var(--safe-right));
+  }
+
+  .welcome__actions {
+    width: auto;
+    max-width: none;
+    margin-top: auto;
+    margin-left: calc(max(0.55rem, var(--safe-left)) * -1);
+    margin-right: calc(max(0.55rem, var(--safe-right)) * -1);
+    padding:
+      0.7rem
+      max(0.75rem, var(--safe-right))
+      max(0.7rem, var(--safe-bottom))
+      max(0.75rem, var(--safe-left));
+    border-radius: 22px 22px 0 0;
+    background: rgba(255, 255, 255, 0.38);
+    backdrop-filter: blur(18px) saturate(1.45);
+    -webkit-backdrop-filter: blur(18px) saturate(1.45);
+    border: 1px solid rgba(255, 255, 255, 0.62);
+    border-bottom: none;
+    box-shadow:
+      0 -10px 28px rgba(26, 35, 50, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  }
+}
+
 @media (max-width: 360px) {
   .carousel__nav {
     width: 2.45rem;
@@ -3695,14 +3990,16 @@ input.setimo-footer__field {
     font-size: 0.72rem;
   }
 
+  .welcome__create,
   .welcome__ok,
   .editor__download {
-    letter-spacing: 0.1em;
-    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
   }
 }
 
 @media (hover: none) {
+  .welcome__create:hover,
   .welcome__ok:hover,
   .editor__download:hover,
   .export-sheet__option:hover {
@@ -3710,6 +4007,7 @@ input.setimo-footer__field {
     transform: none;
   }
 
+  .welcome__create:active,
   .welcome__ok:active,
   .editor__download:active:not(:disabled),
   .export-sheet__option:active:not(:disabled) {

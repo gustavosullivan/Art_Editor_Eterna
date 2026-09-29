@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { defaultFields } from './data/defaults'
+import { defaultFields, emptyFields } from './data/defaults'
 import EditorScreen from './screens/EditorScreen'
 import SplashScreen from './screens/SplashScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
 import { type AssetOffset } from './components/DraggableAsset'
+import { defaultLivrePieces, type LivrePieceId, type LivrePieceState, type LivrePieces } from './livreLayout'
 import {
   defaultClassicoBorder,
   defaultPhotoTransform,
@@ -23,6 +24,8 @@ const defaultVisibility = {
   name: true,
   age: true,
   logo: true,
+  title: true,
+  contact: true,
 }
 
 const defaultLogoOffset: AssetOffset = { x: 0, y: 0 }
@@ -40,27 +43,33 @@ export default function App() {
   const [classicoBorder, setClassicoBorder] =
     useState<ClassicoBorderMode>(defaultClassicoBorder)
   const [visibility, setVisibility] = useState(defaultVisibility)
+  const [livrePieces, setLivrePieces] = useState<LivrePieces>(defaultLivrePieces)
 
   function updateField<K extends keyof ArtFields>(key: K, value: ArtFields[K]) {
     setFields((current) => ({ ...current, [key]: value }))
   }
 
-  function applyLayoutDefaults() {
-    setFields(defaultFields)
+  function applyLayoutDefaults(id: LayoutId) {
+    setFields(id === 'livre' ? emptyFields : defaultFields)
     setPhotoTransform(defaultPhotoTransform)
     setLogoOffset(defaultLogoOffset)
     setCardsOffset(defaultCardsOffset)
     setClassicoBorder(defaultClassicoBorder)
     setVisibility(defaultVisibility)
+    setLivrePieces(defaultLivrePieces())
+  }
+
+  function updateLivrePiece(id: LivrePieceId, next: LivrePieceState) {
+    setLivrePieces((current) => ({ ...current, [id]: next }))
   }
 
   function resetEdits() {
-    applyLayoutDefaults()
+    applyLayoutDefaults(layoutId)
   }
 
   function openLayout(id: LayoutId) {
     setLayoutId(id)
-    applyLayoutDefaults()
+    applyLayoutDefaults(id)
     setStep('editor')
   }
 
@@ -73,6 +82,7 @@ export default function App() {
       <WelcomeScreen
         onBack={() => setStep('splash')}
         onConfirm={openLayout}
+        onCreate={() => openLayout('livre')}
       />
     )
   }
@@ -93,6 +103,10 @@ export default function App() {
       showPersonName={visibility.name}
       showPersonAge={visibility.age}
       showLogo={visibility.logo}
+      showTitle={visibility.title}
+      showContact={visibility.contact}
+      livrePieces={livrePieces}
+      onLivrePieceChange={updateLivrePiece}
       onFieldChange={updateField}
       onPhotoChange={setPhotoUrl}
       onPhotoTransformChange={setPhotoTransform}
@@ -106,6 +120,8 @@ export default function App() {
       onRemovePersonName={() => setVisibility((v) => ({ ...v, name: false }))}
       onRemovePersonAge={() => setVisibility((v) => ({ ...v, age: false }))}
       onRemoveLogo={() => setVisibility((v) => ({ ...v, logo: false }))}
+      onRemoveTitle={() => setVisibility((v) => ({ ...v, title: false }))}
+      onRemoveContact={() => setVisibility((v) => ({ ...v, contact: false }))}
       onResetEdits={resetEdits}
       onBack={() => setStep('welcome')}
       onChangeLayout={() => setStep('welcome')}

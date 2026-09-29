@@ -1,4 +1,5 @@
 import EditableText from '../EditableText'
+import type { LivrePieceId, LivrePieces, LivrePieceState } from '../../livreLayout'
 import type { ArtFields, ClassicoBorderMode, PhotoTransform } from '../../types'
 import type { AssetOffset } from '../DraggableAsset'
 import SaoLuizLogo from '../SaoLuizLogo'
@@ -20,6 +21,10 @@ export type LayoutProps = {
   showPersonName?: boolean
   showPersonAge?: boolean
   showLogo?: boolean
+  showTitle?: boolean
+  showContact?: boolean
+  livrePieces?: LivrePieces
+  onLivrePieceChange?: (id: LivrePieceId, next: LivrePieceState) => void
   /** Moldura dos clássicos: mista / azul / ouro / off */
   classicoBorder?: ClassicoBorderMode
   logoOffset?: AssetOffset
@@ -33,6 +38,8 @@ export type LayoutProps = {
   onRemovePersonName?: () => void
   onRemovePersonAge?: () => void
   onRemoveLogo?: () => void
+  onRemoveTitle?: () => void
+  onRemoveContact?: () => void
 }
 
 function ClockIcon() {
@@ -120,6 +127,8 @@ export function DateRow({
   showDeathDate = true,
   onRemoveBirthDate,
   onRemoveDeathDate,
+  birthPlaceholder,
+  deathPlaceholder,
 }: Pick<
   LayoutProps,
   | 'fields'
@@ -129,7 +138,10 @@ export function DateRow({
   | 'showDeathDate'
   | 'onRemoveBirthDate'
   | 'onRemoveDeathDate'
->) {
+> & {
+  birthPlaceholder?: string
+  deathPlaceholder?: string
+}) {
   const canEdit = !preview
   if (!showBirthDate && !showDeathDate) return null
 
@@ -153,6 +165,7 @@ export function DateRow({
                 value={fields.birthDate}
                 onChange={(value) => onFieldChange('birthDate', value)}
                 ariaLabel="Data de nascimento"
+                placeholder={birthPlaceholder}
                 className="editable--date"
                 autoWidth
               />
@@ -183,6 +196,7 @@ export function DateRow({
                 value={fields.deathDate}
                 onChange={(value) => onFieldChange('deathDate', value)}
                 ariaLabel="Data de falecimento"
+                placeholder={deathPlaceholder}
                 className="editable--date"
                 autoWidth
               />

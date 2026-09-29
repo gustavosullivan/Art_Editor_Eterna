@@ -1,5 +1,22 @@
 import type { ArtFields, LayoutOption } from '../types'
 
+/** Arte em branco — criar do zero */
+export const emptyFields: ArtFields = {
+  personName: '',
+  age: '',
+  birthDate: '',
+  deathDate: '',
+  wakeText: '',
+  burialText: '',
+  phone: '',
+  website: '',
+  memorialNote: '',
+  celebrationLabel: '',
+  celebrationDate: '',
+  ceremonyLabel: '',
+  ceremonyPlace: '',
+}
+
 export const defaultFields: ArtFields = {
   personName: 'Claudina Danielli',
   age: '95 anos',

@@ -5,6 +5,7 @@ import ExportSheet from '../components/ExportSheet'
 import { layoutOptions } from '../data/defaults'
 import { exportArt, type ExportPreset } from '../exportArt'
 import type { AssetOffset } from '../components/DraggableAsset'
+import type { LivrePieceId, LivrePieces, LivrePieceState } from '../livreLayout'
 import type { ArtFields, ClassicoBorderMode, LayoutId, PhotoTransform } from '../types'
 
 type EditorScreenProps = {
@@ -22,6 +23,10 @@ type EditorScreenProps = {
   showPersonName: boolean
   showPersonAge: boolean
   showLogo: boolean
+  showTitle: boolean
+  showContact: boolean
+  livrePieces: LivrePieces
+  onLivrePieceChange: (id: LivrePieceId, next: LivrePieceState) => void
   onFieldChange: <K extends keyof ArtFields>(key: K, value: ArtFields[K]) => void
   onPhotoChange: (url: string | null) => void
   onPhotoTransformChange: (transform: PhotoTransform) => void
@@ -35,6 +40,8 @@ type EditorScreenProps = {
   onRemovePersonName: () => void
   onRemovePersonAge: () => void
   onRemoveLogo: () => void
+  onRemoveTitle: () => void
+  onRemoveContact: () => void
   onResetEdits: () => void
   onBack: () => void
   onChangeLayout: () => void
@@ -68,6 +75,10 @@ export default function EditorScreen({
   showPersonName,
   showPersonAge,
   showLogo,
+  showTitle,
+  showContact,
+  livrePieces,
+  onLivrePieceChange,
   onFieldChange,
   onPhotoChange,
   onPhotoTransformChange,
@@ -81,6 +92,8 @@ export default function EditorScreen({
   onRemovePersonName,
   onRemovePersonAge,
   onRemoveLogo,
+  onRemoveTitle,
+  onRemoveContact,
   onResetEdits,
   onBack,
   onChangeLayout,
@@ -90,7 +103,8 @@ export default function EditorScreen({
   const [exportOpen, setExportOpen] = useState(false)
   const [downloading, setDownloading] = useState(false)
 
-  const isClassicoLayout = layoutId === 'classico' || layoutId === 'classico7dias'
+  const isClassicoLayout =
+    layoutId === 'classico' || layoutId === 'classico7dias' || layoutId === 'livre'
 
   function handleFile(file: File | undefined) {
     if (!file || !file.type.startsWith('image/')) return
@@ -128,11 +142,15 @@ export default function EditorScreen({
   }
 
   const layoutName =
-    layoutOptions.find((item) => item.id === layoutId)?.name ?? 'Editar arte'
+    layoutId === 'livre'
+      ? 'Novo layout'
+      : (layoutOptions.find((item) => item.id === layoutId)?.name ?? 'Editar arte')
   const emptyTip =
-    layoutId === 'classico7dias'
-      ? layoutName
-      : 'Toque na moldura para adicionar a foto.'
+    layoutId === 'livre'
+      ? 'Toque num bloco para selecionar e arraste para posicionar.'
+      : layoutId === 'classico7dias'
+        ? layoutName
+        : 'Toque na moldura para adicionar a foto.'
 
   return (
     <main className="editor">
@@ -180,6 +198,10 @@ export default function EditorScreen({
             showPersonName={showPersonName}
             showPersonAge={showPersonAge}
             showLogo={showLogo}
+            showTitle={showTitle}
+            showContact={showContact}
+            livrePieces={livrePieces}
+            onLivrePieceChange={onLivrePieceChange}
             onRemoveWakeCard={onRemoveWakeCard}
             onRemoveBurialCard={onRemoveBurialCard}
             onRemoveBirthDate={onRemoveBirthDate}
@@ -187,6 +209,8 @@ export default function EditorScreen({
             onRemovePersonName={onRemovePersonName}
             onRemovePersonAge={onRemovePersonAge}
             onRemoveLogo={onRemoveLogo}
+            onRemoveTitle={onRemoveTitle}
+            onRemoveContact={onRemoveContact}
           />
         </EditorArtFit>
       </div>

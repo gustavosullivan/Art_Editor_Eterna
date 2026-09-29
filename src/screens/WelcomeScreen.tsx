@@ -6,6 +6,7 @@ import type { LayoutId } from '../types'
 
 type WelcomeScreenProps = {
   onConfirm: (layoutId: LayoutId) => void
+  onCreate: () => void
   onBack: () => void
 }
 
@@ -17,7 +18,7 @@ function slideOffset(index: number, active: number, total: number) {
   return delta
 }
 
-export default function WelcomeScreen({ onConfirm, onBack }: WelcomeScreenProps) {
+export default function WelcomeScreen({ onConfirm, onCreate, onBack }: WelcomeScreenProps) {
   const [index, setIndex] = useState(0)
   const selected = layoutOptions[index]
   const total = layoutOptions.length
@@ -170,6 +171,9 @@ export default function WelcomeScreen({ onConfirm, onBack }: WelcomeScreenProps)
       <div className="welcome__actions">
         <button type="button" className="link-back" onClick={onBack}>
           Voltar
+        </button>
+        <button type="button" className="welcome__create" onClick={onCreate}>
+          Criar
         </button>
         <button
           type="button"
