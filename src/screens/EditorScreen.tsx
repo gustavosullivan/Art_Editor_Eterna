@@ -100,10 +100,6 @@ export default function EditorScreen({
   const [downloading, setDownloading] = useState(false)
   const [flash, setFlash] = useState<'back' | 'undo' | null>(null)
 
-<<<<<<< HEAD
-  const isClassicoLayout =
-    layoutId === 'classico' || layoutId === 'classico7dias' || layoutId === 'livre'
-=======
   const borderOn = classicoBorder === 'navy'
 
   function blink(which: 'back' | 'undo', action: () => void, delay = 0) {
@@ -115,7 +111,6 @@ export default function EditorScreen({
     if (delay > 0) window.setTimeout(action, delay)
     else action()
   }
->>>>>>> dd71d82ce1c571773a9646b2010efc6ae17a9eb8
 
   function handleFile(file: File | undefined) {
     if (!file || !file.type.startsWith('image/')) return
@@ -208,16 +203,13 @@ export default function EditorScreen({
             onRemovePersonName={onRemovePersonName}
             onRemovePersonAge={onRemovePersonAge}
             onRemoveLogo={onRemoveLogo}
-<<<<<<< HEAD
             onRemoveTitle={onRemoveTitle}
             onRemoveContact={onRemoveContact}
-=======
             watermark={
               layoutId === 'classico' || layoutId === 'classico7dias'
                 ? watermarkTunes[layoutId]
                 : undefined
             }
->>>>>>> dd71d82ce1c571773a9646b2010efc6ae17a9eb8
           />
         </EditorArtFit>
       </div>
