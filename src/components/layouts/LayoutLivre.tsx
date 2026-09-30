@@ -136,7 +136,7 @@ export default function LayoutLivre({
                 className="livre-title__field"
                 multiline
                 plain
-                maxRows={2}
+                maxRows={3}
                 clampOverflow
               />
             )}
@@ -144,7 +144,7 @@ export default function LayoutLivre({
         ) : null}
 
         {showPersonName ? (
-          <LivrePiece {...pieceProps('name', 'nome', onRemovePersonName)}>
+          <LivrePiece {...pieceProps('name', 'nome', onRemovePersonName, true)}>
             {preview ? (
               <p className="invite-person__name">{fields.personName || 'Nome'}</p>
             ) : (
@@ -156,7 +156,7 @@ export default function LayoutLivre({
                 className="editable--name"
                 multiline
                 plain
-                maxRows={2}
+                maxRows={3}
                 clampOverflow
               />
             )}

@@ -1,6 +1,6 @@
 import EditableText from '../EditableText'
 import type { LivrePieceId, LivrePieces, LivrePieceState } from '../../livreLayout'
-import type { ArtFields, ClassicoBorderMode, PhotoTransform } from '../../types'
+import type { ArtFields, ClassicoBorderMode, Definitivo7Modelo, PhotoTransform } from '../../types'
 import type { AssetOffset } from '../DraggableAsset'
 import SaoLuizLogo from '../SaoLuizLogo'
 import PhotoUpload from '../PhotoUpload'
@@ -42,6 +42,8 @@ export type LayoutProps = {
   onRemoveContact?: () => void
   /** Posição e escala da marca d'água (clássico / 7 dias) */
   watermark?: { x: number; y: number; scale: number }
+  /** Modelo 1 ou 2 — só o definitivo de 7 dias */
+  definitivo7Modelo?: Definitivo7Modelo
 }
 
 function ClockIcon() {

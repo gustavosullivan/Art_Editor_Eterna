@@ -1,14 +1,16 @@
 import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react'
 import ArtLayout from '../components/layouts/ArtLayout'
 import PreviewFit from '../components/PreviewFit'
-import { defaultFields, layoutOptions } from '../data/defaults'
+import { defaultFields, definitivoFields, layoutOptions } from '../data/defaults'
 import { watermarkTunes } from '../data/watermarks'
-import type { LayoutId } from '../types'
+import type { Definitivo7Modelo, LayoutId } from '../types'
 
 type WelcomeScreenProps = {
-  onConfirm: (layoutId: LayoutId) => void
+  onConfirm: (layoutId: LayoutId, definitivo7Modelo?: Definitivo7Modelo) => void
   onCreate: () => void
   onBack: () => void
+  definitivo7Modelo: Definitivo7Modelo
+  onDefinitivo7ModeloChange: (modelo: Definitivo7Modelo) => void
 }
 
 function slideOffset(index: number, active: number, total: number) {
@@ -19,7 +21,13 @@ function slideOffset(index: number, active: number, total: number) {
   return delta
 }
 
-export default function WelcomeScreen({ onConfirm, onCreate, onBack }: WelcomeScreenProps) {
+export default function WelcomeScreen({
+  onConfirm,
+  onCreate,
+  onBack,
+  definitivo7Modelo,
+  onDefinitivo7ModeloChange,
+}: WelcomeScreenProps) {
   const [index, setIndex] = useState(0)
   const selected = layoutOptions[index]
   const total = layoutOptions.length
@@ -122,10 +130,21 @@ export default function WelcomeScreen({ onConfirm, onCreate, onBack }: WelcomeSc
                       tabIndex={offset === 0 ? -1 : 0}
                     >
                       <div className="carousel__slide-face">
-                        <PreviewFit resetKey={`${option.id}-${offset === 0}`}>
+                        <PreviewFit
+                          resetKey={`${option.id}-${option.id === 'definitivo7dias' ? definitivo7Modelo : 1}-${offset === 0}`}
+                        >
                           <ArtLayout
                             layoutId={option.id}
-                            fields={defaultFields}
+                            definitivo7Modelo={
+                              option.id === 'definitivo7dias' ? definitivo7Modelo : 1
+                            }
+                            fields={
+                              option.id === 'definitivo' || option.id === 'definitivo7dias'
+                                ? option.id === 'definitivo7dias' && definitivo7Modelo === 2
+                                  ? { ...definitivoFields, memorialNote: '' }
+                                  : definitivoFields
+                                : defaultFields
+                            }
                             photoUrl={null}
                             onFieldChange={() => undefined}
                             onPhotoChange={() => undefined}
@@ -144,8 +163,31 @@ export default function WelcomeScreen({ onConfirm, onCreate, onBack }: WelcomeSc
               </div>
             </div>
 
-            <div className="carousel__meta">
+            <div
+              className={`carousel__meta${selected.id === 'definitivo7dias' ? ' carousel__meta--modelos' : ''}`}
+            >
               <p className="carousel__name">{selected.name}</p>
+              {selected.id === 'definitivo7dias' ? (
+                <div className="modelo-switch" role="group" aria-label="Modelo">
+                  <span className="modelo-switch__label">Modelo</span>
+                  <button
+                    type="button"
+                    className={`modelo-switch__ball${definitivo7Modelo === 1 ? ' is-active' : ''}`}
+                    aria-pressed={definitivo7Modelo === 1}
+                    onClick={() => onDefinitivo7ModeloChange(1)}
+                  >
+                    1
+                  </button>
+                  <button
+                    type="button"
+                    className={`modelo-switch__ball${definitivo7Modelo === 2 ? ' is-active' : ''}`}
+                    aria-pressed={definitivo7Modelo === 2}
+                    onClick={() => onDefinitivo7ModeloChange(2)}
+                  >
+                    2
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -184,7 +226,12 @@ export default function WelcomeScreen({ onConfirm, onCreate, onBack }: WelcomeSc
         <button
           type="button"
           className="splash__cta welcome__ok"
-          onClick={() => onConfirm(selected.id)}
+          onClick={() =>
+            onConfirm(
+              selected.id,
+              selected.id === 'definitivo7dias' ? definitivo7Modelo : 1,
+            )
+          }
         >
           OK
         </button>

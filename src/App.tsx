@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { defaultFields, emptyFields } from './data/defaults'
+import { defaultFields, definitivoFields, emptyFields } from './data/defaults'
 import EditorScreen from './screens/EditorScreen'
 import SplashScreen from './screens/SplashScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
@@ -10,6 +10,7 @@ import {
   defaultPhotoTransform,
   type ArtFields,
   type ClassicoBorderMode,
+  type Definitivo7Modelo,
   type LayoutId,
   type PhotoTransform,
 } from './types'
@@ -44,13 +45,22 @@ export default function App() {
     useState<ClassicoBorderMode>(defaultClassicoBorder)
   const [visibility, setVisibility] = useState(defaultVisibility)
   const [livrePieces, setLivrePieces] = useState<LivrePieces>(defaultLivrePieces)
+  const [definitivo7Modelo, setDefinitivo7Modelo] = useState<Definitivo7Modelo>(1)
 
   function updateField<K extends keyof ArtFields>(key: K, value: ArtFields[K]) {
     setFields((current) => ({ ...current, [key]: value }))
   }
 
-  function applyLayoutDefaults(id: LayoutId) {
-    setFields(id === 'livre' ? emptyFields : defaultFields)
+  function applyLayoutDefaults(id: LayoutId, modelo: Definitivo7Modelo = definitivo7Modelo) {
+    const base =
+      id === 'livre'
+        ? emptyFields
+        : id === 'definitivo' || id === 'definitivo7dias'
+          ? definitivoFields
+          : defaultFields
+    setFields(
+      id === 'definitivo7dias' && modelo === 2 ? { ...base, memorialNote: '' } : base,
+    )
     setPhotoTransform(defaultPhotoTransform)
     setLogoOffset(defaultLogoOffset)
     setCardsOffset(defaultCardsOffset)
@@ -67,9 +77,11 @@ export default function App() {
     applyLayoutDefaults(layoutId)
   }
 
-  function openLayout(id: LayoutId) {
+  function openLayout(id: LayoutId, modelo: Definitivo7Modelo = 1) {
+    const nextModelo = id === 'definitivo7dias' ? modelo : 1
+    setDefinitivo7Modelo(nextModelo)
     setLayoutId(id)
-    applyLayoutDefaults(id)
+    applyLayoutDefaults(id, nextModelo)
     setStep('editor')
   }
 
@@ -83,6 +95,8 @@ export default function App() {
         onBack={() => setStep('splash')}
         onConfirm={openLayout}
         onCreate={() => openLayout('livre')}
+        definitivo7Modelo={definitivo7Modelo}
+        onDefinitivo7ModeloChange={setDefinitivo7Modelo}
       />
     )
   }
@@ -90,6 +104,7 @@ export default function App() {
   return (
     <EditorScreen
       layoutId={layoutId}
+      definitivo7Modelo={definitivo7Modelo}
       fields={fields}
       photoUrl={photoUrl}
       photoTransform={photoTransform}

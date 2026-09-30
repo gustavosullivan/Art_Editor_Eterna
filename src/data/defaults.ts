@@ -13,6 +13,7 @@ export const emptyFields: ArtFields = {
   memorialNote: '',
   celebrationLabel: '',
   celebrationDate: '',
+  celebrationTime: '',
   ceremonyLabel: '',
   ceremonyPlace: '',
 }
@@ -31,11 +32,30 @@ export const defaultFields: ArtFields = {
   memorialNote: 'Inserir texto',
   celebrationLabel: 'DATA DA CELEBRAÇÃO',
   celebrationDate: 'Data e horário',
+  celebrationTime: '',
   ceremonyLabel: 'LOCAL DA CERIMÔNIA',
   ceremonyPlace: 'Local da cerimônia',
 }
 
+/** Campos dos layouts definitivos — local e data começam vazios, com placeholder */
+export const definitivoFields: ArtFields = {
+  ...defaultFields,
+  ceremonyPlace: '',
+  celebrationDate: '',
+  celebrationTime: '',
+}
+
 export const layoutOptions: LayoutOption[] = [
+  {
+    id: 'definitivo',
+    name: 'Modelo Definitivo',
+    description: '',
+  },
+  {
+    id: 'definitivo7dias',
+    name: 'Modelo Definitivo de 7 Dias',
+    description: '',
+  },
   {
     id: 'classico7dias',
     name: 'Modelo Clássico de 7 Dias',

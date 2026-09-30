@@ -1,4 +1,11 @@
-export type LayoutId = 'classico7dias' | 'classico' | 'principal' | 'setimo' | 'livre'
+export type LayoutId =
+  | 'definitivo7dias'
+  | 'definitivo'
+  | 'classico7dias'
+  | 'classico'
+  | 'principal'
+  | 'setimo'
+  | 'livre'
 
 /** Moldura dos layouts clássicos */
 export type ClassicoBorderMode = 'combo' | 'navy' | 'gold' | 'off'
@@ -18,8 +25,10 @@ export type ArtFields = {
   memorialNote: string
   /** Rótulo do card de data (clássicos) */
   celebrationLabel: string
-  /** Data e horário da celebração */
+  /** Data da celebração */
   celebrationDate: string
+  /** Horário da celebração */
+  celebrationTime: string
   /** Rótulo do card de local (clássicos) */
   ceremonyLabel: string
   /** Local da cerimônia */
@@ -49,3 +58,6 @@ export type LayoutOption = {
   name: string
   description: string
 }
+
+/** Variação só do Modelo Definitivo de 7 Dias */
+export type Definitivo7Modelo = 1 | 2

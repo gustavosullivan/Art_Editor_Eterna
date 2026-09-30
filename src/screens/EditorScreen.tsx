@@ -6,11 +6,18 @@ import { layoutOptions } from '../data/defaults'
 import { exportArt, type ExportPreset } from '../exportArt'
 import type { AssetOffset } from '../components/DraggableAsset'
 import type { LivrePieceId, LivrePieces, LivrePieceState } from '../livreLayout'
-import type { ArtFields, ClassicoBorderMode, LayoutId, PhotoTransform } from '../types'
+import type {
+  ArtFields,
+  ClassicoBorderMode,
+  Definitivo7Modelo,
+  LayoutId,
+  PhotoTransform,
+} from '../types'
 import { watermarkTunes } from '../data/watermarks'
 
 type EditorScreenProps = {
   layoutId: LayoutId
+  definitivo7Modelo: Definitivo7Modelo
   fields: ArtFields
   photoUrl: string | null
   photoTransform: PhotoTransform
@@ -59,6 +66,7 @@ const BORDER_LABEL = {
 
 export default function EditorScreen({
   layoutId,
+  definitivo7Modelo,
   fields,
   photoUrl,
   photoTransform,
@@ -148,7 +156,9 @@ export default function EditorScreen({
   const layoutName =
     layoutId === 'livre'
       ? 'Novo layout'
-      : (layoutOptions.find((item) => item.id === layoutId)?.name ?? 'Editar arte')
+      : layoutId === 'definitivo7dias' && definitivo7Modelo === 2
+        ? 'Modelo Definitivo de 7 Dias · 2'
+        : (layoutOptions.find((item) => item.id === layoutId)?.name ?? 'Editar arte')
   const emptyTip =
     layoutId === 'livre'
       ? 'Toque num bloco para selecionar e arraste para posicionar.'
@@ -171,9 +181,10 @@ export default function EditorScreen({
       </header>
 
       <div className="editor__canvas" ref={artRef}>
-        <EditorArtFit resetKey={layoutId}>
+        <EditorArtFit resetKey={`${layoutId}-${definitivo7Modelo}`}>
           <ArtLayout
             layoutId={layoutId}
+            definitivo7Modelo={definitivo7Modelo}
             fields={fields}
             photoUrl={photoUrl}
             photoTransform={photoTransform}
