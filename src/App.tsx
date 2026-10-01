@@ -1,5 +1,13 @@
 import { useState } from 'react'
 import { defaultFields, definitivoFields, emptyFields } from './data/defaults'
+import {
+  historyKindFor,
+  loadHistory,
+  photoForStorage,
+  saveHistory,
+  type ArtHistory,
+  type HistoryEntry,
+} from './history'
 import EditorScreen from './screens/EditorScreen'
 import SplashScreen from './screens/SplashScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
@@ -46,6 +54,7 @@ export default function App() {
   const [visibility, setVisibility] = useState(defaultVisibility)
   const [livrePieces, setLivrePieces] = useState<LivrePieces>(defaultLivrePieces)
   const [definitivo7Modelo, setDefinitivo7Modelo] = useState<Definitivo7Modelo>(1)
+  const [history, setHistory] = useState<ArtHistory>(() => loadHistory())
 
   function updateField<K extends keyof ArtFields>(key: K, value: ArtFields[K]) {
     setFields((current) => ({ ...current, [key]: value }))
@@ -77,6 +86,43 @@ export default function App() {
     applyLayoutDefaults(layoutId)
   }
 
+  function openHistory(entry: HistoryEntry) {
+    setPhotoUrl((current) => {
+      if (current?.startsWith('blob:')) URL.revokeObjectURL(current)
+      return entry.photoUrl
+    })
+    setLayoutId(entry.layoutId)
+    setDefinitivo7Modelo(entry.definitivo7Modelo)
+    setFields(entry.fields)
+    setPhotoTransform(entry.photoTransform)
+    setLogoOffset(entry.logoOffset)
+    setCardsOffset(entry.cardsOffset)
+    setClassicoBorder(entry.classicoBorder)
+    setVisibility(entry.visibility)
+    setLivrePieces(entry.livrePieces)
+    setStep('editor')
+  }
+
+  async function rememberDownload() {
+    const kind = historyKindFor(layoutId)
+    if (!kind) return
+    const photoUrlStored = await photoForStorage(photoUrl)
+    const entry: HistoryEntry = {
+      layoutId,
+      definitivo7Modelo,
+      fields,
+      photoUrl: photoUrlStored,
+      photoTransform,
+      logoOffset,
+      cardsOffset,
+      classicoBorder,
+      visibility,
+      livrePieces,
+      savedAt: Date.now(),
+    }
+    setHistory((current) => saveHistory(current, kind, entry))
+  }
+
   function openLayout(id: LayoutId, modelo: Definitivo7Modelo = 1) {
     const nextModelo = id === 'definitivo7dias' ? modelo : 1
     setDefinitivo7Modelo(nextModelo)
@@ -97,6 +143,8 @@ export default function App() {
         onCreate={() => openLayout('livre')}
         definitivo7Modelo={definitivo7Modelo}
         onDefinitivo7ModeloChange={setDefinitivo7Modelo}
+        history={history}
+        onOpenHistory={openHistory}
       />
     )
   }
@@ -140,6 +188,7 @@ export default function App() {
       onResetEdits={resetEdits}
       onBack={() => setStep('welcome')}
       onChangeLayout={() => setStep('welcome')}
+      onDownloaded={rememberDownload}
     />
   )
 }

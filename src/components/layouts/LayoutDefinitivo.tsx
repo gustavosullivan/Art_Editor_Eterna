@@ -1,3 +1,4 @@
+import DefinitivoWatermark from '../DefinitivoWatermark'
 import EditableText from '../EditableText'
 import PhotoUpload from '../PhotoUpload'
 import SaoLuizLogo from '../SaoLuizLogo'
@@ -235,6 +236,7 @@ export default function LayoutDefinitivo({
   onRemoveDeathDate,
   titleVariant = 'homenagem',
   definitivo7Modelo = 1,
+  watermark,
 }: LayoutDefinitivoProps) {
   const isSetimoTitle = titleVariant === 'setimo'
   const isModelo2 = isSetimoTitle && definitivo7Modelo === 2
@@ -244,6 +246,8 @@ export default function LayoutDefinitivo({
       className={`art art--definitivo${isSetimoTitle ? ' art--definitivo-7dias' : ''}${isModelo2 ? ' art--definitivo-m2' : ''}${preview ? ' art--definitivo-preview' : ''}`}
     >
       <div className="definitivo-sheet" aria-hidden="true" />
+
+      <DefinitivoWatermark tune={watermark} />
 
       {!preview && classicoBorder === 'navy' ? (
         <div className="classico-edge classico-edge--navy" aria-hidden="true" />

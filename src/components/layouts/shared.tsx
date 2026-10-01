@@ -40,7 +40,7 @@ export type LayoutProps = {
   onRemoveLogo?: () => void
   onRemoveTitle?: () => void
   onRemoveContact?: () => void
-  /** Posição e escala da marca d'água (clássico / 7 dias) */
+  /** Posição e escala da marca d'água (clássico / 7 dias / definitivos) */
   watermark?: { x: number; y: number; scale: number }
   /** Modelo 1 ou 2 — só o definitivo de 7 dias */
   definitivo7Modelo?: Definitivo7Modelo

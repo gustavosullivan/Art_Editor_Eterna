@@ -15,6 +15,8 @@ type EditableTextProps = {
   maxRows?: number
   /** Input cresce/encolhe na horizontal conforme o texto */
   autoWidth?: boolean
+  /** Remede a caixa quando o tamanho da letra muda (layout criar) */
+  remeasureKey?: string | number
 }
 
 function lineHeightPx(el: HTMLElement) {
@@ -26,6 +28,8 @@ function lineHeightPx(el: HTMLElement) {
 }
 
 function growToContent(el: HTMLTextAreaElement, maxRows: number) {
+  const previousMax = el.style.maxHeight
+  el.style.maxHeight = 'none'
   const lh = lineHeightPx(el)
   const maxH = lh * maxRows
 
@@ -33,7 +37,8 @@ function growToContent(el: HTMLTextAreaElement, maxRows: number) {
   el.scrollTop = 0
   const contentH = el.scrollHeight
   const lines = Math.max(1, Math.min(maxRows, Math.ceil((contentH - 1) / lh)))
-  el.style.height = `${lines * lh}px`
+  el.style.height = `${Math.ceil(lines * lh)}px`
+  el.style.maxHeight = previousMax
   el.scrollTop = 0
 
   return { contentH, maxH, lh, lines }
@@ -96,6 +101,7 @@ export default function EditableText({
   clampOverflow = false,
   maxRows,
   autoWidth = false,
+  remeasureKey,
 }: EditableTextProps) {
   const fieldRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null)
 
@@ -108,7 +114,7 @@ export default function EditableText({
     if (autoWidth && !multiline && el instanceof HTMLInputElement) {
       growToContentWidth(el)
     }
-  }, [value, multiline, maxRows, autoWidth])
+  }, [value, multiline, maxRows, autoWidth, remeasureKey])
 
   function handleChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const next = event.target.value

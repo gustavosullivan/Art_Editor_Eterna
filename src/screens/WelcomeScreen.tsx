@@ -1,8 +1,14 @@
 import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react'
+import HistoryModal from '../components/HistoryModal'
 import ArtLayout from '../components/layouts/ArtLayout'
 import PreviewFit from '../components/PreviewFit'
 import { defaultFields, definitivoFields, layoutOptions } from '../data/defaults'
-import { watermarkTunes } from '../data/watermarks'
+import {
+  definitivoWatermarkModelo1,
+  definitivoWatermarkModelo2,
+  watermarkTunes,
+} from '../data/watermarks'
+import type { ArtHistory, HistoryEntry } from '../history'
 import type { Definitivo7Modelo, LayoutId } from '../types'
 
 type WelcomeScreenProps = {
@@ -11,6 +17,8 @@ type WelcomeScreenProps = {
   onBack: () => void
   definitivo7Modelo: Definitivo7Modelo
   onDefinitivo7ModeloChange: (modelo: Definitivo7Modelo) => void
+  history: ArtHistory
+  onOpenHistory: (entry: HistoryEntry) => void
 }
 
 function slideOffset(index: number, active: number, total: number) {
@@ -27,8 +35,11 @@ export default function WelcomeScreen({
   onBack,
   definitivo7Modelo,
   onDefinitivo7ModeloChange,
+  history,
+  onOpenHistory,
 }: WelcomeScreenProps) {
   const [index, setIndex] = useState(0)
+  const [historyOpen, setHistoryOpen] = useState(false)
   const selected = layoutOptions[index]
   const total = layoutOptions.length
   const swipeRef = useRef<{ x: number; y: number; active: boolean } | null>(null)
@@ -83,6 +94,10 @@ export default function WelcomeScreen({
   return (
     <main className="welcome">
       <div className="welcome__atmosphere" aria-hidden="true" />
+
+      <button type="button" className="welcome__history" onClick={() => setHistoryOpen(true)}>
+        Histórico
+      </button>
 
       <header className="welcome__header">
         <h1 className="welcome__title">Escolha o layout</h1>
@@ -152,7 +167,13 @@ export default function WelcomeScreen({
                             watermark={
                               option.id === 'classico' || option.id === 'classico7dias'
                                 ? watermarkTunes[option.id]
-                                : undefined
+                                : option.id === 'definitivo'
+                                  ? definitivoWatermarkModelo1
+                                  : option.id === 'definitivo7dias'
+                                    ? definitivo7Modelo === 2
+                                      ? definitivoWatermarkModelo2
+                                      : definitivoWatermarkModelo1
+                                    : undefined
                             }
                           />
                         </PreviewFit>
@@ -236,6 +257,16 @@ export default function WelcomeScreen({
           OK
         </button>
       </div>
+
+      <HistoryModal
+        open={historyOpen}
+        history={history}
+        onClose={() => setHistoryOpen(false)}
+        onOpen={(entry) => {
+          setHistoryOpen(false)
+          onOpenHistory(entry)
+        }}
+      />
     </main>
   )
 }

@@ -97,9 +97,15 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
   const width = Math.max(1, Math.ceil(target.offsetWidth))
   const height = Math.max(1, Math.ceil(target.offsetHeight))
   const artRect = target.getBoundingClientRect()
+  const watermarkMarks = Array.from(
+    target.querySelectorAll<HTMLElement>('.definitivo-watermark__marks'),
+  )
+  watermarkMarks.forEach((mark) => {
+    mark.style.display = 'none'
+  })
   const watermarkBoxes = Array.from(
     target.querySelectorAll<HTMLElement>(
-      '.classico-watermark, .setimo-watermark, .tpl-watermark',
+      '.classico-watermark, .setimo-watermark, .tpl-watermark, .definitivo-watermark',
     ),
   ).map((mark) => {
     const box = mark.getBoundingClientRect()
@@ -109,6 +115,9 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
       width: box.width,
       height: box.height,
     }
+  })
+  watermarkMarks.forEach((mark) => {
+    mark.style.display = ''
   })
 
   target.classList.add('is-exporting')
@@ -148,7 +157,7 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
 
         element
           .querySelectorAll<HTMLElement>(
-            '.classico-watermark, .setimo-watermark, .tpl-watermark',
+            '.classico-watermark, .setimo-watermark, .tpl-watermark, .definitivo-watermark',
           )
           .forEach((mark, index) => {
             const box = watermarkBoxes[index]
@@ -163,11 +172,13 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
 
         element
           .querySelectorAll<HTMLElement>(
-            '.classico-watermark__img, .setimo-watermark__img, .tpl-watermark__img',
+            '.classico-watermark__img, .setimo-watermark__img, .tpl-watermark__img, .definitivo-watermark__img',
           )
           .forEach((img) => {
             img.style.mixBlendMode = 'normal'
-            const isClassico = img.classList.contains('classico-watermark__img')
+            const isClassico =
+              img.classList.contains('classico-watermark__img') ||
+              img.classList.contains('definitivo-watermark__img')
             img.style.filter = isClassico
               ? 'brightness(0.72) sepia(0.9) hue-rotate(185deg) saturate(2.8)'
               : 'none'

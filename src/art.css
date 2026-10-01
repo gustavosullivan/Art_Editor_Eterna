@@ -40,10 +40,129 @@
     linear-gradient(165deg, #f8fafb 0%, var(--pearl) 50%, var(--pearl-deep) 100%);
 }
 
+.welcome__history {
+  position: absolute;
+  z-index: 6;
+  top: max(0.55rem, var(--safe-top));
+  right: max(0.55rem, var(--safe-right));
+  appearance: none;
+  border: 1px solid rgba(36, 54, 86, 0.35);
+  background: rgba(255, 255, 255, 0.92);
+  color: #243656;
+  min-height: 2rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.welcome__history:active {
+  background: rgba(36, 54, 86, 0.08);
+}
+
 .welcome__header {
   text-align: center;
-  padding-inline: 0.5rem;
+  padding-inline: 4.8rem;
   flex-shrink: 0;
+}
+
+.history-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+}
+
+.history-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: rgba(16, 24, 34, 0.46);
+  cursor: pointer;
+}
+
+.history-modal__panel {
+  position: relative;
+  z-index: 1;
+  width: min(22rem, 100%);
+  padding: 1.35rem 1.15rem 1.1rem;
+  border-radius: 16px;
+  background: #f7f5f1;
+  box-shadow: 0 22px 50px rgba(16, 24, 34, 0.28);
+  text-align: center;
+}
+
+.history-modal__title {
+  margin: 0 0 1rem;
+  font-family: var(--font-display, 'Libre Baskerville', Georgia, serif);
+  font-size: 1.65rem;
+  font-weight: 600;
+  color: #243656;
+}
+
+.history-modal__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.history-modal__item {
+  appearance: none;
+  width: 100%;
+  min-height: 3.4rem;
+  padding: 0.7rem 0.9rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(165deg, #243247 0%, #152033 70%);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+}
+
+.history-modal__item:disabled {
+  background: #d5d8de;
+  color: #5c6573;
+  cursor: default;
+}
+
+.history-modal__item-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.history-modal__item-detail {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.85;
+}
+
+.history-modal__close {
+  appearance: none;
+  margin-top: 0.85rem;
+  border: none;
+  background: transparent;
+  color: #243656;
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-height: 2.2rem;
 }
 
 .welcome__eyebrow {
@@ -1098,13 +1217,15 @@
 
 /* html2canvas suja mix-blend / filter — achata na exportação */
 .art.is-exporting .classico-watermark__img,
+.art.is-exporting .definitivo-watermark__img,
 .art.is-exporting .setimo-watermark__img,
 .art.is-exporting .tpl-watermark__img {
   mix-blend-mode: normal !important;
   filter: none !important;
 }
 
-.art.is-exporting .classico-watermark__img {
+.art.is-exporting .classico-watermark__img,
+.art.is-exporting .definitivo-watermark__img {
   opacity: 0.26 !important;
   filter: brightness(0.72) sepia(0.9) hue-rotate(185deg) saturate(2.8) !important;
 }
@@ -1386,15 +1507,30 @@ textarea.editable--card {
 }
 
 .art--livre .livre-piece textarea.livre-title__field,
-.art--livre .livre-piece textarea.editable--name {
+.art--livre .livre-piece .livre-title__text,
+.art--livre .livre-piece textarea.editable--name,
+.art--livre .livre-piece .invite-person__name,
+.art--livre .livre-piece textarea.classico-card__value,
+.art--livre .livre-piece .classico-card__value {
   white-space: pre-wrap;
   overflow-wrap: break-word;
   word-break: normal;
   line-break: auto;
   overflow: hidden;
   line-height: 1.25;
-  max-height: calc(1.25em * 3);
+}
+
+.art--livre .livre-piece textarea.livre-title__field,
+.art--livre .livre-piece textarea.editable--name,
+.art--livre .livre-piece textarea.classico-card__value {
+  max-height: none;
   height: auto;
+}
+
+.art--livre .livre-piece .livre-title__text,
+.art--livre .livre-piece .invite-person__name,
+.art--livre .livre-piece p.classico-card__value {
+  max-height: calc(1.25em * 3);
 }
 
 .livre-title {
@@ -1762,8 +1898,8 @@ p.classico-card__value {
 
 .art--classico .classico-logo .brand-logo__img,
 .art--classico .classico-footer .brand-logo__img {
-  height: 1.85rem;
-  max-width: 150px;
+  height: calc(1.85rem + 10px);
+  max-width: 210px;
 }
 
 .classico-footer__contact {
@@ -1934,8 +2070,8 @@ input.classico-footer__field {
 }
 
 .invite-footer .brand-logo__img {
-  height: 1.7rem;
-  max-width: 140px;
+  height: calc(1.85rem + 10px);
+  max-width: 210px;
 }
 
 .brand-logo--compact .brand-logo__mark {
@@ -2373,8 +2509,8 @@ input.classico-footer__field {
 }
 
 .art--principal .tpl-logo .brand-logo__img {
-  height: clamp(1.55rem, 6.4cqw, 2rem);
-  max-width: clamp(8.5rem, 38cqw, 12rem);
+  height: calc(1.85rem + 10px);
+  max-width: 210px;
 }
 
 /* Nome / idade — inputs sobre o papel */
@@ -3568,8 +3704,8 @@ p.setimo-card__value {
 
 .art--setimo .setimo-logo-asset .brand-logo__img,
 .art--setimo .brand-logo__img {
-  height: 2rem;
-  max-width: 168px;
+  height: calc(1.85rem + 10px);
+  max-width: 210px;
 }
 
 .setimo-footer__contact {
@@ -3709,7 +3845,8 @@ input.setimo-footer__field {
 
 .livre-piece__size {
   position: absolute;
-  top: 0.95rem;
+  top: auto;
+  bottom: calc(100% + 0.45rem);
   right: 0;
   z-index: 7;
   display: flex;
@@ -3787,12 +3924,43 @@ input.setimo-footer__field {
 .art--livre .livre-piece textarea.classico-card__value,
 .art--livre .livre-piece .classico-card__value {
   font-size: 0.84em;
+  line-height: 1.25;
+}
+
+.art--livre .livre-piece .classico-card__label,
+.art--livre .livre-piece input.classico-card__label {
+  letter-spacing: 0.06em;
+  text-overflow: clip;
+}
+
+.art--livre .invite-dates {
+  flex-wrap: wrap;
+  max-width: 100%;
+  row-gap: 0.28rem;
+}
+
+.art--livre .livre-piece .invite-dates__icon {
+  width: 1.15em;
+  height: 1.15em;
+}
+
+.art--livre .livre-piece .editable--date,
+.art--livre .livre-piece .editable--age,
+.art--livre .livre-piece .editable--age.editable--auto-width {
+  max-width: 22ch;
+}
+
+.art--livre .livre-piece[data-piece='contact'] {
+  width: 100%;
+  max-width: 92%;
 }
 
 .art--livre .livre-piece[data-piece='contact'] .classico-footer__contact {
   flex-wrap: wrap;
+  width: 100%;
   max-width: 100%;
   font-size: 1.2em;
+  row-gap: 0.2em;
 }
 
 .art--livre .livre-piece[data-piece='contact'] .classico-footer__sep {
@@ -3800,7 +3968,16 @@ input.setimo-footer__field {
 }
 
 .art--livre .livre-piece[data-piece='contact'] .classico-footer__item {
+  flex: 1 1 7em;
   max-width: 100%;
+  min-width: 0;
+}
+
+.art--livre .livre-piece[data-piece='contact'] .classico-footer__field,
+.art--livre .livre-piece[data-piece='contact'] input.classico-footer__field {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
 }
 
 .art--livre .livre-piece[data-piece='contact'] .classico-footer__icon {
@@ -3808,8 +3985,16 @@ input.setimo-footer__field {
   height: 1.05em;
 }
 
+.art--livre .livre-piece[data-piece='logo'] {
+  width: min(78%, calc(210px * var(--char-scale, 1)));
+  max-width: 78%;
+}
+
+.art--livre .livre-piece[data-piece='logo'] .brand-logo,
 .art--livre .livre-piece[data-piece='logo'] .brand-logo__img {
-  height: calc(1.85rem * var(--char-scale, 1));
+  width: 100%;
+  max-width: 100%;
+  height: auto;
 }
 
 .art.is-exporting .livre-piece {
@@ -3839,8 +4024,8 @@ input.setimo-footer__field {
 
   .art--classico .classico-logo .brand-logo__img,
   .art--classico .classico-footer .brand-logo__img {
-    height: 1.35rem;
-    max-width: 120px;
+    height: calc(1.85rem + 10px);
+    max-width: 210px;
   }
 
   .art--classico .classico-footer {
@@ -3860,8 +4045,8 @@ input.setimo-footer__field {
 
   .art--setimo .setimo-logo-asset .brand-logo__img,
   .art--setimo .setimo-footer .brand-logo__img {
-    height: 1.35rem;
-    max-width: 120px;
+    height: calc(1.85rem + 10px);
+    max-width: 210px;
   }
 
   /* Longe do detalhe azul do canto inferior esquerdo (só mobile) */
@@ -4425,8 +4610,8 @@ input.setimo-footer__field {
 
 .art--definitivo .definitivo-logo .brand-logo__img,
 .art--definitivo .definitivo-footer .brand-logo__img {
-  height: 1.85rem;
-  max-width: 150px;
+  height: calc(1.85rem + 10px);
+  max-width: 210px;
 }
 
 .art--definitivo .definitivo-footer__contact {
@@ -4487,8 +4672,33 @@ input.setimo-footer__field {
 
 .art--definitivo-preview .classico-edge,
 .art--definitivo-preview .photo-frame__tools,
-.art--definitivo-preview .photo-frame__input {
+.art--definitivo-preview .photo-frame__input,
+.art--definitivo-preview .definitivo-watermark__marks {
   display: none !important;
+}
+
+.definitivo-watermark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(68%, 250px);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+.definitivo-watermark__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0.28;
+  mix-blend-mode: normal;
+  filter: brightness(0.72) sepia(0.9) hue-rotate(185deg) saturate(2.8);
+  pointer-events: none;
+  user-select: none;
 }
 
 .art.is-exporting.art--definitivo .photo-frame--rounded .photo-frame__hit {

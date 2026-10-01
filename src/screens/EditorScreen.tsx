@@ -13,7 +13,11 @@ import type {
   LayoutId,
   PhotoTransform,
 } from '../types'
-import { watermarkTunes } from '../data/watermarks'
+import {
+  definitivoWatermarkModelo1,
+  definitivoWatermarkModelo2,
+  watermarkTunes,
+} from '../data/watermarks'
 
 type EditorScreenProps = {
   layoutId: LayoutId
@@ -53,6 +57,7 @@ type EditorScreenProps = {
   onResetEdits: () => void
   onBack: () => void
   onChangeLayout: () => void
+  onDownloaded: () => void | Promise<void>
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -101,6 +106,7 @@ export default function EditorScreen({
   onRemoveContact,
   onResetEdits,
   onBack,
+  onDownloaded,
 }: EditorScreenProps) {
   const artRef = useRef<HTMLDivElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
@@ -140,6 +146,7 @@ export default function EditorScreen({
         fields.personName,
         classicoBorder,
       )
+      await onDownloaded()
       setExportOpen(false)
     } catch (error) {
       console.error(error)
@@ -219,7 +226,13 @@ export default function EditorScreen({
             watermark={
               layoutId === 'classico' || layoutId === 'classico7dias'
                 ? watermarkTunes[layoutId]
-                : undefined
+                : layoutId === 'definitivo'
+                  ? definitivoWatermarkModelo1
+                  : layoutId === 'definitivo7dias'
+                    ? definitivo7Modelo === 2
+                      ? definitivoWatermarkModelo2
+                      : definitivoWatermarkModelo1
+                    : undefined
             }
           />
         </EditorArtFit>

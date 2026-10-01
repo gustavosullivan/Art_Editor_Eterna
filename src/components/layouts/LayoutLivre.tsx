@@ -138,6 +138,7 @@ export default function LayoutLivre({
                 plain
                 maxRows={3}
                 clampOverflow
+                remeasureKey={livrePieces.title.scale}
               />
             )}
           </LivrePiece>
@@ -158,6 +159,7 @@ export default function LayoutLivre({
                 plain
                 maxRows={3}
                 clampOverflow
+                remeasureKey={livrePieces.name.scale}
               />
             )}
           </LivrePiece>
@@ -175,6 +177,7 @@ export default function LayoutLivre({
                 placeholder="Idade"
                 className="editable--age"
                 autoWidth
+                remeasureKey={livrePieces.age.scale}
               />
             )}
           </LivrePiece>
@@ -198,6 +201,7 @@ export default function LayoutLivre({
                       placeholder="Nascimento"
                       className="editable--date"
                       autoWidth
+                      remeasureKey={livrePieces.birth.scale}
                     />
                   )}
                 </div>
@@ -222,6 +226,7 @@ export default function LayoutLivre({
                       placeholder="Falecimento"
                       className="editable--date"
                       autoWidth
+                      remeasureKey={livrePieces.death.scale}
                     />
                   )}
                 </div>
@@ -245,7 +250,7 @@ export default function LayoutLivre({
                       placeholder="Título"
                       className="classico-card__label"
                       plain
-                      clampOverflow
+                      remeasureKey={livrePieces.cardDate.scale}
                     />
                   )}
                   {preview ? (
@@ -261,6 +266,7 @@ export default function LayoutLivre({
                       plain
                       maxRows={3}
                       clampOverflow
+                      remeasureKey={livrePieces.cardDate.scale}
                     />
                   )}
                 </div>
@@ -280,7 +286,7 @@ export default function LayoutLivre({
                       placeholder="Título"
                       className="classico-card__label"
                       plain
-                      clampOverflow
+                      remeasureKey={livrePieces.cardPlace.scale}
                     />
                   )}
                   {preview ? (
@@ -296,6 +302,7 @@ export default function LayoutLivre({
                       plain
                       maxRows={3}
                       clampOverflow
+                      remeasureKey={livrePieces.cardPlace.scale}
                     />
                   )}
                 </div>
@@ -340,7 +347,7 @@ export default function LayoutLivre({
                           placeholder="Site"
                           className="classico-footer__field"
                           plain
-                          clampOverflow
+                          remeasureKey={livrePieces.contact.scale}
                         />
                       </span>
                       <span className="classico-footer__sep" aria-hidden="true">
@@ -355,7 +362,7 @@ export default function LayoutLivre({
                           placeholder="Telefone"
                           className="classico-footer__field"
                           plain
-                          clampOverflow
+                          remeasureKey={livrePieces.contact.scale}
                         />
                       </span>
                     </>
