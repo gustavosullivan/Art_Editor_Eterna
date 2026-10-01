@@ -612,67 +612,6 @@
   text-align: left;
 }
 
-.editor__watermark-tune {
-  position: relative;
-  z-index: 20;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: nowrap;
-  gap: 0.35rem;
-  margin: 0;
-  padding: 0.18rem 0.55rem;
-  background: #243656;
-  color: #fff;
-  font-family: 'Manrope', system-ui, sans-serif;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.editor__watermark-tune label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.18rem;
-}
-
-.editor__watermark-tune input[type='number'] {
-  width: 3.35rem;
-  box-sizing: border-box;
-  border: none;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
-  font: inherit;
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-align: center;
-  text-transform: none;
-  padding: 0.08rem 0.1rem;
-}
-
-.editor__watermark-tune__zoom {
-  display: inline-flex;
-  gap: 0.16rem;
-}
-
-.editor__watermark-tune__zoom button {
-  width: 1.35rem;
-  height: 1.35rem;
-  border-radius: 50%;
-  border: 1px solid #fff;
-  background: transparent;
-  color: #fff;
-  font: inherit;
-  font-size: 0.85rem;
-  font-weight: 700;
-  line-height: 1;
-  padding: 0;
-  cursor: pointer;
-}
-
 .editor__bar-btn {
   appearance: none;
   border: none;

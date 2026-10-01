@@ -14,9 +14,9 @@ import type {
   PhotoTransform,
 } from '../types'
 import {
-  clampWatermark,
+  definitivoWatermarkModelo1,
+  definitivoWatermarkModelo2,
   watermarkTunes,
-  type WatermarkTune,
 } from '../data/watermarks'
 
 type EditorScreenProps = {
@@ -54,8 +54,6 @@ type EditorScreenProps = {
   onRemoveLogo: () => void
   onRemoveTitle: () => void
   onRemoveContact: () => void
-  definitivoWatermark: WatermarkTune
-  onDefinitivoWatermarkChange: (tune: WatermarkTune) => void
   onResetEdits: () => void
   onBack: () => void
   onChangeLayout: () => void
@@ -106,8 +104,6 @@ export default function EditorScreen({
   onRemoveLogo,
   onRemoveTitle,
   onRemoveContact,
-  definitivoWatermark,
-  onDefinitivoWatermarkChange,
   onResetEdits,
   onBack,
   onDownloaded,
@@ -119,11 +115,10 @@ export default function EditorScreen({
   const [flash, setFlash] = useState<'back' | 'undo' | null>(null)
 
   const borderOn = classicoBorder === 'navy'
-  const watermarkLive = layoutId === 'definitivo' || layoutId === 'definitivo7dias'
-
-  function setWatermark(partial: Partial<WatermarkTune>) {
-    onDefinitivoWatermarkChange(clampWatermark({ ...definitivoWatermark, ...partial }))
-  }
+  const definitivoWatermark =
+    layoutId === 'definitivo7dias' && definitivo7Modelo === 2
+      ? definitivoWatermarkModelo2
+      : definitivoWatermarkModelo1
 
   function blink(which: 'back' | 'undo', action: () => void, delay = 0) {
     setFlash(null)
@@ -196,68 +191,6 @@ export default function EditorScreen({
         </button>
       </header>
 
-      {watermarkLive ? (
-        <div className="editor__watermark-tune">
-          <span>Marca</span>
-          <label>
-            X
-            <input
-              type="number"
-              inputMode="numeric"
-              value={definitivoWatermark.x}
-              onChange={(event) => {
-                const next = Number(event.target.value)
-                if (Number.isFinite(next)) setWatermark({ x: next })
-              }}
-              aria-label="Posição horizontal da marca d'água"
-            />
-          </label>
-          <label>
-            Y
-            <input
-              type="number"
-              inputMode="numeric"
-              value={definitivoWatermark.y}
-              onChange={(event) => {
-                const next = Number(event.target.value)
-                if (Number.isFinite(next)) setWatermark({ y: next })
-              }}
-              aria-label="Posição vertical da marca d'água"
-            />
-          </label>
-          <label>
-            Tam.
-            <input
-              type="number"
-              inputMode="decimal"
-              step={0.05}
-              value={definitivoWatermark.scale}
-              onChange={(event) => {
-                const next = Number(event.target.value)
-                if (Number.isFinite(next)) setWatermark({ scale: next })
-              }}
-              aria-label="Tamanho da marca d'água"
-            />
-          </label>
-          <span className="editor__watermark-tune__zoom">
-            <button
-              type="button"
-              onClick={() => setWatermark({ scale: definitivoWatermark.scale - 0.1 })}
-              aria-label="Diminuir marca d'água"
-            >
-              −
-            </button>
-            <button
-              type="button"
-              onClick={() => setWatermark({ scale: definitivoWatermark.scale + 0.1 })}
-              aria-label="Aumentar marca d'água"
-            >
-              +
-            </button>
-          </span>
-        </div>
-      ) : null}
-
       <div className="editor__canvas" ref={artRef}>
         <EditorArtFit resetKey={`${layoutId}-${definitivo7Modelo}`}>
           <ArtLayout
@@ -297,7 +230,7 @@ export default function EditorScreen({
             watermark={
               layoutId === 'classico' || layoutId === 'classico7dias'
                 ? watermarkTunes[layoutId]
-                : watermarkLive
+                : layoutId === 'definitivo' || layoutId === 'definitivo7dias'
                   ? definitivoWatermark
                   : undefined
             }
