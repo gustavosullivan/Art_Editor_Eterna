@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, type ChangeEvent, type ClipboardEvent, type KeyboardEvent } from 'react'
+import { useLayoutEffect, useRef, type ChangeEvent } from 'react'
 
 type EditableTextProps = {
   value: string
@@ -106,61 +106,6 @@ function wouldOverflow(
   return overflow
 }
 
-function plainText(el: HTMLElement) {
-  return (el.textContent ?? '').replace(/\u00a0/g, ' ')
-}
-
-function caretOffset(el: HTMLElement) {
-  const selection = window.getSelection()
-  if (!selection || selection.rangeCount === 0 || !el.contains(selection.anchorNode)) return null
-  const range = selection.getRangeAt(0)
-  const before = range.cloneRange()
-  before.selectNodeContents(el)
-  before.setEnd(range.endContainer, range.endOffset)
-  return before.toString().length
-}
-
-function restoreCaret(el: HTMLElement, offset: number) {
-  const selection = window.getSelection()
-  if (!selection) return
-  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
-  let remaining = offset
-  let node = walker.nextNode()
-  while (node) {
-    const length = node.textContent?.length ?? 0
-    if (remaining <= length) {
-      const range = document.createRange()
-      range.setStart(node, remaining)
-      range.collapse(true)
-      selection.removeAllRanges()
-      selection.addRange(range)
-      return
-    }
-    remaining -= length
-    node = walker.nextNode()
-  }
-  const range = document.createRange()
-  range.selectNodeContents(el)
-  range.collapse(false)
-  selection.removeAllRanges()
-  selection.addRange(range)
-}
-
-function wouldOverflowBlock(el: HTMLElement, next: string, maxRows: number | undefined, measurePadding: boolean) {
-  const previous = el.textContent ?? ''
-  const previousHeight = el.style.height
-  el.textContent = next
-  let overflow = false
-  if (maxRows) {
-    const { contentH, maxH } = growToContent(el, maxRows, measurePadding)
-    overflow = contentH > maxH + 1
-    el.style.height = previousHeight
-    el.scrollTop = 0
-  }
-  el.textContent = previous
-  return overflow
-}
-
 export default function EditableText({
   value,
   onChange,
@@ -176,16 +121,11 @@ export default function EditableText({
   measurePadding = false,
   wrapWords = false,
 }: EditableTextProps) {
-  const fieldRef = useRef<HTMLInputElement | HTMLTextAreaElement | HTMLDivElement>(null)
+  const fieldRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null)
 
   useLayoutEffect(() => {
     const el = fieldRef.current
     if (!el) return
-    if (wrapWords && el instanceof HTMLDivElement && plainText(el) !== value) {
-      const caret = document.activeElement === el ? caretOffset(el) : null
-      el.textContent = value
-      if (caret != null) restoreCaret(el, Math.min(caret, value.length))
-    }
     if (multiline && maxRows && !(el instanceof HTMLInputElement)) {
       growToContent(el, maxRows, measurePadding)
     }
@@ -241,58 +181,13 @@ export default function EditableText({
     spellCheck: true as const,
   }
 
-  function rejectPlainEdit(el: HTMLDivElement, next: string) {
-    const caret = caretOffset(el)
-    const added = next.length - value.length
-    el.textContent = value
-    if (caret != null) restoreCaret(el, Math.max(0, caret - added))
-  }
-
-  function handlePlainInput() {
-    const el = fieldRef.current
-    if (!(el instanceof HTMLDivElement)) return
-    const next = plainText(el)
-    if (
-      clampOverflow &&
-      !autoWidth &&
-      next.length > value.length &&
-      wouldOverflowBlock(el, next, maxRows, measurePadding)
-    ) {
-      rejectPlainEdit(el, next)
-      return
-    }
-    onChange(next)
-    if (maxRows) growToContent(el, maxRows, measurePadding)
-  }
-
-  function handlePlainPaste(event: ClipboardEvent<HTMLDivElement>) {
-    event.preventDefault()
-    const text = event.clipboardData.getData('text/plain').replace(/\r\n/g, '\n')
-    document.execCommand('insertText', false, text)
-  }
-
-  function handlePlainKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.key !== 'Enter') return
-    event.preventDefault()
-    document.execCommand('insertText', false, '\n')
-  }
-
   if (wrapWords && multiline) {
     return (
-      <div
-        ref={fieldRef as never}
-        className={sharedProps.className}
-        contentEditable
-        role="textbox"
-        aria-multiline="true"
-        aria-label={ariaLabel}
-        data-placeholder={placeholder}
-        spellCheck
-        suppressContentEditableWarning
-        onInput={handlePlainInput}
-        onPaste={handlePlainPaste}
-        onKeyDown={handlePlainKeyDown}
-        onFocus={sharedProps.onFocus}
+      <textarea
+        {...sharedProps}
+        rows={1}
+        wrap="soft"
+        style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'normal' }}
       />
     )
   }

@@ -63,10 +63,14 @@ async function withNaturalArtScale<T>(
   const measure = target.closest('.editor__art-measure') as HTMLElement | null
   const shell = target.closest('.editor__art-shell') as HTMLElement | null
   const prevMeasure = measure?.style.transform ?? ''
+  const prevZoom = measure?.style.zoom ?? ''
   const prevShellW = shell?.style.width ?? ''
   const prevShellH = shell?.style.height ?? ''
 
-  if (measure) measure.style.transform = 'none'
+  if (measure) {
+    measure.style.transform = 'none'
+    measure.style.zoom = '1'
+  }
   if (shell) {
     shell.style.width = `${target.offsetWidth}px`
     shell.style.height = `${target.offsetHeight}px`
@@ -78,7 +82,10 @@ async function withNaturalArtScale<T>(
   try {
     return await run()
   } finally {
-    if (measure) measure.style.transform = prevMeasure
+    if (measure) {
+      measure.style.transform = prevMeasure
+      measure.style.zoom = prevZoom
+    }
     if (shell) {
       shell.style.width = prevShellW
       shell.style.height = prevShellH

@@ -670,7 +670,6 @@
 .editor__art-measure {
   transform-origin: top left;
   width: 400px;
-  will-change: transform;
 }
 
 .editor__art-measure .art {

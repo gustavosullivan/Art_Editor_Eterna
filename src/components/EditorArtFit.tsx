@@ -66,7 +66,7 @@ export default function EditorArtFit({ children, resetKey }: EditorArtFitProps) 
         <div
           ref={measureRef}
           className="editor__art-measure"
-          style={{ transform: `scale(${fit.scale})` }}
+          style={{ zoom: fit.scale, transform: 'none' }}
         >
           {children}
         </div>
