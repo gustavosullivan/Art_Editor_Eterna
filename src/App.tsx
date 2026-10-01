@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import { defaultFields, definitivoFields, emptyFields } from './data/defaults'
 import {
+  definitivoWatermarkModelo1,
+  definitivoWatermarkModelo2,
+  type WatermarkTune,
+} from './data/watermarks'
+import {
   historyKindFor,
   loadHistory,
   photoForStorage,
@@ -40,6 +45,12 @@ const defaultVisibility = {
 const defaultLogoOffset: AssetOffset = { x: 0, y: 0 }
 const defaultCardsOffset: AssetOffset = { x: 0, y: 0 }
 
+function watermarkFor(id: LayoutId, modelo: Definitivo7Modelo): WatermarkTune {
+  return id === 'definitivo7dias' && modelo === 2
+    ? definitivoWatermarkModelo2
+    : definitivoWatermarkModelo1
+}
+
 export default function App() {
   const [step, setStep] = useState<Step>('splash')
   const [layoutId, setLayoutId] = useState<LayoutId>('classico7dias')
@@ -54,6 +65,9 @@ export default function App() {
   const [visibility, setVisibility] = useState(defaultVisibility)
   const [livrePieces, setLivrePieces] = useState<LivrePieces>(defaultLivrePieces)
   const [definitivo7Modelo, setDefinitivo7Modelo] = useState<Definitivo7Modelo>(1)
+  const [definitivoWatermark, setDefinitivoWatermark] = useState<WatermarkTune>(
+    definitivoWatermarkModelo1,
+  )
   const [history, setHistory] = useState<ArtHistory>(() => loadHistory())
 
   function updateField<K extends keyof ArtFields>(key: K, value: ArtFields[K]) {
@@ -76,6 +90,7 @@ export default function App() {
     setClassicoBorder(defaultClassicoBorder)
     setVisibility(defaultVisibility)
     setLivrePieces(defaultLivrePieces())
+    setDefinitivoWatermark(watermarkFor(id, modelo))
   }
 
   function updateLivrePiece(id: LivrePieceId, next: LivrePieceState) {
@@ -100,6 +115,7 @@ export default function App() {
     setClassicoBorder(entry.classicoBorder)
     setVisibility(entry.visibility)
     setLivrePieces(entry.livrePieces)
+    setDefinitivoWatermark(watermarkFor(entry.layoutId, entry.definitivo7Modelo))
     setStep('editor')
   }
 
@@ -185,6 +201,8 @@ export default function App() {
       onRemoveLogo={() => setVisibility((v) => ({ ...v, logo: false }))}
       onRemoveTitle={() => setVisibility((v) => ({ ...v, title: false }))}
       onRemoveContact={() => setVisibility((v) => ({ ...v, contact: false }))}
+      definitivoWatermark={definitivoWatermark}
+      onDefinitivoWatermarkChange={setDefinitivoWatermark}
       onResetEdits={resetEdits}
       onBack={() => setStep('welcome')}
       onChangeLayout={() => setStep('welcome')}

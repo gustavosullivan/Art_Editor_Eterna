@@ -59,9 +59,16 @@ type LineFieldProps = {
   onChange: (value: string) => void
 }
 
+function fieldClass(base: string, value: string) {
+  const compact = value.replace(/\n/g, '').length > 18 ? ` ${base}--compact` : ''
+  const empty = value ? '' : ` ${base}--placeholder`
+  return `${base}${empty}${compact}`
+}
+
 function LineField({ value, placeholder, ariaLabel, preview, onChange }: LineFieldProps) {
+  const className = fieldClass('definitivo-line', value)
   if (preview) {
-    return <p className={`definitivo-line${value ? '' : ' definitivo-line--placeholder'}`}>{value || placeholder}</p>
+    return <p className={className}>{value || placeholder}</p>
   }
 
   return (
@@ -70,9 +77,80 @@ function LineField({ value, placeholder, ariaLabel, preview, onChange }: LineFie
       onChange={onChange}
       ariaLabel={ariaLabel}
       placeholder={placeholder}
-      className="definitivo-line"
+      className={className}
+      multiline
       plain
+      maxRows={3}
       clampOverflow
+      measurePadding
+      wrapWords
+      remeasureKey={className}
+    />
+  )
+}
+
+function PersonName({
+  value,
+  preview,
+  onChange,
+}: {
+  value: string
+  preview: boolean
+  onChange: (value: string) => void
+}) {
+  const className = fieldClass('definitivo-name', value)
+  if (preview) {
+    return <p className={className}>{value || 'Nome'}</p>
+  }
+
+  return (
+    <EditableText
+      value={value}
+      onChange={onChange}
+      ariaLabel="Nome da pessoa"
+      placeholder="Nome"
+      className={className}
+      multiline
+      plain
+      maxRows={3}
+      clampOverflow
+      measurePadding
+      wrapWords
+      remeasureKey={className}
+    />
+  )
+}
+
+function WhenDate({
+  value,
+  preview,
+  onChange,
+}: {
+  value: string
+  preview: boolean
+  onChange: (value: string) => void
+}) {
+  const compact = value.replace(/\n/g, '').length > 18 ? ' definitivo-when__date--compact' : ''
+  const empty = value ? '' : ' definitivo-when__placeholder'
+  const className = `definitivo-when__date${empty}${compact}`
+  if (preview) {
+    return <p className={className}>{value || 'Data da celebração'}</p>
+  }
+
+  return (
+    <EditableText
+      value={value}
+      onChange={onChange}
+      ariaLabel="Data da celebração"
+      placeholder="Data da celebração"
+      className={className}
+      multiline
+      plain
+      maxRows={3}
+      clampOverflow
+      measurePadding
+      wrapWords
+      remeasureKey={className}
     />
   )
 }
@@ -135,23 +213,11 @@ function Modelo2Body({
 
         <div className="definitivo-side">
           {showPersonName ? (
-            preview ? (
-              <p className={`definitivo-name${fields.personName ? '' : ' definitivo-name--placeholder'}`}>
-                {fields.personName || 'Nome'}
-              </p>
-            ) : (
-              <EditableText
-                value={fields.personName}
-                onChange={(value) => onFieldChange('personName', value)}
-                ariaLabel="Nome da pessoa"
-                placeholder="Nome"
-                className="definitivo-name"
-                multiline
-                plain
-                maxRows={3}
-                clampOverflow
-              />
-            )
+            <PersonName
+              value={fields.personName}
+              preview={preview}
+              onChange={(value) => onFieldChange('personName', value)}
+            />
           ) : null}
 
           <div className="definitivo-note">
@@ -171,6 +237,7 @@ function Modelo2Body({
                 plain
                 maxRows={4}
                 clampOverflow
+                wrapWords
               />
             )}
           </div>
@@ -178,21 +245,11 @@ function Modelo2Body({
       </div>
 
       <div className="definitivo-when">
-        {preview ? (
-          <p className={`definitivo-when__date${fields.celebrationDate ? '' : ' definitivo-when__placeholder'}`}>
-            {fields.celebrationDate || 'Data da celebração'}
-          </p>
-        ) : (
-          <EditableText
-            value={fields.celebrationDate}
-            onChange={(value) => onFieldChange('celebrationDate', value)}
-            ariaLabel="Data da celebração"
-            placeholder="Data da celebração"
-            className="definitivo-when__date"
-            plain
-            clampOverflow
-          />
-        )}
+        <WhenDate
+          value={fields.celebrationDate}
+          preview={preview}
+          onChange={(value) => onFieldChange('celebrationDate', value)}
+        />
         {preview ? (
           <p className={`definitivo-when__time${fields.celebrationTime ? '' : ' definitivo-when__placeholder'}`}>
             {fields.celebrationTime || 'Hora da celebração'}
@@ -282,23 +339,11 @@ export default function LayoutDefinitivo({
             </div>
 
             {showPersonName ? (
-              preview ? (
-                <p className={`definitivo-name${fields.personName ? '' : ' definitivo-name--placeholder'}`}>
-                  {fields.personName || 'Nome'}
-                </p>
-              ) : (
-                <EditableText
-                  value={fields.personName}
-                  onChange={(value) => onFieldChange('personName', value)}
-                  ariaLabel="Nome da pessoa"
-                  placeholder="Nome"
-                  className="definitivo-name"
-                  multiline
-                  plain
-                  maxRows={2}
-                  clampOverflow
-                />
-              )
+              <PersonName
+                value={fields.personName}
+                preview={preview}
+                onChange={(value) => onFieldChange('personName', value)}
+              />
             ) : null}
 
             <DateRow

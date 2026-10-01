@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, type ChangeEvent } from 'react'
+import { useLayoutEffect, useRef, type ChangeEvent, type ClipboardEvent, type KeyboardEvent } from 'react'
 
 type EditableTextProps = {
   value: string
@@ -17,6 +17,10 @@ type EditableTextProps = {
   autoWidth?: boolean
   /** Remede a caixa quando o tamanho da letra muda (layout criar) */
   remeasureKey?: string | number
+  /** Inclui padding na altura. Usado só nos campos de 3 linhas do definitivo. */
+  measurePadding?: boolean
+  /** Quebra só no espaço. O textarea nativo parte a palavra no meio. */
+  wrapWords?: boolean
 }
 
 function lineHeightPx(el: HTMLElement) {
@@ -27,17 +31,28 @@ function lineHeightPx(el: HTMLElement) {
   return fontSize * 1.25
 }
 
-function growToContent(el: HTMLTextAreaElement, maxRows: number) {
+function verticalExtras(el: HTMLElement) {
+  const style = getComputedStyle(el)
+  return (
+    (Number.parseFloat(style.paddingTop) || 0) +
+    (Number.parseFloat(style.paddingBottom) || 0) +
+    (Number.parseFloat(style.borderTopWidth) || 0) +
+    (Number.parseFloat(style.borderBottomWidth) || 0)
+  )
+}
+
+function growToContent(el: HTMLElement, maxRows: number, measurePadding = false) {
   const previousMax = el.style.maxHeight
   el.style.maxHeight = 'none'
   const lh = lineHeightPx(el)
-  const maxH = lh * maxRows
+  const extras = measurePadding ? verticalExtras(el) : 0
+  const maxH = lh * maxRows + extras
 
   el.style.height = 'auto'
   el.scrollTop = 0
   const contentH = el.scrollHeight
-  const lines = Math.max(1, Math.min(maxRows, Math.ceil((contentH - 1) / lh)))
-  el.style.height = `${Math.ceil(lines * lh)}px`
+  const lines = Math.max(1, Math.min(maxRows, Math.ceil((contentH - extras - 1) / lh)))
+  el.style.height = `${Math.ceil(lines * lh + extras)}px`
   el.style.maxHeight = previousMax
   el.scrollTop = 0
 
@@ -58,6 +73,7 @@ function wouldOverflow(
   el: HTMLInputElement | HTMLTextAreaElement,
   next: string,
   maxRows?: number,
+  measurePadding = false,
 ) {
   const previous = el.value
   const selectionStart = el.selectionStart
@@ -69,7 +85,7 @@ function wouldOverflow(
 
   let overflow = false
   if (maxRows && el instanceof HTMLTextAreaElement) {
-    const { contentH, maxH } = growToContent(el, maxRows)
+    const { contentH, maxH } = growToContent(el, maxRows, measurePadding)
     overflow = contentH > maxH + 1
     el.style.height = previousHeight
     el.scrollTop = 0
@@ -90,6 +106,61 @@ function wouldOverflow(
   return overflow
 }
 
+function plainText(el: HTMLElement) {
+  return (el.textContent ?? '').replace(/\u00a0/g, ' ')
+}
+
+function caretOffset(el: HTMLElement) {
+  const selection = window.getSelection()
+  if (!selection || selection.rangeCount === 0 || !el.contains(selection.anchorNode)) return null
+  const range = selection.getRangeAt(0)
+  const before = range.cloneRange()
+  before.selectNodeContents(el)
+  before.setEnd(range.endContainer, range.endOffset)
+  return before.toString().length
+}
+
+function restoreCaret(el: HTMLElement, offset: number) {
+  const selection = window.getSelection()
+  if (!selection) return
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+  let remaining = offset
+  let node = walker.nextNode()
+  while (node) {
+    const length = node.textContent?.length ?? 0
+    if (remaining <= length) {
+      const range = document.createRange()
+      range.setStart(node, remaining)
+      range.collapse(true)
+      selection.removeAllRanges()
+      selection.addRange(range)
+      return
+    }
+    remaining -= length
+    node = walker.nextNode()
+  }
+  const range = document.createRange()
+  range.selectNodeContents(el)
+  range.collapse(false)
+  selection.removeAllRanges()
+  selection.addRange(range)
+}
+
+function wouldOverflowBlock(el: HTMLElement, next: string, maxRows: number | undefined, measurePadding: boolean) {
+  const previous = el.textContent ?? ''
+  const previousHeight = el.style.height
+  el.textContent = next
+  let overflow = false
+  if (maxRows) {
+    const { contentH, maxH } = growToContent(el, maxRows, measurePadding)
+    overflow = contentH > maxH + 1
+    el.style.height = previousHeight
+    el.scrollTop = 0
+  }
+  el.textContent = previous
+  return overflow
+}
+
 export default function EditableText({
   value,
   onChange,
@@ -102,19 +173,26 @@ export default function EditableText({
   maxRows,
   autoWidth = false,
   remeasureKey,
+  measurePadding = false,
+  wrapWords = false,
 }: EditableTextProps) {
-  const fieldRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null)
+  const fieldRef = useRef<HTMLInputElement | HTMLTextAreaElement | HTMLDivElement>(null)
 
   useLayoutEffect(() => {
     const el = fieldRef.current
     if (!el) return
-    if (multiline && maxRows && el instanceof HTMLTextAreaElement) {
-      growToContent(el, maxRows)
+    if (wrapWords && el instanceof HTMLDivElement && plainText(el) !== value) {
+      const caret = document.activeElement === el ? caretOffset(el) : null
+      el.textContent = value
+      if (caret != null) restoreCaret(el, Math.min(caret, value.length))
+    }
+    if (multiline && maxRows && !(el instanceof HTMLInputElement)) {
+      growToContent(el, maxRows, measurePadding)
     }
     if (autoWidth && !multiline && el instanceof HTMLInputElement) {
       growToContentWidth(el)
     }
-  }, [value, multiline, maxRows, autoWidth, remeasureKey])
+  }, [value, multiline, maxRows, autoWidth, remeasureKey, measurePadding, wrapWords])
 
   function handleChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const next = event.target.value
@@ -125,7 +203,8 @@ export default function EditableText({
       !autoWidth &&
       next.length > value.length &&
       el &&
-      wouldOverflow(el, next, maxRows)
+      (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) &&
+      wouldOverflow(el, next, maxRows, measurePadding)
     ) {
       return
     }
@@ -134,7 +213,7 @@ export default function EditableText({
 
     if (maxRows && el instanceof HTMLTextAreaElement) {
       el.value = next
-      growToContent(el, maxRows)
+      growToContent(el, maxRows, measurePadding)
     }
     if (autoWidth && el instanceof HTMLInputElement) {
       el.value = next
@@ -160,6 +239,62 @@ export default function EditableText({
     'aria-label': ariaLabel,
     placeholder,
     spellCheck: true as const,
+  }
+
+  function rejectPlainEdit(el: HTMLDivElement, next: string) {
+    const caret = caretOffset(el)
+    const added = next.length - value.length
+    el.textContent = value
+    if (caret != null) restoreCaret(el, Math.max(0, caret - added))
+  }
+
+  function handlePlainInput() {
+    const el = fieldRef.current
+    if (!(el instanceof HTMLDivElement)) return
+    const next = plainText(el)
+    if (
+      clampOverflow &&
+      !autoWidth &&
+      next.length > value.length &&
+      wouldOverflowBlock(el, next, maxRows, measurePadding)
+    ) {
+      rejectPlainEdit(el, next)
+      return
+    }
+    onChange(next)
+    if (maxRows) growToContent(el, maxRows, measurePadding)
+  }
+
+  function handlePlainPaste(event: ClipboardEvent<HTMLDivElement>) {
+    event.preventDefault()
+    const text = event.clipboardData.getData('text/plain').replace(/\r\n/g, '\n')
+    document.execCommand('insertText', false, text)
+  }
+
+  function handlePlainKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== 'Enter') return
+    event.preventDefault()
+    document.execCommand('insertText', false, '\n')
+  }
+
+  if (wrapWords && multiline) {
+    return (
+      <div
+        ref={fieldRef as never}
+        className={sharedProps.className}
+        contentEditable
+        role="textbox"
+        aria-multiline="true"
+        aria-label={ariaLabel}
+        data-placeholder={placeholder}
+        spellCheck
+        suppressContentEditableWarning
+        onInput={handlePlainInput}
+        onPaste={handlePlainPaste}
+        onKeyDown={handlePlainKeyDown}
+        onFocus={sharedProps.onFocus}
+      />
+    )
   }
 
   if (multiline) {
