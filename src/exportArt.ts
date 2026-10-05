@@ -18,18 +18,22 @@ export const exportPresets: {
   {
     id: 'instagram',
     title: 'Instagram',
-    subtitle: '1080 × 1350 · post vertical (4:5)',
+    subtitle: '1080 × 1350 · 4:5, o feed mostra inteiro',
   },
   {
     id: 'facebook',
     title: 'Facebook',
-    subtitle: '1200 × 1500 · post vertical',
+    subtitle: '1080 × 1350 · 4:5, sem cortar a base',
   },
 ]
 
-const SOCIAL_SIZES: Record<Exclude<ExportPreset, 'pdf'>, { w: number; h: number }> = {
+/**
+ * 4:5 é o retrato mais alto que Instagram e Facebook publicam sem cortar.
+ * A arte é 3:4 (mais alta). Um arquivo 1080×1440 perde topo e base na hora de postar.
+ */
+const SOCIAL_FRAME: Record<Exclude<ExportPreset, 'pdf'>, { w: number; h: number }> = {
   instagram: { w: 1080, h: 1350 },
-  facebook: { w: 1200, h: 1500 },
+  facebook: { w: 1080, h: 1350 },
 }
 
 function fileSlug(personName: string) {
@@ -68,6 +72,7 @@ async function withNaturalArtScale<T>(
   const prevShellH = shell?.style.height ?? ''
 
   if (measure) {
+    measure.dataset.exportLock = '1'
     measure.style.transform = 'none'
     measure.style.zoom = '1'
   }
@@ -83,6 +88,7 @@ async function withNaturalArtScale<T>(
     return await run()
   } finally {
     if (measure) {
+      delete measure.dataset.exportLock
       measure.style.transform = prevMeasure
       measure.style.zoom = prevZoom
     }
@@ -131,8 +137,25 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
   await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
   await new Promise((resolve) => setTimeout(resolve, 50))
 
+  // Fora do editor: o scale e o overflow do canvas cortavam a base na captura.
+  const host = document.createElement('div')
+  host.style.cssText =
+    'position:fixed;left:0;top:0;margin:0;padding:0;overflow:visible;z-index:-1;pointer-events:none;background:transparent;'
+  host.style.width = `${width}px`
+  host.style.height = `${height}px`
+  const shot = target.cloneNode(true) as HTMLElement
+  shot.classList.add('is-exporting')
+  shot.style.width = `${width}px`
+  shot.style.height = `${height}px`
+  shot.style.maxWidth = 'none'
+  shot.style.aspectRatio = 'auto'
+  shot.style.transform = 'none'
+  shot.style.margin = '0'
+  host.appendChild(shot)
+  document.body.appendChild(host)
+
   try {
-    return await html2canvas(target, {
+    return await html2canvas(shot, {
       backgroundColor: exportBg,
       scale: pixelRatio,
       useCORS: true,
@@ -252,6 +275,7 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
       },
     })
   } finally {
+    host.remove()
     target.classList.remove('is-exporting')
   }
 }
@@ -306,7 +330,10 @@ function paintClassicoBorder(
   return canvas
 }
 
-/** Encaixa a arte no formato social sem cortar nem distorcer (contain) */
+/**
+ * Encaixa a arte inteira no 4:5, sem cortar topo nem base.
+ * As laterais continuam a cor da própria arte, para não aparecer faixa.
+ */
 function fitToSocial(
   source: HTMLCanvasElement,
   w: number,
@@ -323,16 +350,53 @@ function fitToSocial(
 
   ctx.fillStyle = bg
   ctx.fillRect(0, 0, w, h)
-
-  const scale = Math.min(w / source.width, h / source.height)
-  const dw = source.width * scale
-  const dh = source.height * scale
-  const dx = (w - dw) / 2
-  const dy = (h - dh) / 2
   ctx.imageSmoothingEnabled = true
   ctx.imageSmoothingQuality = 'high'
+
+  const scale = Math.min(w / source.width, h / source.height)
+  let dw = source.width * scale
+  let dh = source.height * scale
+  let dx = (w - dw) / 2
+  let dy = (h - dh) / 2
+  if (w - dw < 2 && h - dh < 2) {
+    dw = w
+    dh = h
+    dx = 0
+    dy = 0
+  }
+
+  const edge = Math.max(2, Math.round(source.width * 0.004))
+  if (dx > 1) {
+    ctx.drawImage(source, 0, 0, edge, source.height, 0, Math.max(0, dy), dx, dh)
+    ctx.drawImage(
+      source,
+      Math.max(0, source.width - edge),
+      0,
+      edge,
+      source.height,
+      dx + dw,
+      Math.max(0, dy),
+      Math.max(1, w - (dx + dw)),
+      dh,
+    )
+  }
+  if (dy > 1) {
+    ctx.drawImage(source, 0, 0, source.width, edge, Math.max(0, dx), 0, dw, dy)
+    ctx.drawImage(
+      source,
+      0,
+      Math.max(0, source.height - edge),
+      source.width,
+      edge,
+      Math.max(0, dx),
+      dy + dh,
+      dw,
+      Math.max(1, h - (dy + dh)),
+    )
+  }
+
   ctx.drawImage(source, dx, dy, dw, dh)
-  return { canvas: out, artRect: { x: dx, y: dy, w: dw, h: dh } }
+  return { canvas: out, artRect: { x: 0, y: 0, w, h } }
 }
 
 function triggerDownload(href: string, filename: string) {
@@ -412,13 +476,9 @@ export async function exportArt(
       return
     }
 
-    const size = SOCIAL_SIZES[preset]
+    const size = SOCIAL_FRAME[preset]
     const artW = Math.max(1, target.offsetWidth)
-    const artH = Math.max(1, target.offsetHeight)
-    const pixelRatio = Math.min(
-      3,
-      Math.max(2, Math.ceil(Math.max(size.w / artW, size.h / artH))),
-    )
+    const pixelRatio = Math.min(3, Math.max(2, Math.ceil(size.w / artW)))
     const source = await captureArt(target, pixelRatio)
     const { canvas: social, artRect } = fitToSocial(source, size.w, size.h, bg)
     paintClassicoBorder(social, classicoBorder, artRect)

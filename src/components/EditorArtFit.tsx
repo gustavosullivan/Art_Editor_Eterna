@@ -20,6 +20,7 @@ export default function EditorArtFit({ children, resetKey }: EditorArtFitProps) 
     if (!outer || !measure) return
 
     const update = () => {
+      if (measure.dataset.exportLock === '1') return
       const availableW = Math.max(outer.clientWidth, 1)
       const availableH = Math.max(outer.clientHeight, 1)
       const art = measure.querySelector('.art') as HTMLElement | null
