@@ -9,8 +9,8 @@ type SplashScreenProps = {
   onEnter: () => void
 }
 
-const PHONE = '54 3312.2688'
-const WEBSITE = 'www.lucianocogo.com.br'
+const PHONE = '(54) 99327-2101'
+const EMAIL = 'lucianoporto979@gmail.com'
 const badge = (file: string) => `${import.meta.env.BASE_URL}templates/${file}`
 
 export default function SplashScreen({ onEnter }: SplashScreenProps) {
@@ -86,20 +86,15 @@ export default function SplashScreen({ onEnter }: SplashScreenProps) {
             clamp={40}
             anchor="start"
           >
-            <div className="splash__contact" aria-label="Telefone e site">
+            <div className="splash__contact" aria-label="Telefone e e-mail">
               <a className="splash__contact-link" href={`tel:+55${PHONE.replace(/\D/g, '')}`}>
                 {PHONE}
               </a>
               <span className="splash__contact-dot" aria-hidden="true">
                 •
               </span>
-              <a
-                className="splash__contact-link"
-                href={`https://${WEBSITE}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {WEBSITE}
+              <a className="splash__contact-link" href={`mailto:${EMAIL}`}>
+                {EMAIL}
               </a>
             </div>
           </DraggableAsset>
