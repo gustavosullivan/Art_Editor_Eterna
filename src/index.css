@@ -361,8 +361,15 @@ button {
   width: max-content;
   max-width: min(94vw, 360px);
   margin-inline: auto;
-  margin-top: clamp(0.35rem, 1vh, 0.65rem);
+  margin-top: 0;
   animation: rise 1.05s ease 0.42s both;
+}
+
+.splash__contacts {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
 }
 
 .splash__contact {

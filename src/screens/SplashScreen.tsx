@@ -9,8 +9,10 @@ type SplashScreenProps = {
   onEnter: () => void
 }
 
-const PHONE = '(54) 99327-2101'
-const EMAIL = 'lucianoporto979@gmail.com'
+const CONTACTS = [
+  { phone: '(54) 99327-2101', email: 'lucianoporto979@gmail.com' },
+  { phone: '(54) 99369-8492', email: 'gubportela@gmail.com' },
+]
 const badge = (file: string) => `${import.meta.env.BASE_URL}templates/${file}`
 
 export default function SplashScreen({ onEnter }: SplashScreenProps) {
@@ -68,7 +70,7 @@ export default function SplashScreen({ onEnter }: SplashScreenProps) {
             </div>
 
             <p className="splash__credit">
-              Desenvolvido por Elo Tecnologia · Sulli Digital Solutions
+              Desenvolvido por Elo Tecnologia · Sully Tech
             </p>
           </div>
         </div>
@@ -86,16 +88,20 @@ export default function SplashScreen({ onEnter }: SplashScreenProps) {
             clamp={40}
             anchor="start"
           >
-            <div className="splash__contact" aria-label="Telefone e e-mail">
-              <a className="splash__contact-link" href={`tel:+55${PHONE.replace(/\D/g, '')}`}>
-                {PHONE}
-              </a>
-              <span className="splash__contact-dot" aria-hidden="true">
-                •
-              </span>
-              <a className="splash__contact-link" href={`mailto:${EMAIL}`}>
-                {EMAIL}
-              </a>
+            <div className="splash__contacts">
+              {CONTACTS.map(({ phone, email }) => (
+                <div key={email} className="splash__contact" aria-label="Telefone e e-mail">
+                  <a className="splash__contact-link" href={`tel:+55${phone.replace(/\D/g, '')}`}>
+                    {phone}
+                  </a>
+                  <span className="splash__contact-dot" aria-hidden="true">
+                    •
+                  </span>
+                  <a className="splash__contact-link" href={`mailto:${email}`}>
+                    {email}
+                  </a>
+                </div>
+              ))}
             </div>
           </DraggableAsset>
         </div>
@@ -111,7 +117,7 @@ export default function SplashScreen({ onEnter }: SplashScreenProps) {
         <img
           className="splash__brand-badge splash__brand-badge--sully"
           src={badge('sully-badge.png?v=4')}
-          alt="Sully Digital Solutions"
+          alt="Sully Tech"
           draggable={false}
         />
       </div>
