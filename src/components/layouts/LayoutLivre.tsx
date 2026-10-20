@@ -345,8 +345,10 @@ export default function LayoutLivre({
                           onChange={(value) => onFieldChange('website', value)}
                           ariaLabel="Site / e-mail"
                           placeholder="Site"
-                          className="classico-footer__field"
+                          className="classico-footer__field classico-footer__field--email"
                           plain
+                          autoWidth
+                          clampOverflow
                           remeasureKey={livrePieces.contact.scale}
                         />
                       </span>
@@ -360,8 +362,10 @@ export default function LayoutLivre({
                           onChange={(value) => onFieldChange('phone', value)}
                           ariaLabel="Telefone"
                           placeholder="Telefone"
-                          className="classico-footer__field"
+                          className="classico-footer__field classico-footer__field--phone"
                           plain
+                          autoWidth
+                          clampOverflow
                           remeasureKey={livrePieces.contact.scale}
                         />
                       </span>

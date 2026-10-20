@@ -285,7 +285,8 @@ export function InvitationFooter({
               value={fields.website}
               onChange={(value) => onFieldChange('website', value)}
               ariaLabel="Site / e-mail"
-              className="editable--contact"
+              className="editable--contact editable--contact-email"
+              autoWidth
               clampOverflow
             />
             <span className="invite-footer__sep" aria-hidden="true">
@@ -295,7 +296,8 @@ export function InvitationFooter({
               value={fields.phone}
               onChange={(value) => onFieldChange('phone', value)}
               ariaLabel="Telefone"
-              className="editable--contact"
+              className="editable--contact editable--contact-phone"
+              autoWidth
               clampOverflow
             />
           </>

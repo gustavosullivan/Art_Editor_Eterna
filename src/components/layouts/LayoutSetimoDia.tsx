@@ -266,8 +266,9 @@ export default function LayoutSetimoDia({
                   value={fields.website}
                   onChange={(value) => onFieldChange('website', value)}
                   ariaLabel="Site / e-mail"
-                  className="setimo-footer__field setimo-input setimo-footer__item"
+                  className="setimo-footer__field setimo-footer__field--email setimo-input setimo-footer__item"
                   plain
+                  autoWidth
                   clampOverflow
                 />
                 <span className="setimo-footer__sep" aria-hidden="true">
@@ -277,8 +278,9 @@ export default function LayoutSetimoDia({
                   value={fields.phone}
                   onChange={(value) => onFieldChange('phone', value)}
                   ariaLabel="Telefone"
-                  className="setimo-footer__field setimo-input setimo-footer__item"
+                  className="setimo-footer__field setimo-footer__field--phone setimo-input setimo-footer__item"
                   plain
+                  autoWidth
                   clampOverflow
                 />
               </>

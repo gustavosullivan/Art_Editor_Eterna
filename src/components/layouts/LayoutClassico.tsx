@@ -246,8 +246,9 @@ export default function LayoutClassico({
                     value={fields.website}
                     onChange={(value) => onFieldChange('website', value)}
                     ariaLabel="Site / e-mail"
-                    className="classico-footer__field"
+                    className="classico-footer__field classico-footer__field--email"
                     plain
+                    autoWidth
                     clampOverflow
                   />
                 </span>
@@ -260,8 +261,9 @@ export default function LayoutClassico({
                     value={fields.phone}
                     onChange={(value) => onFieldChange('phone', value)}
                     ariaLabel="Telefone"
-                    className="classico-footer__field"
+                    className="classico-footer__field classico-footer__field--phone"
                     plain
+                    autoWidth
                     clampOverflow
                   />
                 </span>

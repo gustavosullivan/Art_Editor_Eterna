@@ -1575,7 +1575,7 @@ textarea.livre-title__field {
 
 .art--livre .classico-footer__field,
 .art--livre input.classico-footer__field {
-  min-width: 5.5rem;
+  min-width: 3ch;
 }
 
 .art--livre .classico-card {
@@ -1927,7 +1927,9 @@ p.classico-card__value {
   justify-content: center;
   gap: 0.22rem;
   min-width: 0;
-  max-width: 48%;
+  max-width: 58%;
+  flex: 0 1 auto;
+  width: max-content;
   line-height: 1.2;
 }
 
@@ -1959,6 +1961,22 @@ input.classico-footer__field {
   padding: 0;
   outline: none;
   white-space: nowrap;
+}
+
+.classico-footer__field--email,
+input.classico-footer__field--email {
+  width: auto;
+  min-width: 3ch;
+  max-width: 40ch;
+  flex: 0 0 auto;
+}
+
+.classico-footer__field--phone,
+input.classico-footer__field--phone {
+  width: auto;
+  min-width: 3ch;
+  max-width: 25ch;
+  flex: 0 0 auto;
 }
 
 .art--classico .invite-person {
@@ -2158,6 +2176,18 @@ input.classico-footer__field {
   max-width: 12rem;
   text-align: center;
   font-size: 0.68rem;
+}
+
+.editable--contact-email {
+  width: auto;
+  min-width: 3ch;
+  max-width: 40ch;
+}
+
+.editable--contact-phone {
+  width: auto;
+  min-width: 3ch;
+  max-width: 25ch;
 }
 
 .editable--multiline {
@@ -2850,7 +2880,7 @@ input.classico-footer__field {
   top: calc(96.4% - 4px);
   transform: translateX(-50%);
   width: max-content;
-  max-width: 58%;
+  max-width: 72%;
   min-width: 0;
   display: flex;
   flex-direction: row;
@@ -2871,6 +2901,22 @@ input.classico-footer__field {
 .art--principal .tpl-footer .tpl-input--contact {
   flex: 0 0 auto;
   max-width: 10.5rem;
+}
+
+.art--principal .tpl-footer .tpl-input--contact-email,
+.art--principal .tpl-input--contact-email {
+  width: auto;
+  min-width: 3ch;
+  max-width: 40ch;
+  flex: 0 0 auto;
+}
+
+.art--principal .tpl-footer .tpl-input--contact-phone,
+.art--principal .tpl-input--contact-phone {
+  width: auto;
+  min-width: 3ch;
+  max-width: 25ch;
+  flex: 0 0 auto;
 }
 
 .art--principal .tpl-footer__dot {
@@ -2975,6 +3021,7 @@ input.classico-footer__field {
   white-space: nowrap;
   overflow: hidden;
 }
+
 
 .art.is-exporting .photo-frame__tools,
 .art.is-exporting .no-export {
@@ -3730,7 +3777,9 @@ p.setimo-card__value {
   text-align: center;
   line-height: 1.2;
   min-width: 0;
-  max-width: 46%;
+  max-width: 58%;
+  flex: 0 1 auto;
+  width: max-content;
 }
 
 .setimo-footer__sep {
@@ -3758,6 +3807,22 @@ input.setimo-footer__field {
   padding: 0;
   outline: none;
   white-space: nowrap;
+}
+
+.setimo-footer__field--email,
+input.setimo-footer__field--email {
+  width: auto;
+  min-width: 3ch;
+  max-width: 40ch;
+  flex: 0 0 auto;
+}
+
+.setimo-footer__field--phone,
+input.setimo-footer__field--phone {
+  width: auto;
+  min-width: 3ch;
+  max-width: 25ch;
+  flex: 0 0 auto;
 }
 
 .art--setimo .setimo-input:focus {
@@ -3966,16 +4031,26 @@ input.setimo-footer__field {
 }
 
 .art--livre .livre-piece[data-piece='contact'] .classico-footer__item {
-  flex: 1 1 7em;
+  flex: 0 1 auto;
+  width: max-content;
   max-width: 100%;
   min-width: 0;
 }
 
 .art--livre .livre-piece[data-piece='contact'] .classico-footer__field,
 .art--livre .livre-piece[data-piece='contact'] input.classico-footer__field {
-  width: 100%;
-  max-width: none;
-  min-width: 0;
+  width: auto;
+  min-width: 3ch;
+}
+
+.art--livre .livre-piece[data-piece='contact'] .classico-footer__field--email,
+.art--livre .livre-piece[data-piece='contact'] input.classico-footer__field--email {
+  max-width: 40ch;
+}
+
+.art--livre .livre-piece[data-piece='contact'] .classico-footer__field--phone,
+.art--livre .livre-piece[data-piece='contact'] input.classico-footer__field--phone {
+  max-width: 25ch;
 }
 
 .art--livre .livre-piece[data-piece='contact'] .classico-footer__icon {
@@ -4694,7 +4769,9 @@ input.setimo-footer__field {
   justify-content: center;
   gap: 0.22rem;
   min-width: 0;
-  max-width: 48%;
+  max-width: 58%;
+  flex: 0 1 auto;
+  width: max-content;
 }
 
 .art--definitivo .definitivo-footer__icon {
@@ -4723,6 +4800,22 @@ input.setimo-footer__field {
   padding: 0;
   outline: none;
   white-space: nowrap;
+}
+
+.art--definitivo .definitivo-footer__field--email,
+.art--definitivo input.definitivo-footer__field--email {
+  width: auto;
+  min-width: 3ch;
+  max-width: 40ch;
+  flex: 0 0 auto;
+}
+
+.art--definitivo .definitivo-footer__field--phone,
+.art--definitivo input.definitivo-footer__field--phone {
+  width: auto;
+  min-width: 3ch;
+  max-width: 25ch;
+  flex: 0 0 auto;
 }
 
 .art--definitivo-preview {

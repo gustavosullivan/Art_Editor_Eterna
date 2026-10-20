@@ -404,8 +404,9 @@ export default function LayoutDefinitivo({
                       value={fields.website}
                       onChange={(value) => onFieldChange('website', value)}
                       ariaLabel="E-mail"
-                      className="definitivo-footer__field"
+                      className="definitivo-footer__field definitivo-footer__field--email"
                       plain
+                      autoWidth
                       clampOverflow
                     />
                   </span>
@@ -418,8 +419,9 @@ export default function LayoutDefinitivo({
                       value={fields.phone}
                       onChange={(value) => onFieldChange('phone', value)}
                       ariaLabel="Telefone"
-                      className="definitivo-footer__field"
+                      className="definitivo-footer__field definitivo-footer__field--phone"
                       plain
+                      autoWidth
                       clampOverflow
                     />
                   </span>

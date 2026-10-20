@@ -140,13 +140,22 @@ export default function EditableText({
 
     if (
       clampOverflow &&
-      !autoWidth &&
       next.length > value.length &&
       el &&
-      (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) &&
-      wouldOverflow(el, next, maxRows, measurePadding)
+      (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)
     ) {
-      return
+      if (autoWidth && el instanceof HTMLInputElement) {
+        const previous = el.value
+        const previousWidth = el.style.width
+        el.value = next
+        growToContentWidth(el)
+        const overflow = el.scrollWidth > el.clientWidth + 1
+        el.value = previous
+        el.style.width = previousWidth
+        if (overflow) return
+      } else if (!autoWidth && wouldOverflow(el, next, maxRows, measurePadding)) {
+        return
+      }
     }
 
     onChange(next)

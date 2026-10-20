@@ -235,8 +235,9 @@ export default function LayoutPrincipal({
           value={fields.phone}
           onChange={(value) => onFieldChange('phone', value)}
           ariaLabel="Telefone"
-          className="tpl-input tpl-input--contact"
+          className="tpl-input tpl-input--contact tpl-input--contact-phone"
           plain
+          autoWidth
           clampOverflow
         />
         <span className="tpl-footer__dot" aria-hidden="true">
@@ -246,8 +247,9 @@ export default function LayoutPrincipal({
           value={fields.website}
           onChange={(value) => onFieldChange('website', value)}
           ariaLabel="Site"
-          className="tpl-input tpl-input--contact"
+          className="tpl-input tpl-input--contact tpl-input--contact-email"
           plain
+          autoWidth
           clampOverflow
         />
       </div>
