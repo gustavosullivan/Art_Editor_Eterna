@@ -146,6 +146,7 @@ export default function LayoutPrincipal({
               className="tpl-input tpl-input--date"
               plain
               clampOverflow
+              autoWidth
             />
           </div>
         ) : null}
@@ -170,6 +171,7 @@ export default function LayoutPrincipal({
               className="tpl-input tpl-input--date"
               plain
               clampOverflow
+              autoWidth
             />
           </div>
         ) : null}
