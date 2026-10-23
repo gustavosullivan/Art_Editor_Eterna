@@ -29,9 +29,10 @@ function drawPhotoIntoClip(
   const { x, y, scale } = parseImgTransform(img)
   const iw = img.naturalWidth
   const ih = img.naturalHeight
-  const cover = Math.max(w / iw, h / ih)
-  const dw = iw * cover
-  const dh = ih * cover
+  // contain — mesma regra do CSS (foto inteira; zoom/pan ajustam depois)
+  const fit = Math.min(w / iw, h / ih)
+  const dw = iw * fit
+  const dh = ih * fit
   const ox = (w - dw) / 2
   const oy = (h - dh) / 2
 
