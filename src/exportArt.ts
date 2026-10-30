@@ -3,7 +3,7 @@ import { jsPDF } from 'jspdf'
 import { applyClippedPhotosToClone } from './exportClippedPhoto'
 import type { ClassicoBorderMode } from './types'
 
-export type ExportPreset = 'pdf' | 'instagram' | 'facebook'
+export type ExportPreset = 'pdf' | 'instagram' | 'instagramStories' | 'facebook'
 
 export const exportPresets: {
   id: ExportPreset
@@ -17,8 +17,13 @@ export const exportPresets: {
   },
   {
     id: 'instagram',
-    title: 'Instagram',
-    subtitle: '1080 × 1350 · 4:5, o feed mostra inteiro',
+    title: 'Instagram Feed',
+    subtitle: '1080 × 1350 · 4:5, arte inteira no post',
+  },
+  {
+    id: 'instagramStories',
+    title: 'Instagram Stories',
+    subtitle: '1080 × 1920 · 9:16, sem faixa preta',
   },
   {
     id: 'facebook',
@@ -28,14 +33,16 @@ export const exportPresets: {
 ]
 
 /**
- * 4:5 é o retrato mais alto que Instagram e Facebook mostram inteiro.
- * A arte é 3:4 — contain evita cortar topo e base.
+ * Feed (IG/FB): 4:5 é o retrato mais alto sem cortar no post.
+ * Stories: 9:16 — se mandar 4:5, o app coloca faixa preta em cima e embaixo.
+ * A arte é 3:4; contain mantém ela inteira e completa o quadro com a cor do papel.
  */
 const SOCIAL_FRAME: Record<
   Exclude<ExportPreset, 'pdf'>,
   { w: number; h: number; fit: 'contain' | 'cover' }
 > = {
   instagram: { w: 1080, h: 1350, fit: 'contain' },
+  instagramStories: { w: 1080, h: 1920, fit: 'contain' },
   facebook: { w: 1080, h: 1350, fit: 'contain' },
 }
 
@@ -54,12 +61,20 @@ function resolveExportBg(target: HTMLElement) {
     style.getPropertyValue('--classico-paper').trim() ||
     style.getPropertyValue('--setimo-paper').trim() ||
     style.getPropertyValue('--invite-paper').trim()
-  if (fromVar) return fromVar
+  // Só aceita hex/rgb simples — lab()/oklch() quebram fillStyle e viram preto no JPEG
+  if (fromVar && /^#|^rgb/i.test(fromVar)) return fromVar
 
   const paper = style.backgroundColor
-  if (paper && paper !== 'rgba(0, 0, 0, 0)' && paper !== 'transparent') return paper
+  if (
+    paper &&
+    paper !== 'rgba(0, 0, 0, 0)' &&
+    paper !== 'transparent' &&
+    /^#|^rgb/i.test(paper)
+  ) {
+    return paper
+  }
 
-  return '#f7f8fa'
+  return '#e8eef6'
 }
 
 /** Tira o scale do editor pra html2canvas medir o tamanho natural da arte */
@@ -405,7 +420,15 @@ function fitToSocial(
   }
 
   ctx.drawImage(source, dx, dy, dw, dh)
-  return { canvas: out, artRect: { x: 0, y: 0, w, h } }
+  return {
+    canvas: out,
+    artRect: {
+      x: Math.max(0, dx),
+      y: Math.max(0, dy),
+      w: Math.min(dw, w),
+      h: Math.min(dh, h),
+    },
+  }
 }
 
 function triggerDownload(href: string, filename: string) {

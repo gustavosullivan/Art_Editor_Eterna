@@ -870,7 +870,8 @@
   background: var(--navy);
 }
 
-.export-sheet__option--instagram .export-sheet__option-icon {
+.export-sheet__option--instagram .export-sheet__option-icon,
+.export-sheet__option--instagramStories .export-sheet__option-icon {
   background: linear-gradient(145deg, #f58529, #dd2a7b 55%, #8134af);
 }
 

@@ -79,7 +79,13 @@ export default function ExportSheet({
               disabled={busy}
             >
               <span className="export-sheet__option-icon" aria-hidden="true">
-                {preset.id === 'pdf' ? 'PDF' : preset.id === 'instagram' ? 'IG' : 'FB'}
+                {preset.id === 'pdf'
+                  ? 'PDF'
+                  : preset.id === 'facebook'
+                    ? 'FB'
+                    : preset.id === 'instagramStories'
+                      ? 'ST'
+                      : 'IG'}
               </span>
               <span className="export-sheet__option-copy">
                 <span className="export-sheet__option-title">{preset.title}</span>
