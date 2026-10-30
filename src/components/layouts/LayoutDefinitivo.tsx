@@ -1,3 +1,4 @@
+import { homageMessages } from '../../data/homageMessages'
 import DefinitivoWatermark from '../DefinitivoWatermark'
 import EditableText from '../EditableText'
 import PhotoUpload from '../PhotoUpload'
@@ -152,6 +153,85 @@ function WhenDate({
       wrapWords
       remeasureKey={className}
     />
+  )
+}
+
+function HomageCarousel({
+  value,
+  preview,
+  onChange,
+}: {
+  value: string
+  preview: boolean
+  onChange: (value: string) => void
+}) {
+  const normalized = (value ?? '').replace(/\r\n/g, '\n')
+  const current =
+    !normalized
+      ? 0
+      : homageMessages.findIndex((item) => item === normalized)
+
+  function cycle(delta: number) {
+    if (current < 0) {
+      onChange(delta > 0 ? homageMessages[0] : homageMessages[homageMessages.length - 1])
+      return
+    }
+    const next = (current + delta + homageMessages.length) % homageMessages.length
+    onChange(homageMessages[next])
+  }
+
+  return (
+    <div className="definitivo-homage-slot">
+      <div className="definitivo-homage-carousel">
+        {preview ? null : (
+          <button
+            type="button"
+            className="definitivo-homage-nav no-export"
+            aria-label="Mensagem anterior"
+            onPointerDown={(event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              cycle(-1)
+            }}
+          >
+            ‹
+          </button>
+        )}
+
+        {preview ? (
+          <p className="definitivo-homage">{value || homageMessages[0]}</p>
+        ) : (
+          <EditableText
+            value={value ?? homageMessages[0]}
+            onChange={onChange}
+            ariaLabel="Mensagem de homenagem"
+            placeholder="Escreva sua mensagem"
+            className="definitivo-homage"
+            multiline
+            plain
+            maxRows={3}
+            clampOverflow
+            wrapWords
+            measurePadding
+          />
+        )}
+
+        {preview ? null : (
+          <button
+            type="button"
+            className="definitivo-homage-nav no-export"
+            aria-label="Próxima mensagem"
+            onPointerDown={(event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              cycle(1)
+            }}
+          >
+            ›
+          </button>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -326,38 +406,84 @@ export default function LayoutDefinitivo({
           />
         ) : (
           <>
-            <div className="definitivo-photo">
-              <PhotoUpload
-                photoUrl={photoUrl}
-                onChange={onPhotoChange}
-                transform={photoTransform}
-                onTransformChange={onPhotoTransformChange ?? (() => undefined)}
-                variant="rounded"
-                preview={preview}
-                className="definitivo-photo__frame"
-              />
+            <div className={isSetimoTitle ? 'definitivo-left-stack' : 'definitivo-stack'}>
+              <div className="definitivo-photo">
+                <PhotoUpload
+                  photoUrl={photoUrl}
+                  onChange={onPhotoChange}
+                  transform={photoTransform}
+                  onTransformChange={onPhotoTransformChange ?? (() => undefined)}
+                  variant="rounded"
+                  preview={preview}
+                  className="definitivo-photo__frame"
+                />
+              </div>
+
+              {isSetimoTitle ? (
+                <div className="definitivo-left-copy">
+                  {showPersonName ? (
+                    <PersonName
+                      value={fields.personName}
+                      preview={preview}
+                      onChange={(value) => onFieldChange('personName', value)}
+                    />
+                  ) : null}
+
+                  <DateRow
+                    fields={fields}
+                    onFieldChange={onFieldChange}
+                    preview={preview}
+                    showBirthDate={showBirthDate}
+                    showDeathDate={showDeathDate}
+                    onRemoveBirthDate={onRemoveBirthDate}
+                    onRemoveDeathDate={onRemoveDeathDate}
+                    birthPlaceholder="Nascimento"
+                    deathPlaceholder="Falecimento"
+                  />
+
+                  <div className="definitivo-meta">
+                    <LineField
+                      value={fields.ceremonyPlace}
+                      placeholder="Local do evento"
+                      ariaLabel="Local do evento"
+                      preview={preview}
+                      onChange={(value) => onFieldChange('ceremonyPlace', value)}
+                    />
+                    <LineField
+                      value={fields.celebrationDate}
+                      placeholder="Data do lugar"
+                      ariaLabel="Data do lugar"
+                      preview={preview}
+                      onChange={(value) => onFieldChange('celebrationDate', value)}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {showPersonName ? (
+                    <PersonName
+                      value={fields.personName}
+                      preview={preview}
+                      onChange={(value) => onFieldChange('personName', value)}
+                    />
+                  ) : null}
+
+                  <DateRow
+                    fields={fields}
+                    onFieldChange={onFieldChange}
+                    preview={preview}
+                    showBirthDate={showBirthDate}
+                    showDeathDate={showDeathDate}
+                    onRemoveBirthDate={onRemoveBirthDate}
+                    onRemoveDeathDate={onRemoveDeathDate}
+                    birthPlaceholder="Nascimento"
+                    deathPlaceholder="Falecimento"
+                  />
+                </>
+              )}
             </div>
 
-            {showPersonName ? (
-              <PersonName
-                value={fields.personName}
-                preview={preview}
-                onChange={(value) => onFieldChange('personName', value)}
-              />
-            ) : null}
-
-            <DateRow
-              fields={fields}
-              onFieldChange={onFieldChange}
-              preview={preview}
-              showBirthDate={showBirthDate}
-              showDeathDate={showDeathDate}
-              onRemoveBirthDate={onRemoveBirthDate}
-              onRemoveDeathDate={onRemoveDeathDate}
-              birthPlaceholder="Nascimento"
-              deathPlaceholder="Falecimento"
-            />
-
+            {isSetimoTitle ? null : (
             <div className="definitivo-meta">
               <LineField
                 value={fields.ceremonyPlace}
@@ -374,8 +500,17 @@ export default function LayoutDefinitivo({
                 onChange={(value) => onFieldChange('celebrationDate', value)}
               />
             </div>
+            )}
           </>
         )}
+
+        {isSetimoTitle ? (
+          <HomageCarousel
+            value={fields.homageText}
+            preview={preview}
+            onChange={(value) => onFieldChange('homageText', value)}
+          />
+        ) : null}
 
         <footer className="definitivo-footer">
           {showLogo ? <SaoLuizLogo compact className="definitivo-logo" /> : null}
@@ -391,7 +526,7 @@ export default function LayoutDefinitivo({
                   <span className="definitivo-footer__sep" aria-hidden="true">
                     |
                   </span>
-                  <span className="definitivo-footer__item">
+                  <span className="definitivo-footer__item definitivo-footer__item--phone">
                     <PhoneIcon />
                     <span>{fields.phone}</span>
                   </span>
@@ -413,7 +548,7 @@ export default function LayoutDefinitivo({
                   <span className="definitivo-footer__sep" aria-hidden="true">
                     |
                   </span>
-                  <span className="definitivo-footer__item">
+                  <span className="definitivo-footer__item definitivo-footer__item--phone">
                     <PhoneIcon />
                     <EditableText
                       value={fields.phone}
@@ -422,7 +557,6 @@ export default function LayoutDefinitivo({
                       className="definitivo-footer__field definitivo-footer__field--phone"
                       plain
                       autoWidth
-                      clampOverflow
                     />
                   </span>
                 </>

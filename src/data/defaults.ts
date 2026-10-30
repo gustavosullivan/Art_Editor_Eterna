@@ -1,5 +1,12 @@
 import type { ArtFields, LayoutOption } from '../types'
 import { archivedLayoutOptions } from './archivedLayouts'
+import { defaultHomageText } from './homageMessages'
+
+/** Contato oficial — já vem preenchido em todo layout */
+export const officialContact = {
+  website: 'www.lucianocogo.com.br',
+  phone: '(54) 3312-2688',
+}
 
 /** Arte em branco — criar do zero */
 export const emptyFields: ArtFields = {
@@ -9,14 +16,14 @@ export const emptyFields: ArtFields = {
   deathDate: '',
   wakeText: '',
   burialText: '',
-  phone: '(54) 3312-26',
-  website: 'www.lucianocogo.com.br',
+  ...officialContact,
   memorialNote: '',
   celebrationLabel: '',
   celebrationDate: '',
   celebrationTime: '',
   ceremonyLabel: '',
   ceremonyPlace: '',
+  homageText: defaultHomageText,
 }
 
 export const defaultFields: ArtFields = {
@@ -28,14 +35,14 @@ export const defaultFields: ArtFields = {
     'Início do velório dia 28/08/2026 às 09:00hs na Capela Ametista do Memorial Vera Cruz',
   burialText:
     'Sepultamento dia 28/08/2026 às 16:30 no cemitério de Nossa Senhora das Graças',
-  phone: '(54) 3312-26',
-  website: 'www.lucianocogo.com.br',
+  ...officialContact,
   memorialNote: 'Inserir texto',
   celebrationLabel: 'DATA DA CELEBRAÇÃO',
   celebrationDate: 'Data e horário',
   celebrationTime: '',
   ceremonyLabel: 'LOCAL DA CERIMÔNIA',
   ceremonyPlace: 'Local da cerimônia',
+  homageText: defaultHomageText,
 }
 
 /** Campos dos layouts definitivos — local e data começam vazios, com placeholder */

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { defaultFields, definitivoFields, emptyFields } from './data/defaults'
+import { defaultFields, definitivoFields, emptyFields, officialContact } from './data/defaults'
 import {
   historyKindFor,
   loadHistory,
@@ -93,7 +93,7 @@ export default function App() {
     })
     setLayoutId(entry.layoutId)
     setDefinitivo7Modelo(entry.definitivo7Modelo)
-    setFields(entry.fields)
+    setFields({ ...entry.fields, ...officialContact })
     setPhotoTransform(entry.photoTransform)
     setLogoOffset(entry.logoOffset)
     setCardsOffset(entry.cardsOffset)

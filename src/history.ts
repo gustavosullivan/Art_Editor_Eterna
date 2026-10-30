@@ -73,6 +73,7 @@ const fieldKeys: (keyof ArtFields)[] = [
   'celebrationTime',
   'ceremonyLabel',
   'ceremonyPlace',
+  'homageText',
 ]
 
 const borders: ClassicoBorderMode[] = ['combo', 'navy', 'gold', 'off']

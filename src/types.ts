@@ -33,6 +33,8 @@ export type ArtFields = {
   ceremonyLabel: string
   /** Local da cerimônia */
   ceremonyPlace: string
+  /** Mensagem de homenagem (7º dia) — preset ou texto próprio */
+  homageText: string
 }
 
 export type PhotoTransform = {
