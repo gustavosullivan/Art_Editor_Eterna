@@ -4971,8 +4971,8 @@ input.setimo-footer__field--phone {
 .art--definitivo .definitivo-footer__item {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.22rem;
+  justify-content: flex-start;
+  gap: 0.12rem;
   min-width: 0;
   max-width: none;
   flex: 0 1 auto;
@@ -4985,6 +4985,7 @@ input.setimo-footer__field--phone {
   height: calc(0.78rem * 1.5);
   flex-shrink: 0;
   color: var(--classico-navy);
+  display: block;
 }
 
 .art--definitivo .definitivo-footer__sep {
@@ -4999,7 +5000,7 @@ input.setimo-footer__field--phone {
   background: transparent;
   font: inherit;
   color: inherit;
-  text-align: center;
+  text-align: left;
   min-width: 0;
   width: auto;
   max-width: none;
@@ -5007,6 +5008,7 @@ input.setimo-footer__field--phone {
   outline: none;
   white-space: nowrap;
   overflow: visible;
+  field-sizing: content;
 }
 
 .art--definitivo .definitivo-footer__field--email,
@@ -5020,7 +5022,7 @@ input.setimo-footer__field--phone {
 .art--definitivo .definitivo-footer__field--phone,
 .art--definitivo input.definitivo-footer__field--phone {
   width: auto;
-  min-width: 8ch;
+  min-width: 0;
   max-width: none;
   flex: 0 0 auto;
   overflow: visible;
@@ -5029,6 +5031,7 @@ input.setimo-footer__field--phone {
 .art--definitivo .definitivo-footer__item--phone {
   max-width: none;
   overflow: visible;
+  gap: 0.08rem;
 }
 
 .art--definitivo-preview {

@@ -60,11 +60,12 @@ function growToContent(el: HTMLElement, maxRows: number, measurePadding = false)
 }
 
 function growToContentWidth(el: HTMLInputElement) {
-  if (typeof CSS !== 'undefined' && CSS.supports?.('field-sizing', 'content')) {
+  const style = getComputedStyle(el)
+  // Só confia no field-sizing se o próprio campo realmente usa content
+  if (style.getPropertyValue('field-sizing').trim() === 'content') {
     el.style.width = ''
     return
   }
-  const style = getComputedStyle(el)
   const minW = Number.parseFloat(style.minWidth) || 0
   const maxW = Number.parseFloat(style.maxWidth)
   const previous = el.style.width
