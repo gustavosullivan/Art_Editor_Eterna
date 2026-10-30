@@ -147,13 +147,13 @@ export default function LayoutLivre({
         {showPersonName ? (
           <LivrePiece {...pieceProps('name', 'nome', onRemovePersonName, true)}>
             {preview ? (
-              <p className="invite-person__name">{fields.personName || 'Nome'}</p>
+              <p className="invite-person__name">{fields.personName || 'digite o nome'}</p>
             ) : (
               <EditableText
                 value={fields.personName}
                 onChange={(value) => onFieldChange('personName', value)}
                 ariaLabel="Nome da pessoa"
-                placeholder="Nome"
+                placeholder="digite o nome"
                 className="editable--name"
                 multiline
                 plain

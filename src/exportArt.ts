@@ -18,7 +18,7 @@ export const exportPresets: {
   {
     id: 'instagram',
     title: 'Instagram',
-    subtitle: '1080 × 1350 · 4:5, o feed mostra inteiro',
+    subtitle: '1080 × 1080 · quadrado, laterais preenchidas',
   },
   {
     id: 'facebook',
@@ -28,12 +28,16 @@ export const exportPresets: {
 ]
 
 /**
- * 4:5 é o retrato mais alto que Instagram e Facebook publicam sem cortar.
- * A arte é 3:4 (mais alta). Um arquivo 1080×1440 perde topo e base na hora de postar.
+ * Instagram: 1:1 preenche o feed e a grade sem faixa nas laterais.
+ * Facebook: 4:5 é o retrato mais alto que a rede mostra inteiro.
+ * A arte é 3:4 — no quadrado o encaixe é cover (preenche esquerda e direita).
  */
-const SOCIAL_FRAME: Record<Exclude<ExportPreset, 'pdf'>, { w: number; h: number }> = {
-  instagram: { w: 1080, h: 1350 },
-  facebook: { w: 1080, h: 1350 },
+const SOCIAL_FRAME: Record<
+  Exclude<ExportPreset, 'pdf'>,
+  { w: number; h: number; fit: 'contain' | 'cover' }
+> = {
+  instagram: { w: 1080, h: 1080, fit: 'cover' },
+  facebook: { w: 1080, h: 1350, fit: 'contain' },
 }
 
 function fileSlug(personName: string) {
@@ -331,14 +335,15 @@ function paintClassicoBorder(
 }
 
 /**
- * Encaixa a arte inteira no 4:5, sem cortar topo nem base.
- * As laterais continuam a cor da própria arte, para não aparecer faixa.
+ * contain: arte inteira no quadro (pode sobrar faixa).
+ * cover: preenche largura e altura — no quadrado do Instagram some a faixa lateral.
  */
 function fitToSocial(
   source: HTMLCanvasElement,
   w: number,
   h: number,
   bg: string,
+  fit: 'contain' | 'cover' = 'contain',
 ): { canvas: HTMLCanvasElement; artRect: { x: number; y: number; w: number; h: number } } {
   const out = document.createElement('canvas')
   out.width = w
@@ -353,46 +358,51 @@ function fitToSocial(
   ctx.imageSmoothingEnabled = true
   ctx.imageSmoothingQuality = 'high'
 
-  const scale = Math.min(w / source.width, h / source.height)
+  const scale =
+    fit === 'cover'
+      ? Math.max(w / source.width, h / source.height)
+      : Math.min(w / source.width, h / source.height)
   let dw = source.width * scale
   let dh = source.height * scale
   let dx = (w - dw) / 2
   let dy = (h - dh) / 2
-  if (w - dw < 2 && h - dh < 2) {
+  if (fit === 'contain' && w - dw < 2 && h - dh < 2) {
     dw = w
     dh = h
     dx = 0
     dy = 0
   }
 
-  const edge = Math.max(2, Math.round(source.width * 0.004))
-  if (dx > 1) {
-    ctx.drawImage(source, 0, 0, edge, source.height, 0, Math.max(0, dy), dx, dh)
-    ctx.drawImage(
-      source,
-      Math.max(0, source.width - edge),
-      0,
-      edge,
-      source.height,
-      dx + dw,
-      Math.max(0, dy),
-      Math.max(1, w - (dx + dw)),
-      dh,
-    )
-  }
-  if (dy > 1) {
-    ctx.drawImage(source, 0, 0, source.width, edge, Math.max(0, dx), 0, dw, dy)
-    ctx.drawImage(
-      source,
-      0,
-      Math.max(0, source.height - edge),
-      source.width,
-      edge,
-      Math.max(0, dx),
-      dy + dh,
-      dw,
-      Math.max(1, h - (dy + dh)),
-    )
+  if (fit === 'contain') {
+    const edge = Math.max(2, Math.round(source.width * 0.004))
+    if (dx > 1) {
+      ctx.drawImage(source, 0, 0, edge, source.height, 0, Math.max(0, dy), dx, dh)
+      ctx.drawImage(
+        source,
+        Math.max(0, source.width - edge),
+        0,
+        edge,
+        source.height,
+        dx + dw,
+        Math.max(0, dy),
+        Math.max(1, w - (dx + dw)),
+        dh,
+      )
+    }
+    if (dy > 1) {
+      ctx.drawImage(source, 0, 0, source.width, edge, Math.max(0, dx), 0, dw, dy)
+      ctx.drawImage(
+        source,
+        0,
+        Math.max(0, source.height - edge),
+        source.width,
+        edge,
+        Math.max(0, dx),
+        dy + dh,
+        dw,
+        Math.max(1, h - (dy + dh)),
+      )
+    }
   }
 
   ctx.drawImage(source, dx, dy, dw, dh)
@@ -477,12 +487,49 @@ export async function exportArt(
     }
 
     const size = SOCIAL_FRAME[preset]
-    const artW = Math.max(1, target.offsetWidth)
-    const pixelRatio = Math.min(3, Math.max(2, Math.ceil(size.w / artW)))
-    const source = await captureArt(target, pixelRatio)
-    const { canvas: social, artRect } = fitToSocial(source, size.w, size.h, bg)
-    paintClassicoBorder(social, classicoBorder, artRect)
-    const blob = await canvasToBlob(social, 'image/jpeg', 0.92)
-    await saveBlob(blob, `homenagem-${slug}-${preset}.jpg`)
+    const shell = target.closest('.editor__art-shell') as HTMLElement | null
+    const prevArt = {
+      aspectRatio: target.style.aspectRatio,
+      width: target.style.width,
+      height: target.style.height,
+      maxWidth: target.style.maxWidth,
+    }
+
+    if (preset === 'instagram') {
+      const side = Math.max(1, target.offsetWidth)
+      target.style.aspectRatio = '1 / 1'
+      target.style.maxWidth = 'none'
+      target.style.width = `${side}px`
+      target.style.height = `${side}px`
+      if (shell) {
+        shell.style.width = `${side}px`
+        shell.style.height = `${side}px`
+      }
+      await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
+      await new Promise((resolve) => setTimeout(resolve, 60))
+    }
+
+    try {
+      const artW = Math.max(1, target.offsetWidth)
+      const pixelRatio = Math.min(3, Math.max(2, Math.ceil(size.w / artW)))
+      const source = await captureArt(target, pixelRatio)
+      const { canvas: social, artRect } = fitToSocial(
+        source,
+        size.w,
+        size.h,
+        bg,
+        size.fit,
+      )
+      paintClassicoBorder(social, classicoBorder, artRect)
+      const blob = await canvasToBlob(social, 'image/jpeg', 0.92)
+      await saveBlob(blob, `homenagem-${slug}-${preset}.jpg`)
+    } finally {
+      if (preset === 'instagram') {
+        target.style.aspectRatio = prevArt.aspectRatio
+        target.style.width = prevArt.width
+        target.style.height = prevArt.height
+        target.style.maxWidth = prevArt.maxWidth
+      }
+    }
   })
 }

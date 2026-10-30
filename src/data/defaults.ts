@@ -1,15 +1,16 @@
 import type { ArtFields, LayoutOption } from '../types'
+import { archivedLayoutOptions } from './archivedLayouts'
 
 /** Arte em branco — criar do zero */
 export const emptyFields: ArtFields = {
-  personName: '',
+  personName: 'digite o nome',
   age: '',
   birthDate: '',
   deathDate: '',
   wakeText: '',
   burialText: '',
-  phone: '(54) 99327-2101',
-  website: 'lucianoporto979@gmail.com',
+  phone: '(54) 3312-26',
+  website: 'www.lucianocogo.com.br',
   memorialNote: '',
   celebrationLabel: '',
   celebrationDate: '',
@@ -19,7 +20,7 @@ export const emptyFields: ArtFields = {
 }
 
 export const defaultFields: ArtFields = {
-  personName: 'Claudina Danielli',
+  personName: 'digite o nome',
   age: '95 anos',
   birthDate: '30/06/1931',
   deathDate: '28/08/2026',
@@ -27,8 +28,8 @@ export const defaultFields: ArtFields = {
     'Início do velório dia 28/08/2026 às 09:00hs na Capela Ametista do Memorial Vera Cruz',
   burialText:
     'Sepultamento dia 28/08/2026 às 16:30 no cemitério de Nossa Senhora das Graças',
-  phone: '(54) 99327-2101',
-  website: 'lucianoporto979@gmail.com',
+  phone: '(54) 3312-26',
+  website: 'www.lucianocogo.com.br',
   memorialNote: 'Inserir texto',
   celebrationLabel: 'DATA DA CELEBRAÇÃO',
   celebrationDate: 'Data e horário',
@@ -45,6 +46,7 @@ export const definitivoFields: ArtFields = {
   celebrationTime: '',
 }
 
+/** Layouts visíveis na produção (carrossel). Clássicos: ver archivedLayouts.ts */
 export const layoutOptions: LayoutOption[] = [
   {
     id: 'definitivo',
@@ -57,16 +59,6 @@ export const layoutOptions: LayoutOption[] = [
     description: '',
   },
   {
-    id: 'classico7dias',
-    name: 'Modelo Clássico de 7 Dias',
-    description: '',
-  },
-  {
-    id: 'classico',
-    name: 'Modelo Clássico',
-    description: '',
-  },
-  {
     id: 'principal',
     name: 'Modelo Principal',
     description: '',
@@ -76,4 +68,10 @@ export const layoutOptions: LayoutOption[] = [
     name: 'Missa de 7º Dia',
     description: '',
   },
+]
+
+/** Produção + arquivos clássicos (histórico / nome no editor). */
+export const allLayoutOptions: LayoutOption[] = [
+  ...layoutOptions,
+  ...archivedLayoutOptions,
 ]

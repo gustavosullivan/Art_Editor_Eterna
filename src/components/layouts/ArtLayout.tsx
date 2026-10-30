@@ -18,8 +18,10 @@ export default function ArtLayout({
     case 'definitivo7dias':
       return <LayoutDefinitivo7Dias {...props} />
     case 'classico7dias':
+      // Arquivado: não entra no carrossel; mantido para histórico antigo.
       return <LayoutClassico7Dias {...props} />
     case 'classico':
+      // Arquivado: não entra no carrossel; mantido para histórico antigo.
       return <LayoutClassico {...props} />
     case 'setimo':
       return <LayoutSetimoDia {...props} />

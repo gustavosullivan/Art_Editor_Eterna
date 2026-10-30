@@ -100,7 +100,7 @@ function PersonName({
 }) {
   const className = fieldClass('definitivo-name', value)
   if (preview) {
-    return <p className={className}>{value || 'Nome'}</p>
+    return <p className={className}>{value || 'digite o nome'}</p>
   }
 
   return (
@@ -108,7 +108,7 @@ function PersonName({
       value={value}
       onChange={onChange}
       ariaLabel="Nome da pessoa"
-      placeholder="Nome"
+      placeholder="digite o nome"
       className={className}
       multiline
       plain

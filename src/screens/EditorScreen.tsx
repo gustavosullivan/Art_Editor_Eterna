@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import ArtLayout from '../components/layouts/ArtLayout'
 import EditorArtFit from '../components/EditorArtFit'
 import ExportSheet from '../components/ExportSheet'
-import { layoutOptions } from '../data/defaults'
+import { allLayoutOptions } from '../data/defaults'
 import { exportArt, type ExportPreset } from '../exportArt'
 import type { AssetOffset } from '../components/DraggableAsset'
 import type { LivrePieceId, LivrePieces, LivrePieceState } from '../livreLayout'
@@ -169,7 +169,7 @@ export default function EditorScreen({
       ? 'Novo layout'
       : layoutId === 'definitivo7dias' && definitivo7Modelo === 2
         ? 'Modelo Definitivo de 7 Dias · 2'
-        : (layoutOptions.find((item) => item.id === layoutId)?.name ?? 'Editar arte')
+        : (allLayoutOptions.find((item) => item.id === layoutId)?.name ?? 'Editar arte')
   const emptyTip =
     layoutId === 'livre'
       ? 'Toque num bloco para selecionar e arraste para posicionar.'

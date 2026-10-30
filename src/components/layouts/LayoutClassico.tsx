@@ -68,7 +68,8 @@ type LayoutClassicoProps = LayoutProps & {
 }
 
 /**
- * Modelo Clássico — título + escrita compartilhados,
+ * Modelo Clássico — arquivado, fora do carrossel de produção.
+ * Guardado em src/data/archivedLayouts.ts. Título + escrita compartilhados,
  * moldura e cards de data/local iguais ao 7º Dia (sem ícones).
  */
 export default function LayoutClassico({

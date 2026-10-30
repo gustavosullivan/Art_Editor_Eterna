@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { layoutOptions } from '../data/defaults'
+import { allLayoutOptions } from '../data/defaults'
 import type { ArtHistory, HistoryEntry } from '../history'
 
 type HistoryModalProps = {
@@ -72,5 +72,5 @@ function layoutLabel(entry: HistoryEntry) {
   if (entry.layoutId === 'definitivo7dias' && entry.definitivo7Modelo === 2) {
     return 'Modelo Definitivo de 7 Dias · 2'
   }
-  return layoutOptions.find((item) => item.id === entry.layoutId)?.name ?? 'Layout salvo'
+  return allLayoutOptions.find((item) => item.id === entry.layoutId)?.name ?? 'Layout salvo'
 }
