@@ -57,8 +57,6 @@ export default function LayoutLivre({
   preview = false,
   showWakeCard = true,
   showBurialCard = true,
-  showBirthDate = true,
-  showDeathDate = true,
   showPersonName = true,
   showPersonAge = true,
   showLogo = true,
@@ -69,8 +67,6 @@ export default function LayoutLivre({
   onLivrePieceChange,
   onRemoveWakeCard,
   onRemoveBurialCard,
-  onRemoveBirthDate,
-  onRemoveDeathDate,
   onRemovePersonName,
   onRemovePersonAge,
   onRemoveLogo,
@@ -92,7 +88,13 @@ export default function LayoutLivre({
     setSelectedId(null)
   }
 
-  function pieceProps(id: LivrePieceId, label: string, onRemove?: () => void, stretch = false) {
+  function pieceProps(
+    id: LivrePieceId,
+    label: string,
+    onRemove?: () => void,
+    stretch = false,
+    canRemove = true,
+  ) {
     return {
       id,
       label,
@@ -106,6 +108,7 @@ export default function LayoutLivre({
         onRemove?.()
       },
       onDragActive: setDragging,
+      canRemove,
     }
   }
 
@@ -183,57 +186,51 @@ export default function LayoutLivre({
           </LivrePiece>
         ) : null}
 
-        {showBirthDate || showDeathDate ? (
-          <div className="invite-dates">
-            {showBirthDate ? (
-              <LivrePiece {...pieceProps('birth', 'nascimento', onRemoveBirthDate)}>
-                <div className="invite-dates__item">
-                  <span className="invite-dates__icon" aria-hidden="true">
-                    <StarIcon />
-                  </span>
-                  {preview ? (
-                    <span className="invite-dates__value">{fields.birthDate || 'Nascimento'}</span>
-                  ) : (
-                    <EditableText
-                      value={fields.birthDate}
-                      onChange={(value) => onFieldChange('birthDate', value)}
-                      ariaLabel="Data de nascimento"
-                      placeholder="Nascimento"
-                      className="editable--date"
-                      autoWidth
-                      remeasureKey={livrePieces.birth.scale}
-                    />
-                  )}
-                </div>
-              </LivrePiece>
-            ) : null}
+        <div className="invite-dates">
+          <LivrePiece {...pieceProps('birth', 'nascimento', undefined, false, false)}>
+            <div className="invite-dates__item">
+              <span className="invite-dates__icon" aria-hidden="true">
+                <StarIcon />
+              </span>
+              {preview ? (
+                <span className="invite-dates__value">{fields.birthDate || 'Nascimento'}</span>
+              ) : (
+                <EditableText
+                  value={fields.birthDate}
+                  onChange={(value) => onFieldChange('birthDate', value)}
+                  ariaLabel="Data de nascimento"
+                  placeholder="Nascimento"
+                  className="editable--date"
+                  autoWidth
+                  remeasureKey={livrePieces.birth.scale}
+                />
+              )}
+            </div>
+          </LivrePiece>
 
-            {showBirthDate && showDeathDate ? <span className="invite-dates__sep" aria-hidden="true" /> : null}
+          <span className="invite-dates__sep" aria-hidden="true" />
 
-            {showDeathDate ? (
-              <LivrePiece {...pieceProps('death', 'falecimento', onRemoveDeathDate)}>
-                <div className="invite-dates__item">
-                  <span className="invite-dates__icon" aria-hidden="true">
-                    <CrossIcon />
-                  </span>
-                  {preview ? (
-                    <span className="invite-dates__value">{fields.deathDate || 'Falecimento'}</span>
-                  ) : (
-                    <EditableText
-                      value={fields.deathDate}
-                      onChange={(value) => onFieldChange('deathDate', value)}
-                      ariaLabel="Data de falecimento"
-                      placeholder="Falecimento"
-                      className="editable--date"
-                      autoWidth
-                      remeasureKey={livrePieces.death.scale}
-                    />
-                  )}
-                </div>
-              </LivrePiece>
-            ) : null}
-          </div>
-        ) : null}
+          <LivrePiece {...pieceProps('death', 'falecimento', undefined, false, false)}>
+            <div className="invite-dates__item">
+              <span className="invite-dates__icon" aria-hidden="true">
+                <CrossIcon />
+              </span>
+              {preview ? (
+                <span className="invite-dates__value">{fields.deathDate || 'Falecimento'}</span>
+              ) : (
+                <EditableText
+                  value={fields.deathDate}
+                  onChange={(value) => onFieldChange('deathDate', value)}
+                  ariaLabel="Data de falecimento"
+                  placeholder="Falecimento"
+                  className="editable--date"
+                  autoWidth
+                  remeasureKey={livrePieces.death.scale}
+                />
+              )}
+            </div>
+          </LivrePiece>
+        </div>
 
         {showWakeCard || showBurialCard ? (
           <div className="classico-cards">

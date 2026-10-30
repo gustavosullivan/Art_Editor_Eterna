@@ -60,12 +60,18 @@ function growToContent(el: HTMLElement, maxRows: number, measurePadding = false)
 }
 
 function growToContentWidth(el: HTMLInputElement) {
+  if (typeof CSS !== 'undefined' && CSS.supports?.('field-sizing', 'content')) {
+    el.style.width = ''
+    return
+  }
   const style = getComputedStyle(el)
   const minW = Number.parseFloat(style.minWidth) || 0
   const maxW = Number.parseFloat(style.maxWidth)
-  el.style.width = '0px'
+  const previous = el.style.width
+  el.style.width = 'auto'
   let next = Math.max(el.scrollWidth + 2, minW || 1)
   if (Number.isFinite(maxW) && maxW > 0) next = Math.min(next, maxW)
+  el.style.width = previous
   el.style.width = `${next}px`
 }
 

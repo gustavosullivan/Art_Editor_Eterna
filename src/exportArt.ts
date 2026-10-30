@@ -29,7 +29,7 @@ export const exportPresets: {
 
 /**
  * 4:5 é o retrato mais alto que Instagram e Facebook mostram inteiro.
- * A arte é 3:4: entra completa no quadro (contain), sem cortar topo nem base.
+ * A arte é 3:4 — contain evita cortar topo e base.
  */
 const SOCIAL_FRAME: Record<
   Exclude<ExportPreset, 'pdf'>,

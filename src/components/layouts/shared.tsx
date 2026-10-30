@@ -4,8 +4,6 @@ import type { ArtFields, ClassicoBorderMode, Definitivo7Modelo, PhotoTransform }
 import type { AssetOffset } from '../DraggableAsset'
 import SaoLuizLogo from '../SaoLuizLogo'
 import PhotoUpload from '../PhotoUpload'
-import { RemovableBlock } from '../CardIconAsset'
-
 export type LayoutProps = {
   fields: ArtFields
   photoUrl: string | null
@@ -127,87 +125,51 @@ export function DateRow({
   fields,
   onFieldChange,
   preview,
-  showBirthDate = true,
-  showDeathDate = true,
-  onRemoveBirthDate,
-  onRemoveDeathDate,
   birthPlaceholder,
   deathPlaceholder,
-}: Pick<
-  LayoutProps,
-  | 'fields'
-  | 'onFieldChange'
-  | 'preview'
-  | 'showBirthDate'
-  | 'showDeathDate'
-  | 'onRemoveBirthDate'
-  | 'onRemoveDeathDate'
-> & {
+}: Pick<LayoutProps, 'fields' | 'onFieldChange' | 'preview'> & {
   birthPlaceholder?: string
   deathPlaceholder?: string
 }) {
-  const canEdit = !preview
-  if (!showBirthDate && !showDeathDate) return null
-
   return (
     <div className="invite-dates">
-      {showBirthDate ? (
-        <RemovableBlock
-          label="data de nascimento"
-          interactive={canEdit}
-          className="invite-dates__item-wrap"
-          onRemove={() => onRemoveBirthDate?.()}
-        >
-          <div className="invite-dates__item">
-            <span className="invite-dates__icon" aria-hidden="true">
-              <StarIcon />
-            </span>
-            {preview ? (
-              <span className="invite-dates__value">{fields.birthDate}</span>
-            ) : (
-              <EditableText
-                value={fields.birthDate}
-                onChange={(value) => onFieldChange('birthDate', value)}
-                ariaLabel="Data de nascimento"
-                placeholder={birthPlaceholder}
-                className="editable--date"
-                autoWidth
-              />
-            )}
-          </div>
-        </RemovableBlock>
-      ) : null}
+      <div className="invite-dates__item">
+        <span className="invite-dates__icon" aria-hidden="true">
+          <StarIcon />
+        </span>
+        {preview ? (
+          <span className="invite-dates__value">{fields.birthDate}</span>
+        ) : (
+          <EditableText
+            value={fields.birthDate}
+            onChange={(value) => onFieldChange('birthDate', value)}
+            ariaLabel="Data de nascimento"
+            placeholder={birthPlaceholder}
+            className="editable--date"
+            autoWidth
+          />
+        )}
+      </div>
 
-      {showBirthDate && showDeathDate ? (
-        <span className="invite-dates__sep" aria-hidden="true" />
-      ) : null}
+      <span className="invite-dates__sep" aria-hidden="true" />
 
-      {showDeathDate ? (
-        <RemovableBlock
-          label="data de falecimento"
-          interactive={canEdit}
-          className="invite-dates__item-wrap"
-          onRemove={() => onRemoveDeathDate?.()}
-        >
-          <div className="invite-dates__item">
-            <span className="invite-dates__icon" aria-hidden="true">
-              <CrossIcon />
-            </span>
-            {preview ? (
-              <span className="invite-dates__value">{fields.deathDate}</span>
-            ) : (
-              <EditableText
-                value={fields.deathDate}
-                onChange={(value) => onFieldChange('deathDate', value)}
-                ariaLabel="Data de falecimento"
-                placeholder={deathPlaceholder}
-                className="editable--date"
-                autoWidth
-              />
-            )}
-          </div>
-        </RemovableBlock>
-      ) : null}
+      <div className="invite-dates__item">
+        <span className="invite-dates__icon" aria-hidden="true">
+          <CrossIcon />
+        </span>
+        {preview ? (
+          <span className="invite-dates__value">{fields.deathDate}</span>
+        ) : (
+          <EditableText
+            value={fields.deathDate}
+            onChange={(value) => onFieldChange('deathDate', value)}
+            ariaLabel="Data de falecimento"
+            placeholder={deathPlaceholder}
+            className="editable--date"
+            autoWidth
+          />
+        )}
+      </div>
     </div>
   )
 }

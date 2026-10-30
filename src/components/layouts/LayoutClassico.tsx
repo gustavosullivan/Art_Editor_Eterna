@@ -82,12 +82,8 @@ export default function LayoutClassico({
   preview = false,
   showWakeCard = true,
   showBurialCard = true,
-  showBirthDate = true,
-  showDeathDate = true,
   showLogo = true,
   classicoBorder = defaultClassicoBorder,
-  onRemoveBirthDate,
-  onRemoveDeathDate,
   titleVariant = 'homenagem',
   watermark,
 }: LayoutClassicoProps) {
@@ -143,10 +139,6 @@ export default function LayoutClassico({
           fields={fields}
           onFieldChange={onFieldChange}
           preview={preview}
-          showBirthDate={showBirthDate}
-          showDeathDate={showDeathDate}
-          onRemoveBirthDate={onRemoveBirthDate}
-          onRemoveDeathDate={onRemoveDeathDate}
         />
 
         <div className="classico-cards">

@@ -5,7 +5,7 @@ export type CardIconKind = 'clock' | 'pin' | 'star' | 'cross'
 type CardIconAssetProps = {
   kind: CardIconKind
   label: string
-  onRemove: () => void
+  onRemove?: () => void
   interactive?: boolean
   tone?: 'card' | 'date'
 }
@@ -104,7 +104,7 @@ export default function CardIconAsset({
               setSelected((current) => !current)
             }}
           />
-          {selected ? (
+          {selected && onRemove ? (
             <button
               type="button"
               className="card-icon-asset__remove no-export"

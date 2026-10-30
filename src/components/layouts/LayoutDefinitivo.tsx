@@ -362,15 +362,11 @@ export default function LayoutDefinitivo({
   photoTransform = defaultPhotoTransform,
   onPhotoTransformChange,
   preview = false,
-  showBirthDate = true,
-  showDeathDate = true,
   showPersonName = true,
   showLogo = true,
   showTitle = true,
   showContact = true,
   classicoBorder = defaultClassicoBorder,
-  onRemoveBirthDate,
-  onRemoveDeathDate,
   titleVariant = 'homenagem',
   definitivo7Modelo = 1,
   watermark,
@@ -433,10 +429,6 @@ export default function LayoutDefinitivo({
                     fields={fields}
                     onFieldChange={onFieldChange}
                     preview={preview}
-                    showBirthDate={showBirthDate}
-                    showDeathDate={showDeathDate}
-                    onRemoveBirthDate={onRemoveBirthDate}
-                    onRemoveDeathDate={onRemoveDeathDate}
                     birthPlaceholder="Nascimento"
                     deathPlaceholder="Falecimento"
                   />
@@ -472,10 +464,6 @@ export default function LayoutDefinitivo({
                     fields={fields}
                     onFieldChange={onFieldChange}
                     preview={preview}
-                    showBirthDate={showBirthDate}
-                    showDeathDate={showDeathDate}
-                    onRemoveBirthDate={onRemoveBirthDate}
-                    onRemoveDeathDate={onRemoveDeathDate}
                     birthPlaceholder="Nascimento"
                     deathPlaceholder="Falecimento"
                   />

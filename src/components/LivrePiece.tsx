@@ -11,6 +11,7 @@ type LivrePieceProps = {
   onChange: (next: LivrePieceState) => void
   onRemove: () => void
   onDragActive: (active: boolean) => void
+  canRemove?: boolean
   children: ReactNode
 }
 
@@ -33,6 +34,7 @@ export default function LivrePiece({
   onChange,
   onRemove,
   onDragActive,
+  canRemove = true,
   children,
 }: LivrePieceProps) {
   const [sizeOpen, setSizeOpen] = useState(false)
@@ -145,6 +147,7 @@ export default function LivrePiece({
           >
             …
           </button>
+          {canRemove ? (
           <button
             type="button"
             className="livre-piece__remove no-export"
@@ -156,6 +159,7 @@ export default function LivrePiece({
           >
             ×
           </button>
+          ) : null}
           {sizeOpen ? (
             <div className="livre-piece__size no-export" role="group" aria-label="Tamanho do caractere">
               <button type="button" onClick={() => bumpScale(-0.1)} aria-label="Diminuir texto">

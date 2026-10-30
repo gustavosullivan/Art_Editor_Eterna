@@ -19,15 +19,11 @@ export default function LayoutPrincipal({
   preview = false,
   showWakeCard = true,
   showBurialCard = true,
-  showBirthDate = true,
-  showDeathDate = true,
   showPersonName = true,
   showPersonAge = true,
   showLogo = true,
   onRemoveWakeCard,
   onRemoveBurialCard,
-  onRemoveBirthDate,
-  onRemoveDeathDate,
   onRemovePersonName,
   onRemovePersonAge,
   onRemoveLogo,
@@ -130,51 +126,41 @@ export default function LayoutPrincipal({
       </div>
 
       <div className="tpl tpl-dates">
-        {showBirthDate ? (
-          <div className="tpl-dates__item">
-            <CardIconAsset
-              kind="star"
-              tone="date"
-              label="estrela / nascimento"
-              interactive={canEdit}
-              onRemove={() => onRemoveBirthDate?.()}
-            />
-            <EditableText
-              value={fields.birthDate}
-              onChange={(value) => onFieldChange('birthDate', value)}
-              ariaLabel="Data de nascimento"
-              className="tpl-input tpl-input--date"
-              plain
-              clampOverflow
-              autoWidth
-            />
-          </div>
-        ) : null}
+        <div className="tpl-dates__item">
+          <CardIconAsset
+            kind="star"
+            tone="date"
+            label="estrela / nascimento"
+            interactive={false}
+          />
+          <EditableText
+            value={fields.birthDate}
+            onChange={(value) => onFieldChange('birthDate', value)}
+            ariaLabel="Data de nascimento"
+            className="tpl-input tpl-input--date"
+            plain
+            autoWidth
+          />
+        </div>
 
-        {showBirthDate && showDeathDate ? (
-          <span className="tpl-dates__sep" aria-hidden="true" />
-        ) : null}
+        <span className="tpl-dates__sep" aria-hidden="true" />
 
-        {showDeathDate ? (
-          <div className="tpl-dates__item">
-            <CardIconAsset
-              kind="cross"
-              tone="date"
-              label="cruz / falecimento"
-              interactive={canEdit}
-              onRemove={() => onRemoveDeathDate?.()}
-            />
-            <EditableText
-              value={fields.deathDate}
-              onChange={(value) => onFieldChange('deathDate', value)}
-              ariaLabel="Data de falecimento"
-              className="tpl-input tpl-input--date"
-              plain
-              clampOverflow
-              autoWidth
-            />
-          </div>
-        ) : null}
+        <div className="tpl-dates__item">
+          <CardIconAsset
+            kind="cross"
+            tone="date"
+            label="cruz / falecimento"
+            interactive={false}
+          />
+          <EditableText
+            value={fields.deathDate}
+            onChange={(value) => onFieldChange('deathDate', value)}
+            ariaLabel="Data de falecimento"
+            className="tpl-input tpl-input--date"
+            plain
+            autoWidth
+          />
+        </div>
       </div>
 
       <div className="tpl tpl-cards">
