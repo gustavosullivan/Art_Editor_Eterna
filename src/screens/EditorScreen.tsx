@@ -172,7 +172,7 @@ export default function EditorScreen({
         : (allLayoutOptions.find((item) => item.id === layoutId)?.name ?? 'Editar arte')
   const emptyTip =
     layoutId === 'livre'
-      ? 'Toque num bloco para selecionar e arraste para posicionar.'
+      ? 'Edite o título e o conteúdo do aviso.'
       : layoutId === 'classico7dias'
         ? layoutName
         : 'Toque na moldura para adicionar a foto.'

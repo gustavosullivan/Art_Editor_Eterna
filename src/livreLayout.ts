@@ -1,5 +1,6 @@
 export const livrePieceIds = [
   'title',
+  'body',
   'name',
   'age',
   'birth',
@@ -26,6 +27,7 @@ const idle: LivrePieceState = { x: 0, y: 0, scale: 1 }
 export function defaultLivrePieces(): LivrePieces {
   return {
     title: { ...idle },
+    body: { ...idle },
     name: { ...idle },
     age: { ...idle },
     birth: { ...idle },

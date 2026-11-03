@@ -28,22 +28,22 @@ export const exportPresets: {
   {
     id: 'facebook',
     title: 'Facebook',
-    subtitle: '1080 × 1350 · 4:5, sem cortar a base',
+    subtitle: '1080 × 1350 · 4:5, sem cortar título nem base',
   },
 ]
 
 /**
  * Feed (IG/FB): 4:5 é o retrato mais alto sem cortar no post.
  * Stories: 9:16 — se mandar 4:5, o app coloca faixa preta em cima e embaixo.
- * A arte é 3:4; contain mantém ela inteira e completa o quadro com a cor do papel.
+ * A arte é 3:4; contain mantém ela inteira. padY evita o feed cortar título/base.
  */
 const SOCIAL_FRAME: Record<
   Exclude<ExportPreset, 'pdf'>,
-  { w: number; h: number; fit: 'contain' | 'cover' }
+  { w: number; h: number; fit: 'contain' | 'cover'; padY: number }
 > = {
-  instagram: { w: 1080, h: 1350, fit: 'contain' },
-  instagramStories: { w: 1080, h: 1920, fit: 'contain' },
-  facebook: { w: 1080, h: 1350, fit: 'contain' },
+  instagram: { w: 1080, h: 1350, fit: 'contain', padY: 0.05 },
+  instagramStories: { w: 1080, h: 1920, fit: 'contain', padY: 0.04 },
+  facebook: { w: 1080, h: 1350, fit: 'contain', padY: 0.12 },
 }
 
 function fileSlug(personName: string) {
@@ -58,11 +58,14 @@ function fileSlug(personName: string) {
 function resolveExportBg(target: HTMLElement) {
   const style = getComputedStyle(target)
   const fromVar =
+    style.getPropertyValue('--aviso-paper').trim() ||
     style.getPropertyValue('--classico-paper').trim() ||
     style.getPropertyValue('--setimo-paper').trim() ||
     style.getPropertyValue('--invite-paper').trim()
   // Só aceita hex/rgb simples — lab()/oklch() quebram fillStyle e viram preto no JPEG
   if (fromVar && /^#|^rgb/i.test(fromVar)) return fromVar
+
+  if (target.classList.contains('art--aviso')) return '#f4f7fb'
 
   const paper = style.backgroundColor
   if (
@@ -152,6 +155,14 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
   })
 
   target.classList.add('is-exporting')
+  originalFields.forEach((field) => {
+    field.scrollTop = 0
+    field.scrollLeft = 0
+    if (field instanceof HTMLTextAreaElement) {
+      field.style.overflow = 'hidden'
+      field.style.overflowY = 'hidden'
+    }
+  })
   await new Promise((resolve) => requestAnimationFrame(() => resolve(null)))
   await new Promise((resolve) => setTimeout(resolve, 50))
 
@@ -274,9 +285,12 @@ async function captureArt(target: HTMLElement, pixelRatio: number) {
           replacement.style.color = cs.color
           replacement.style.textAlign = cs.textAlign as string
           replacement.style.width = `${original.offsetWidth}px`
+          replacement.style.height = `${Math.max(original.offsetHeight, 1)}px`
           replacement.style.minHeight = `${Math.max(original.offsetHeight, 1)}px`
+          replacement.style.maxHeight = `${Math.max(original.offsetHeight, 1)}px`
           replacement.style.whiteSpace = isArea ? 'pre-wrap' : 'pre'
-          replacement.style.wordBreak = isArea ? 'break-word' : 'normal'
+          replacement.style.overflowWrap = isArea ? 'break-word' : 'normal'
+          replacement.style.wordBreak = isArea ? 'normal' : 'normal'
           replacement.style.overflow = 'hidden'
           replacement.style.verticalAlign = 'baseline'
 
@@ -358,6 +372,7 @@ function fitToSocial(
   h: number,
   bg: string,
   fit: 'contain' | 'cover' = 'contain',
+  padY = 0,
 ): { canvas: HTMLCanvasElement; artRect: { x: number; y: number; w: number; h: number } } {
   const out = document.createElement('canvas')
   out.width = w
@@ -372,51 +387,42 @@ function fitToSocial(
   ctx.imageSmoothingEnabled = true
   ctx.imageSmoothingQuality = 'high'
 
+  const insetY = fit === 'contain' ? Math.round(h * padY) : 0
+  const boxW = w
+  const boxH = Math.max(1, h - insetY * 2)
+
   const scale =
     fit === 'cover'
       ? Math.max(w / source.width, h / source.height)
-      : Math.min(w / source.width, h / source.height)
+      : Math.min(boxW / source.width, boxH / source.height)
   let dw = source.width * scale
   let dh = source.height * scale
   let dx = (w - dw) / 2
-  let dy = (h - dh) / 2
-  if (fit === 'contain' && w - dw < 2 && h - dh < 2) {
+  let dy = insetY + (boxH - dh) / 2
+  if (fit === 'contain' && insetY === 0 && w - dw < 2 && h - dh < 2) {
     dw = w
     dh = h
     dx = 0
     dy = 0
   }
 
-  if (fit === 'contain') {
+  // Preenche só as laterais com a borda da arte.
+  // Topo/base ficam na cor de fundo — no Facebook o bleed vertical
+  // fazia o título parecer cortado no feed.
+  if (fit === 'contain' && dx > 1) {
     const edge = Math.max(2, Math.round(source.width * 0.004))
-    if (dx > 1) {
-      ctx.drawImage(source, 0, 0, edge, source.height, 0, Math.max(0, dy), dx, dh)
-      ctx.drawImage(
-        source,
-        Math.max(0, source.width - edge),
-        0,
-        edge,
-        source.height,
-        dx + dw,
-        Math.max(0, dy),
-        Math.max(1, w - (dx + dw)),
-        dh,
-      )
-    }
-    if (dy > 1) {
-      ctx.drawImage(source, 0, 0, source.width, edge, Math.max(0, dx), 0, dw, dy)
-      ctx.drawImage(
-        source,
-        0,
-        Math.max(0, source.height - edge),
-        source.width,
-        edge,
-        Math.max(0, dx),
-        dy + dh,
-        dw,
-        Math.max(1, h - (dy + dh)),
-      )
-    }
+    ctx.drawImage(source, 0, 0, edge, source.height, 0, Math.max(0, dy), dx, dh)
+    ctx.drawImage(
+      source,
+      Math.max(0, source.width - edge),
+      0,
+      edge,
+      source.height,
+      dx + dw,
+      Math.max(0, dy),
+      Math.max(1, w - (dx + dw)),
+      dh,
+    )
   }
 
   ctx.drawImage(source, dx, dy, dw, dh)
@@ -518,6 +524,7 @@ export async function exportArt(
       size.h,
       bg,
       size.fit,
+      size.padY,
     )
     paintClassicoBorder(social, classicoBorder, artRect)
     const blob = await canvasToBlob(social, 'image/jpeg', 0.92)

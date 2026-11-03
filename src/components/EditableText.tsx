@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, type ChangeEvent } from 'react'
+import { useLayoutEffect, useRef, type ChangeEvent, type UIEvent } from 'react'
 
 type EditableTextProps = {
   value: string
@@ -21,6 +21,8 @@ type EditableTextProps = {
   measurePadding?: boolean
   /** Quebra só no espaço. O textarea nativo parte a palavra no meio. */
   wrapWords?: boolean
+  /** Limite de caracteres */
+  maxLength?: number
 }
 
 function lineHeightPx(el: HTMLElement) {
@@ -42,18 +44,20 @@ function verticalExtras(el: HTMLElement) {
 }
 
 function growToContent(el: HTMLElement, maxRows: number, measurePadding = false) {
-  const previousMax = el.style.maxHeight
-  el.style.maxHeight = 'none'
   const lh = lineHeightPx(el)
   const extras = measurePadding ? verticalExtras(el) : 0
   const maxH = lh * maxRows + extras
 
+  el.style.overflow = 'hidden'
+  el.style.overflowY = 'hidden'
+  el.style.maxHeight = 'none'
   el.style.height = 'auto'
   el.scrollTop = 0
   const contentH = el.scrollHeight
   const lines = Math.max(1, Math.min(maxRows, Math.ceil((contentH - extras - 1) / lh)))
-  el.style.height = `${Math.ceil(lines * lh + extras)}px`
-  el.style.maxHeight = previousMax
+  const nextH = Math.ceil(lines * lh + extras)
+  el.style.height = `${nextH}px`
+  el.style.maxHeight = `${maxH}px`
   el.scrollTop = 0
 
   return { contentH, maxH, lh, lines }
@@ -127,6 +131,7 @@ export default function EditableText({
   remeasureKey,
   measurePadding = false,
   wrapWords = false,
+  maxLength,
 }: EditableTextProps) {
   const fieldRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null)
 
@@ -142,7 +147,10 @@ export default function EditableText({
   }, [value, multiline, maxRows, autoWidth, remeasureKey, measurePadding, wrapWords])
 
   function handleChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const next = event.target.value
+    let next = event.target.value
+    if (typeof maxLength === 'number' && next.length > maxLength) {
+      next = next.slice(0, maxLength)
+    }
     const el = fieldRef.current
 
     if (
@@ -182,15 +190,23 @@ export default function EditableText({
     className: `${plain ? '' : `editable ${multiline ? 'editable--multiline' : ''}`} ${autoWidth ? 'editable--auto-width' : ''} ${className}`.trim(),
     value,
     onChange: handleChange,
+    maxLength,
     onFocus: () => {
       // Evita scrollIntoView que empurra a arte e corta o topo no editor
+      const field = fieldRef.current
+      if (field) field.scrollTop = 0
       const x = window.scrollX
       const y = window.scrollY
       window.requestAnimationFrame(() => {
         window.scrollTo(x, y)
-        const canvas = fieldRef.current?.closest('.editor__canvas')
+        if (field) field.scrollTop = 0
+        const canvas = field?.closest('.editor__canvas')
         if (canvas) canvas.scrollTop = 0
       })
+    },
+    onScroll: (event: UIEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      event.currentTarget.scrollTop = 0
+      event.currentTarget.scrollLeft = 0
     },
     'aria-label': ariaLabel,
     placeholder,

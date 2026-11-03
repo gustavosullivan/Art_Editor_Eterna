@@ -1,14 +1,12 @@
-import { useState, type PointerEvent as ReactPointerEvent } from 'react'
 import EditableText from '../EditableText'
-import LivrePiece from '../LivrePiece'
 import SaoLuizLogo from '../SaoLuizLogo'
-import { defaultLivrePieces, type LivrePieceId } from '../../livreLayout'
+import { officialContact } from '../../data/defaults'
 import type { LayoutProps } from './shared'
 import { defaultClassicoBorder } from '../../types'
 
 function PhoneIcon() {
   return (
-    <svg className="classico-footer__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <svg className="aviso-footer__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path
         d="M7.2 3.8h2.7l1.2 3.1-1.7 1.1a11.2 11.2 0 0 0 5.6 5.6l1.1-1.7 3.1 1.2v2.7c0 .7-.5 1.3-1.2 1.4A14.6 14.6 0 0 1 5.8 5c.1-.7.7-1.2 1.4-1.2Z"
         fill="none"
@@ -22,357 +20,131 @@ function PhoneIcon() {
 
 function MailIcon() {
   return (
-    <svg className="classico-footer__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <svg className="aviso-footer__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <rect x="3.5" y="5.5" width="17" height="13" rx="1.6" fill="none" stroke="currentColor" strokeWidth="1.7" />
-      <path d="m4.2 6.8 7.8 6.2 7.8-6.2" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function StarIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
       <path
-        d="m12 3.2 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 15.6 7.2 18l.9-5.4L4.2 8.9l5.4-.8L12 3.2Z"
-        fill="currentColor"
+        d="m4.2 6.8 7.8 6.2 7.8-6.2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )
 }
 
-function CrossIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 3v18M7 8h10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  )
-}
-
 /**
- * Arte em branco — blocos soltos, com arraste e tamanho de texto.
+ * Layout de aviso — título + conteúdo, logo e contato oficial.
+ * Sem blocos soltos: estrutura fixa para não deformar.
  */
 export default function LayoutLivre({
   fields,
   onFieldChange,
   preview = false,
-  showWakeCard = true,
-  showBurialCard = true,
-  showPersonName = true,
-  showPersonAge = true,
-  showLogo = true,
-  showTitle = true,
-  showContact = true,
   classicoBorder = defaultClassicoBorder,
-  livrePieces = defaultLivrePieces(),
-  onLivrePieceChange,
-  onRemoveWakeCard,
-  onRemoveBurialCard,
-  onRemovePersonName,
-  onRemovePersonAge,
-  onRemoveLogo,
-  onRemoveTitle,
-  onRemoveContact,
 }: LayoutProps) {
-  const [selectedId, setSelectedId] = useState<LivrePieceId | null>(null)
-  const [dragging, setDragging] = useState(false)
-  const canEdit = !preview
-
-  function changePiece(id: LivrePieceId, next: (typeof livrePieces)[LivrePieceId]) {
-    onLivrePieceChange?.(id, next)
-  }
-
-  function onArtPointerDown(event: ReactPointerEvent<HTMLElement>) {
-    const target = event.target
-    if (!(target instanceof Element)) return
-    if (target.closest('.livre-piece')) return
-    setSelectedId(null)
-  }
-
-  function pieceProps(
-    id: LivrePieceId,
-    label: string,
-    onRemove?: () => void,
-    stretch = false,
-    canRemove = true,
-  ) {
-    return {
-      id,
-      label,
-      stretch,
-      piece: livrePieces[id],
-      selected: canEdit && selectedId === id,
-      onSelect: () => setSelectedId(id),
-      onChange: (next: (typeof livrePieces)[LivrePieceId]) => changePiece(id, next),
-      onRemove: () => {
-        setSelectedId(null)
-        onRemove?.()
-      },
-      onDragActive: setDragging,
-      canRemove,
-    }
-  }
+  const website = fields.website || officialContact.website
+  const phone = fields.phone || officialContact.phone
 
   return (
-    <article
-      className={`art art--classico art--livre${preview ? ' art--classico-preview' : ''}${dragging ? ' is-guiding' : ''}`}
-      onPointerDown={canEdit ? onArtPointerDown : undefined}
-    >
-      {dragging ? <div className="livre-guides no-export" aria-hidden="true" /> : null}
+    <article className={`art art--aviso${preview ? ' art--aviso-preview' : ''}`}>
+      <div className="aviso-sheet" aria-hidden="true" />
 
-      {!preview && classicoBorder !== 'off' ? (
-        <div className={`classico-edge classico-edge--${classicoBorder}`} aria-hidden="true">
-          {classicoBorder === 'combo' ? <span className="classico-edge__inner" /> : null}
-        </div>
+      {!preview && classicoBorder === 'navy' ? (
+        <div className="classico-edge classico-edge--navy" aria-hidden="true" />
       ) : null}
 
-      <div className="art__inner">
-        {showTitle ? (
-          <LivrePiece {...pieceProps('title', 'título', onRemoveTitle, true)}>
-            {preview ? (
-              <p className="livre-title__text">{fields.memorialNote || 'Título'}</p>
-            ) : (
-              <EditableText
-                value={fields.memorialNote}
-                onChange={(value) => onFieldChange('memorialNote', value)}
-                ariaLabel="Título"
-                placeholder="Título"
-                className="livre-title__field"
-                multiline
-                plain
-                maxRows={3}
-                clampOverflow
-                remeasureKey={livrePieces.title.scale}
-              />
-            )}
-          </LivrePiece>
-        ) : null}
+      <div className="art__inner aviso-inner">
+        <div className="aviso-copy">
+          {preview ? (
+            <p className="aviso-title">{fields.memorialNote || 'Título'}</p>
+          ) : (
+            <EditableText
+              value={fields.memorialNote}
+              onChange={(value) => onFieldChange('memorialNote', value)}
+              ariaLabel="Título do aviso"
+              placeholder="Título"
+              className="aviso-title"
+              multiline
+              plain
+              maxRows={4}
+              clampOverflow
+              wrapWords
+              maxLength={80}
+            />
+          )}
 
-        {showPersonName ? (
-          <LivrePiece {...pieceProps('name', 'nome', onRemovePersonName, true)}>
-            {preview ? (
-              <p className="invite-person__name">{fields.personName || 'digite o nome'}</p>
-            ) : (
-              <EditableText
-                value={fields.personName}
-                onChange={(value) => onFieldChange('personName', value)}
-                ariaLabel="Nome da pessoa"
-                placeholder="digite o nome"
-                className="editable--name"
-                multiline
-                plain
-                maxRows={3}
-                clampOverflow
-                remeasureKey={livrePieces.name.scale}
-              />
-            )}
-          </LivrePiece>
-        ) : null}
-
-        {showPersonAge ? (
-          <LivrePiece {...pieceProps('age', 'idade', onRemovePersonAge)}>
-            {preview ? (
-              <p className="invite-person__age">{fields.age || 'Idade'}</p>
-            ) : (
-              <EditableText
-                value={fields.age}
-                onChange={(value) => onFieldChange('age', value)}
-                ariaLabel="Idade"
-                placeholder="Idade"
-                className="editable--age"
-                autoWidth
-                remeasureKey={livrePieces.age.scale}
-              />
-            )}
-          </LivrePiece>
-        ) : null}
-
-        <div className="invite-dates">
-          <LivrePiece {...pieceProps('birth', 'nascimento', undefined, false, false)}>
-            <div className="invite-dates__item">
-              <span className="invite-dates__icon" aria-hidden="true">
-                <StarIcon />
-              </span>
-              {preview ? (
-                <span className="invite-dates__value">{fields.birthDate || 'Nascimento'}</span>
-              ) : (
-                <EditableText
-                  value={fields.birthDate}
-                  onChange={(value) => onFieldChange('birthDate', value)}
-                  ariaLabel="Data de nascimento"
-                  placeholder="Nascimento"
-                  className="editable--date"
-                  autoWidth
-                  remeasureKey={livrePieces.birth.scale}
-                />
-              )}
-            </div>
-          </LivrePiece>
-
-          <span className="invite-dates__sep" aria-hidden="true" />
-
-          <LivrePiece {...pieceProps('death', 'falecimento', undefined, false, false)}>
-            <div className="invite-dates__item">
-              <span className="invite-dates__icon" aria-hidden="true">
-                <CrossIcon />
-              </span>
-              {preview ? (
-                <span className="invite-dates__value">{fields.deathDate || 'Falecimento'}</span>
-              ) : (
-                <EditableText
-                  value={fields.deathDate}
-                  onChange={(value) => onFieldChange('deathDate', value)}
-                  ariaLabel="Data de falecimento"
-                  placeholder="Falecimento"
-                  className="editable--date"
-                  autoWidth
-                  remeasureKey={livrePieces.death.scale}
-                />
-              )}
-            </div>
-          </LivrePiece>
+          {preview ? (
+            <p className="aviso-body">{fields.homageText || 'Conteúdo'}</p>
+          ) : (
+            <EditableText
+              value={fields.homageText}
+              onChange={(value) => onFieldChange('homageText', value)}
+              ariaLabel="Conteúdo do aviso"
+              placeholder="Conteúdo"
+              className="aviso-body"
+              multiline
+              plain
+              maxRows={15}
+              clampOverflow
+              wrapWords
+              maxLength={150}
+            />
+          )}
         </div>
 
-        {showWakeCard || showBurialCard ? (
-          <div className="classico-cards">
-            {showWakeCard ? (
-              <LivrePiece {...pieceProps('cardDate', 'primeiro texto', onRemoveWakeCard, true)}>
-                <div className="classico-card">
-                  {preview ? (
-                    <p className="classico-card__label">{fields.celebrationLabel || 'Título'}</p>
-                  ) : (
-                    <EditableText
-                      value={fields.celebrationLabel}
-                      onChange={(value) => onFieldChange('celebrationLabel', value)}
-                      ariaLabel="Título do primeiro texto"
-                      placeholder="Título"
-                      className="classico-card__label"
-                      plain
-                      remeasureKey={livrePieces.cardDate.scale}
-                    />
-                  )}
-                  {preview ? (
-                    <p className="classico-card__value">{fields.celebrationDate || 'Texto'}</p>
-                  ) : (
-                    <EditableText
-                      value={fields.celebrationDate}
-                      onChange={(value) => onFieldChange('celebrationDate', value)}
-                      ariaLabel="Texto do primeiro bloco"
-                      placeholder="Texto"
-                      className="classico-card__value"
-                      multiline
-                      plain
-                      maxRows={3}
-                      clampOverflow
-                      remeasureKey={livrePieces.cardDate.scale}
-                    />
-                  )}
-                </div>
-              </LivrePiece>
-            ) : null}
+        <footer className="aviso-footer">
+          <SaoLuizLogo compact className="aviso-logo" />
 
-            {showBurialCard ? (
-              <LivrePiece {...pieceProps('cardPlace', 'segundo texto', onRemoveBurialCard, true)}>
-                <div className="classico-card">
-                  {preview ? (
-                    <p className="classico-card__label">{fields.ceremonyLabel || 'Título'}</p>
-                  ) : (
-                    <EditableText
-                      value={fields.ceremonyLabel}
-                      onChange={(value) => onFieldChange('ceremonyLabel', value)}
-                      ariaLabel="Título do segundo texto"
-                      placeholder="Título"
-                      className="classico-card__label"
-                      plain
-                      remeasureKey={livrePieces.cardPlace.scale}
-                    />
-                  )}
-                  {preview ? (
-                    <p className="classico-card__value">{fields.ceremonyPlace || 'Texto'}</p>
-                  ) : (
-                    <EditableText
-                      value={fields.ceremonyPlace}
-                      onChange={(value) => onFieldChange('ceremonyPlace', value)}
-                      ariaLabel="Texto do segundo bloco"
-                      placeholder="Texto"
-                      className="classico-card__value"
-                      multiline
-                      plain
-                      maxRows={3}
-                      clampOverflow
-                      remeasureKey={livrePieces.cardPlace.scale}
-                    />
-                  )}
-                </div>
-              </LivrePiece>
-            ) : null}
+          <div className="aviso-footer__contact">
+            {preview ? (
+              <>
+                <span className="aviso-footer__item">
+                  <MailIcon />
+                  <span>{website}</span>
+                </span>
+                <span className="aviso-footer__sep" aria-hidden="true">
+                  |
+                </span>
+                <span className="aviso-footer__item aviso-footer__item--phone">
+                  <PhoneIcon />
+                  <span>{phone}</span>
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="aviso-footer__item">
+                  <MailIcon />
+                  <EditableText
+                    value={website}
+                    onChange={(value) => onFieldChange('website', value)}
+                    ariaLabel="Site / e-mail"
+                    placeholder="Site"
+                    className="aviso-footer__field aviso-footer__field--email"
+                    plain
+                    autoWidth
+                  />
+                </span>
+                <span className="aviso-footer__sep" aria-hidden="true">
+                  |
+                </span>
+                <span className="aviso-footer__item aviso-footer__item--phone">
+                  <PhoneIcon />
+                  <EditableText
+                    value={phone}
+                    onChange={(value) => onFieldChange('phone', value)}
+                    ariaLabel="Telefone"
+                    placeholder="Telefone"
+                    className="aviso-footer__field aviso-footer__field--phone"
+                    plain
+                    autoWidth
+                  />
+                </span>
+              </>
+            )}
           </div>
-        ) : null}
-
-        {showLogo || showContact ? (
-          <footer className="classico-footer">
-            {showLogo ? (
-              <LivrePiece {...pieceProps('logo', 'logo', onRemoveLogo)}>
-                <SaoLuizLogo compact className="classico-logo" />
-              </LivrePiece>
-            ) : null}
-
-            {showContact ? (
-              <LivrePiece {...pieceProps('contact', 'contato', onRemoveContact)}>
-                <div className="classico-footer__contact">
-                  {preview ? (
-                    <>
-                      <span className="classico-footer__item">
-                        <MailIcon />
-                        <span>{fields.website || 'Site'}</span>
-                      </span>
-                      <span className="classico-footer__sep" aria-hidden="true">
-                        |
-                      </span>
-                      <span className="classico-footer__item">
-                        <PhoneIcon />
-                        <span>{fields.phone || 'Telefone'}</span>
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="classico-footer__item">
-                        <MailIcon />
-                        <EditableText
-                          value={fields.website}
-                          onChange={(value) => onFieldChange('website', value)}
-                          ariaLabel="Site / e-mail"
-                          placeholder="Site"
-                          className="classico-footer__field classico-footer__field--email"
-                          plain
-                          autoWidth
-                          clampOverflow
-                          remeasureKey={livrePieces.contact.scale}
-                        />
-                      </span>
-                      <span className="classico-footer__sep" aria-hidden="true">
-                        |
-                      </span>
-                      <span className="classico-footer__item">
-                        <PhoneIcon />
-                        <EditableText
-                          value={fields.phone}
-                          onChange={(value) => onFieldChange('phone', value)}
-                          ariaLabel="Telefone"
-                          placeholder="Telefone"
-                          className="classico-footer__field classico-footer__field--phone"
-                          plain
-                          autoWidth
-                          clampOverflow
-                          remeasureKey={livrePieces.contact.scale}
-                        />
-                      </span>
-                    </>
-                  )}
-                </div>
-              </LivrePiece>
-            ) : null}
-          </footer>
-        ) : null}
+        </footer>
       </div>
     </article>
   )

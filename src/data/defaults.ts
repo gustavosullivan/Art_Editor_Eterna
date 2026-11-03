@@ -8,9 +8,9 @@ export const officialContact = {
   phone: '(54) 3312-2688',
 }
 
-/** Arte em branco — criar do zero */
+/** Layout de aviso — título + conteúdo, com contato oficial */
 export const emptyFields: ArtFields = {
-  personName: 'digite o nome',
+  personName: '',
   age: '',
   birthDate: '',
   deathDate: '',
@@ -23,7 +23,7 @@ export const emptyFields: ArtFields = {
   celebrationTime: '',
   ceremonyLabel: '',
   ceremonyPlace: '',
-  homageText: defaultHomageText,
+  homageText: '',
 }
 
 export const defaultFields: ArtFields = {

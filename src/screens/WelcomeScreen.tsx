@@ -95,6 +95,10 @@ export default function WelcomeScreen({
     <main className="welcome">
       <div className="welcome__atmosphere" aria-hidden="true" />
 
+      <button type="button" className="welcome__create-layout" onClick={onCreate}>
+        Criar layout
+      </button>
+
       <button type="button" className="welcome__history" onClick={() => setHistoryOpen(true)}>
         Histórico
       </button>

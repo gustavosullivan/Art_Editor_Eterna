@@ -68,7 +68,11 @@ export default function App() {
           ? definitivoFields
           : defaultFields
     setFields(
-      id === 'definitivo7dias' && modelo === 2 ? { ...base, memorialNote: '' } : base,
+      id === 'livre'
+        ? { ...base, ...officialContact, memorialNote: '', homageText: '' }
+        : id === 'definitivo7dias' && modelo === 2
+          ? { ...base, memorialNote: '' }
+          : base,
     )
     setPhotoTransform(defaultPhotoTransform)
     setLogoOffset(defaultLogoOffset)
