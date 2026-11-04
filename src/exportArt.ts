@@ -18,7 +18,7 @@ export const exportPresets: {
   {
     id: 'instagram',
     title: 'Instagram Feed',
-    subtitle: '1080 × 1350 · 4:5, arte inteira no post',
+    subtitle: '1080 × 1350 · 4:5, preenche o post sem faixa',
   },
   {
     id: 'instagramStories',
@@ -28,22 +28,22 @@ export const exportPresets: {
   {
     id: 'facebook',
     title: 'Facebook',
-    subtitle: '1080 × 1350 · 4:5, sem esticar a arte',
+    subtitle: '1080 × 1350 · 4:5, preenche o post sem faixa',
   },
 ]
 
 /**
- * Feed (IG/FB): 4:5 é o retrato mais alto sem cortar no post.
- * Stories: 9:16 — se mandar 4:5, o app coloca faixa preta em cima e embaixo.
- * A arte é 3:4; contain mantém a proporção e completa o quadro com a cor do papel.
+ * Feed (IG/FB): 4:5 — a arte é 3:4; cover dá um zoom leve e preenche
+ * o quadro (evita faixa azul nas laterais do contain).
+ * Stories: 9:16 com contain — completa topo/base com a cor do papel.
  */
 const SOCIAL_FRAME: Record<
   Exclude<ExportPreset, 'pdf'>,
   { w: number; h: number; fit: 'contain' | 'cover'; padY: number }
 > = {
-  instagram: { w: 1080, h: 1350, fit: 'contain', padY: 0 },
+  instagram: { w: 1080, h: 1350, fit: 'cover', padY: 0 },
   instagramStories: { w: 1080, h: 1920, fit: 'contain', padY: 0 },
-  facebook: { w: 1080, h: 1350, fit: 'contain', padY: 0 },
+  facebook: { w: 1080, h: 1350, fit: 'cover', padY: 0 },
 }
 
 function fileSlug(personName: string) {
@@ -391,9 +391,10 @@ function fitToSocial(
   const boxW = w
   const boxH = Math.max(1, h - insetY * 2)
 
+  // cover: +0.4% evita fio de 1px da cor do papel nas bordas por arredondamento
   const scale =
     fit === 'cover'
-      ? Math.max(w / source.width, h / source.height)
+      ? Math.max(w / source.width, h / source.height) * 1.004
       : Math.min(boxW / source.width, boxH / source.height)
   let dw = source.width * scale
   let dh = source.height * scale
@@ -406,8 +407,8 @@ function fitToSocial(
     dy = 0
   }
 
-  // Laterais/topo/base ficam na cor do papel (bg).
-  // Esticar a borda da arte criava uma faixa deformada nas laterais.
+  // contain: laterais/topo/base na cor do papel (bg).
+  // cover: preenche o quadro inteiro (Feed/FB sem faixa azul).
   ctx.drawImage(source, dx, dy, dw, dh)
   return {
     canvas: out,
