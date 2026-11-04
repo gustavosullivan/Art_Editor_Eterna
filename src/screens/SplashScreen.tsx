@@ -4,6 +4,7 @@ import DraggableAsset, {
   type AssetOffset,
 } from '../components/DraggableAsset'
 import EloLogo from '../components/EloLogo'
+import { downloadAppLauncher } from '../downloadAppLauncher'
 
 type SplashScreenProps = {
   onEnter: () => void
@@ -18,6 +19,15 @@ const badge = (file: string) => `${import.meta.env.BASE_URL}templates/${file}`
 export default function SplashScreen({ onEnter }: SplashScreenProps) {
   const [eloOffset, setEloOffset] = useState<AssetOffset>(defaultAssetOffset)
   const [contactOffset, setContactOffset] = useState<AssetOffset>(defaultAssetOffset)
+
+  function handleDownloadApp() {
+    try {
+      downloadAppLauncher()
+    } catch (error) {
+      console.error(error)
+      window.location.assign(`${import.meta.env.BASE_URL}abrir.html`)
+    }
+  }
 
   return (
     <main className="splash">
@@ -76,10 +86,20 @@ export default function SplashScreen({ onEnter }: SplashScreenProps) {
         </div>
 
         <div className="splash__actions">
-          <button type="button" className="splash__cta" onClick={onEnter}>
-            <span className="splash__cta-label">Entrar</span>
-            <span className="splash__cta-shine" aria-hidden="true" />
+          <div className="splash__cta-stack">
+            <button type="button" className="splash__cta" onClick={onEnter}>
+              <span className="splash__cta-label">Entrar</span>
+              <span className="splash__cta-shine" aria-hidden="true" />
+            </button>
+
+            <button
+              type="button"
+              className="splash__download-app"
+            onClick={handleDownloadApp}
+          >
+            Baixar executável
           </button>
+          </div>
 
           <DraggableAsset
             className="splash__contact-drag"

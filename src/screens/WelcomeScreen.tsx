@@ -96,7 +96,8 @@ export default function WelcomeScreen({
       <div className="welcome__atmosphere" aria-hidden="true" />
 
       <button type="button" className="welcome__create-layout" onClick={onCreate}>
-        Criar layout
+        <span className="welcome__create-layout-line">Criar</span>
+        <span className="welcome__create-layout-line">layout</span>
       </button>
 
       <button type="button" className="welcome__history" onClick={() => setHistoryOpen(true)}>
@@ -246,7 +247,8 @@ export default function WelcomeScreen({
           Voltar
         </button>
         <button type="button" className="welcome__create" onClick={onCreate}>
-          Criar
+          <span className="welcome__create-line">Criar</span>
+          <span className="welcome__create-line">layout de aviso</span>
         </button>
         <button
           type="button"
@@ -258,7 +260,7 @@ export default function WelcomeScreen({
             )
           }
         >
-          OK
+          Selecionar
         </button>
       </div>
 

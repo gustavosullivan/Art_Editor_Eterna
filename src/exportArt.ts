@@ -28,22 +28,22 @@ export const exportPresets: {
   {
     id: 'facebook',
     title: 'Facebook',
-    subtitle: '1080 × 1350 · 4:5, sem cortar título nem base',
+    subtitle: '1080 × 1350 · 4:5, sem esticar a arte',
   },
 ]
 
 /**
  * Feed (IG/FB): 4:5 é o retrato mais alto sem cortar no post.
  * Stories: 9:16 — se mandar 4:5, o app coloca faixa preta em cima e embaixo.
- * A arte é 3:4; contain mantém ela inteira. padY evita o feed cortar título/base.
+ * A arte é 3:4; contain mantém a proporção e completa o quadro com a cor do papel.
  */
 const SOCIAL_FRAME: Record<
   Exclude<ExportPreset, 'pdf'>,
   { w: number; h: number; fit: 'contain' | 'cover'; padY: number }
 > = {
-  instagram: { w: 1080, h: 1350, fit: 'contain', padY: 0.05 },
-  instagramStories: { w: 1080, h: 1920, fit: 'contain', padY: 0.04 },
-  facebook: { w: 1080, h: 1350, fit: 'contain', padY: 0.12 },
+  instagram: { w: 1080, h: 1350, fit: 'contain', padY: 0 },
+  instagramStories: { w: 1080, h: 1920, fit: 'contain', padY: 0 },
+  facebook: { w: 1080, h: 1350, fit: 'contain', padY: 0 },
 }
 
 function fileSlug(personName: string) {
@@ -406,25 +406,8 @@ function fitToSocial(
     dy = 0
   }
 
-  // Preenche só as laterais com a borda da arte.
-  // Topo/base ficam na cor de fundo — no Facebook o bleed vertical
-  // fazia o título parecer cortado no feed.
-  if (fit === 'contain' && dx > 1) {
-    const edge = Math.max(2, Math.round(source.width * 0.004))
-    ctx.drawImage(source, 0, 0, edge, source.height, 0, Math.max(0, dy), dx, dh)
-    ctx.drawImage(
-      source,
-      Math.max(0, source.width - edge),
-      0,
-      edge,
-      source.height,
-      dx + dw,
-      Math.max(0, dy),
-      Math.max(1, w - (dx + dw)),
-      dh,
-    )
-  }
-
+  // Laterais/topo/base ficam na cor do papel (bg).
+  // Esticar a borda da arte criava uma faixa deformada nas laterais.
   ctx.drawImage(source, dx, dy, dw, dh)
   return {
     canvas: out,

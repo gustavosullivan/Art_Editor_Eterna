@@ -67,6 +67,23 @@
 
 .welcome__create-layout {
   left: max(0.55rem, var(--safe-left));
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  min-width: 0;
+  max-width: 3.85rem;
+  min-height: 2.55rem;
+  padding: 0.28rem 0.45rem;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  border-radius: 1rem;
+}
+
+.welcome__create-layout-line {
+  display: block;
+  line-height: 1.05;
 }
 
 .welcome__history:active,
@@ -535,21 +552,32 @@
 
 .welcome__create {
   appearance: none;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.05rem;
   width: 100%;
   min-width: 0;
   min-height: clamp(46px, 6.5vh, 54px);
-  padding: 0.75rem 0.45rem;
+  padding: 0.55rem 0.35rem;
   border-radius: 8px;
   border: 1.5px solid var(--gold);
   background: #fff;
   color: var(--navy);
-  font-size: clamp(0.72rem, 1.6vh, 0.82rem);
+  font-size: clamp(0.62rem, 1.45vh, 0.74rem);
   font-weight: 650;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
   text-transform: uppercase;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+}
+
+.welcome__create-line {
+  display: block;
+  line-height: 1.1;
 }
 
 .welcome__create:hover {

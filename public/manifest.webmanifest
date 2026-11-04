@@ -1,0 +1,19 @@
+{
+  "name": "Editor de Artes — São Luiz Funerária",
+  "short_name": "Editor São Luiz",
+  "description": "Editor de artes da São Luiz Funerária",
+  "start_url": "/Art_Editor_Eterna/",
+  "scope": "/Art_Editor_Eterna/",
+  "display": "standalone",
+  "background_color": "#e9eef3",
+  "theme_color": "#1a6eff",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "logo-sao-luiz.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
