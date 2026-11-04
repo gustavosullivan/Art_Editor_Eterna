@@ -20,9 +20,9 @@ export default function SplashScreen({ onEnter }: SplashScreenProps) {
   const [eloOffset, setEloOffset] = useState<AssetOffset>(defaultAssetOffset)
   const [contactOffset, setContactOffset] = useState<AssetOffset>(defaultAssetOffset)
 
-  function handleDownloadApp() {
+  async function handleDownloadApp() {
     try {
-      downloadAppLauncher()
+      await downloadAppLauncher()
     } catch (error) {
       console.error(error)
       window.location.assign(`${import.meta.env.BASE_URL}abrir.html`)
@@ -95,10 +95,10 @@ export default function SplashScreen({ onEnter }: SplashScreenProps) {
             <button
               type="button"
               className="splash__download-app"
-            onClick={handleDownloadApp}
-          >
-            Baixar executável
-          </button>
+              onClick={() => void handleDownloadApp()}
+            >
+              Instalar no celular
+            </button>
           </div>
 
           <DraggableAsset
